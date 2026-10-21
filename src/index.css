@@ -1,0 +1,424 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ====================================================================
+   OmniLife Design System V3 - "Soft Brutalist Desk"
+   Pewaris penuh token warna V2 (graphite + neon indigo).
+   Perubahan V3: tipografi Bricolage×Jakarta, border 1.5px tegas,
+   offset shadow (hard shadow) pada interaksi, radius dikurangi 1 notch.
+   ==================================================================== */
+
+@theme {
+  /* Typography V3: Jakarta (body) + Bricolage (display) — Inter = micro fallback */
+  --font-sans: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Plus Jakarta Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Graphite neutral scale (remap zinc) */
+  --color-zinc-50: #F6F7F9;
+  --color-zinc-100: #EDEEF2;
+  --color-zinc-200: #E2E4EA;
+  --color-zinc-300: #C6C9D4;
+  --color-zinc-400: #9A9EAD;
+  --color-zinc-500: #7C8090;
+  --color-zinc-600: #5D6172;
+  --color-zinc-700: #474B5C;
+  --color-zinc-800: #2E3140;
+  --color-zinc-900: #1B1D26;
+  --color-zinc-950: #101219;
+
+  /* Hanzi Quest Cinnabar palette (replaces old OmniLife neon purple) */
+  --color-blue-50: #FFF1F2;
+  --color-blue-100: #FFE4E6;
+  --color-blue-200: #FECDD3;
+  --color-blue-300: #FDA4AF;
+  --color-blue-400: #FB7185;
+  --color-blue-500: #F43F5E;
+  --color-blue-600: #C0392B;
+  --color-blue-700: #A93226;
+  --color-blue-800: #8A251B;
+  --color-blue-900: #5B1812;
+  --color-blue-950: #380B07;
+
+  /* Semantic surfaces */
+  --color-canvas: #F6F7F9;
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #F1F2F5;
+  --color-edge: #E2E4EA;
+  --color-edge-strong: #C6C9D4;
+  --color-accent: #C0392B;
+  --color-accent-strong: #A93226;
+  --color-accent-soft: rgba(192, 57, 43, 0.15);
+
+  /* De-puff radius scale (V4: 2xl menyatu ke xl — bahasa radius satu tingkat) */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.625rem;
+  --radius-2xl: 0.625rem;
+  --radius-3xl: 0.625rem;
+  --radius-3xl: 1rem;
+
+  /* V3 Soft-Brutalist: offset (hard) shadow — hanya pada interaksi/aktif */
+  --shadow-brut: 2px 2px 0 0 #A93226;
+  --shadow-brut-sm: 1.5px 1.5px 0 0 #C6C9D4;
+}
+
+/* Dark mode: graphite flip (scale tetap monotonic, nilai digelapkan) */
+.dark {
+  /* V3: offset shadow versi dark */
+  --shadow-brut: 2px 2px 0 0 rgba(251, 113, 133, 0.55);
+  --shadow-brut-sm: 1.5px 1.5px 0 0 #3A3E4E;
+
+  --color-zinc-50: #F4F5F8;
+  --color-zinc-100: #E9EBF2;
+  --color-zinc-200: #D2D5E0;
+  --color-zinc-300: #B6B9C7;
+  --color-zinc-400: #8F93A3;
+  --color-zinc-500: #767A8C;
+  --color-zinc-600: #5F6373;
+  --color-zinc-700: #3A3E4E;
+  --color-zinc-800: #242733;
+  --color-zinc-900: #16181F;
+  --color-zinc-950: #0D0F14;
+
+  --color-canvas: #0D0F14;
+  --color-surface: #16181F;
+  --color-surface-raised: #1D2029;
+  --color-edge: #242733;
+  --color-edge-strong: #3A3E4E;
+  --color-accent-soft: rgba(225, 29, 72, 0.16);
+}
+
+@layer base {
+  :root {
+    --background: 227 17% 97%;
+    --foreground: 229 14% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 229 14% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 229 14% 11%;
+
+    --primary: 350 89% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 226 14% 95%;
+    --secondary-foreground: 229 14% 11%;
+
+    --muted: 226 14% 95%;
+    --muted-foreground: 229 10% 42%;
+
+    --accent: 226 14% 95%;
+    --accent-foreground: 229 14% 11%;
+
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 226 14% 90%;
+    --input: 226 14% 90%;
+    --ring: 350 89% 60%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 225 28% 8%;
+    --foreground: 228 25% 92%;
+
+    --card: 226 17% 12%;
+    --card-foreground: 228 25% 92%;
+
+    --popover: 226 17% 12%;
+    --popover-foreground: 228 25% 92%;
+
+    --primary: 350 89% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 227 14% 17%;
+    --secondary-foreground: 228 25% 92%;
+
+    --muted: 227 14% 17%;
+    --muted-foreground: 227 9% 60%;
+
+    --accent: 227 14% 17%;
+    --accent-foreground: 228 25% 92%;
+
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 227 14% 22%;
+    --input: 227 14% 22%;
+    --ring: 255 92% 63%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+    -webkit-tap-highlight-color: transparent;
+  }
+  html {
+    accent-color: var(--color-accent);
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: "Plus Jakarta Sans Variable", "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    user-select: text;
+    -webkit-user-select: text;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    touch-action: manipulation;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  /* Preserve text selection for content, messages, logs, and codes */
+  p, span, h1, h2, h3, h4, h5, h6, pre, code, blockquote, td, th, label {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  /* Buttons and interactive navigation controls remain clean without selection */
+  button, nav, .btn, [role="button"], [role="tab"] {
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  ::selection {
+    background: rgba(112, 72, 248, 0.28);
+  }
+  :focus-visible {
+    outline: 2px solid rgba(139, 108, 255, 0.65);
+    outline-offset: 2px;
+  }
+}
+
+/* ====================================================================
+   V3 "Soft Brutalist Desk" utilities
+   ==================================================================== */
+
+/* Display font (Bricolage) — identitas heading & angka statement */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* Offset (hard) shadow — hanya dipakai saat hover/active/aktif */
+.shadow-brut {
+  box-shadow: 2px 2px 0 0 #5C38D9;
+}
+.dark .shadow-brut {
+  box-shadow: 2px 2px 0 0 rgba(157, 124, 255, 0.55);
+}
+.shadow-brut-sm {
+  box-shadow: 1.5px 1.5px 0 0 #C6C9D4;
+}
+.dark .shadow-brut-sm {
+  box-shadow: 1.5px 1.5px 0 0 #3A3E4E;
+}
+
+/* Tekstur halus "meja kerja": dots tipis di canvas (hanya halaman, bukan modal) */
+.brut-texture {
+  background-image: radial-gradient(rgba(112, 72, 248, 0.05) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.dark .brut-texture {
+  background-image: radial-gradient(rgba(157, 124, 255, 0.045) 1px, transparent 1px);
+}
+
+/* Press/hover micro-motion ala brutalist: kutub kecil saat ditekan */
+.brut-press {
+  transition: transform 120ms ease-out, box-shadow 120ms ease-out;
+}
+.brut-press:hover {
+  transform: translate(-1px, -1px);
+}
+.brut-press:active {
+  transform: translate(1px, 1px);
+}
+
+/* Hormati prefers-reduced-motion (pewaris V2) */
+@media (prefers-reduced-motion: reduce) {
+  .brut-press:hover,
+  .brut-press:active {
+    transform: none;
+  }
+}
+
+/* Mobile: offset shadow diredam agar tidak makan ruang sentuh */
+@media (max-width: 640px) {
+  .shadow-brut {
+    box-shadow: 1.5px 1.5px 0 0 #5C38D9;
+  }
+}
+
+
+/* Custom scrollbars for desktop application */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(150, 150, 150, 0.5);
+}
+
+/* Mobile Touch & Scroll Utilities */
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Modern sleek scrollbar for custom areas */
+.sleek-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.sleek-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.sleek-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.25);
+  border-radius: 9999px;
+}
+.sleek-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom, 0px));
+}
+.pt-safe {
+  padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+}
+
+
+/* Anki Card Content Styling & Typography */
+.anki-card-content {
+  word-break: break-word;
+}
+.anki-card-content .hanzi {
+  font-size: 2.25rem;
+  font-weight: 900;
+  line-height: 1.25;
+  margin-bottom: 0.35rem;
+  font-family: "PingFang SC", "Microsoft YaHei", "SimSun", "Noto Sans SC", sans-serif;
+  letter-spacing: 0.05em;
+}
+.anki-card-content .pinyin {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #9d7cff;
+  margin-bottom: 0.25rem;
+}
+.anki-card-content .english,
+.anki-card-content .meaning {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #cbd5e1;
+  margin-bottom: 0.5rem;
+}
+.anki-card-content .sentence {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fef08a;
+  margin-top: 0.75rem;
+  margin-bottom: 0.5rem;
+  line-height: 1.5;
+  font-family: "PingFang SC", "Microsoft YaHei", "SimSun", "Noto Sans SC", sans-serif;
+}
+.anki-card-content .description {
+  font-size: 0.875rem;
+  color: #94a3b8;
+}
+.anki-card-content hr {
+  border-color: rgba(255, 255, 255, 0.15);
+  margin: 0.85rem 0;
+}
+.anki-card-content .cloze-gap {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  border: 1.5px dashed #9d7cff;
+  background-color: rgba(112, 72, 248, 0.15);
+  color: #b7a4ff;
+  font-weight: 700;
+}
+.anki-card-content .cloze-active {
+  display: inline-block;
+  padding: 0.125rem 0.5rem;
+  border-radius: 0.375rem;
+  background-color: rgba(245, 158, 11, 0.25);
+  color: #fde68a;
+  font-weight: 800;
+}
+.anki-card-content audio {
+  height: 34px;
+  max-width: 280px;
+  border-radius: 9999px;
+  outline: none;
+}
+
+
+/* ==== Fix: dropdown <select> options kamuflase (dark mode) ==== */
+select {
+  background-color: white;
+  color: #18181b;
+}
+.dark select {
+  background-color: #27272a;
+  color: #f4f4f5;
+}
+select option {
+  background-color: white;
+  color: #18181b;
+}
+.dark select option {
+  background-color: #27272a;
+  color: #f4f4f5;
+}
+select option:checked,
+select option:hover {
+  background-color: #7048f8;
+  color: white;
+}
+
+/* V3: input/select fokus mempertebaskan border accent (bukan cuma ring) */
+select:focus,
+input:focus,
+textarea:focus {
+  border-color: #7048f8;
+}
+
+/* Hanzi tracing: jalur panduan berkedip lembut di canvas latihan menulis */
+@keyframes hanzi-guide-pulse {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+.hanzi-guide-pulse {
+  animation: hanzi-guide-pulse 1.6s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hanzi-guide-pulse {
+    animation: none;
+    opacity: 0.8;
+  }
+}

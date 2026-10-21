@@ -1,0 +1,18 @@
+{
+  "name": "Hanzi Quest · 汉字探索",
+  "short_name": "HanziQuest",
+  "description": "Petualangan Belajar Aksara & Kosakata Bahasa Mandarin HSK 3.0",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#090D16",
+  "theme_color": "#C0392B",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
