@@ -521,7 +521,7 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
       {/* ── STROKE ORDER MODAL (Interactive Hanzi Animation) ── */}
       {strokeModalWord && (
         <div
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in duration-200"
           onClick={handleCloseStrokeModal}
         >
           <div

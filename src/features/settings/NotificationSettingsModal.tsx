@@ -105,27 +105,29 @@ export function NotificationSettingsModal({ isOpen, onClose }: NotificationSetti
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 animate-in fade-in duration-200">
-      <Card className="w-full max-w-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-2xl p-5 space-y-5 rounded-2xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-200">
+      <Card className="w-full max-w-lg bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl max-h-[85vh] sm:max-h-[90vh] flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
+        <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 p-4 sm:p-5 shrink-0">
           <div className="flex items-center gap-2">
-            <Bell className="w-5 h-5 text-indigo-500" />
-            <h3 className="font-bold text-base text-zinc-900 dark:text-zinc-100">
+            <Bell className="w-5 h-5 text-indigo-500 shrink-0" />
+            <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 truncate">
               Notifikasi Belajar & App Lock PIN
             </h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer text-zinc-500"
+            className="p-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 cursor-pointer text-zinc-500 shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Permission Request Banner */}
-        {!hasPermission && (
-          <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-between gap-3 text-xs">
+        {/* Scrollable Body */}
+        <div className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-5">
+          {/* Permission Request Banner */}
+          {!hasPermission && (
+            <div className="p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-between gap-3 text-xs">
             <div>
               <span className="font-bold text-indigo-900 dark:text-indigo-200 block">
                 Izin Notifikasi Belum Aktif
@@ -262,21 +264,22 @@ export function NotificationSettingsModal({ isOpen, onClose }: NotificationSetti
             </div>
           )}
         </div>
+      </div>
 
-        {/* Actions */}
-        <div className="flex justify-end gap-2 pt-2 border-t border-zinc-100 dark:border-zinc-800">
-          <Button variant="outline" onClick={onClose} className="text-xs font-semibold cursor-pointer">
-            Batal
-          </Button>
-          <Button
-            onClick={handleSaveSettings}
-            disabled={lockConfig.isEnabled && !lockConfig.pinHash && !newPin.trim()}
-            className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-          >
-            <Check className="w-4 h-4 mr-1.5" /> Simpan Pengaturan
-          </Button>
-        </div>
-      </Card>
-    </div>
+      {/* Pinned Actions Footer */}
+      <div className="p-3 sm:p-4 bg-zinc-50 dark:bg-zinc-900/90 border-t border-zinc-200 dark:border-zinc-800 flex justify-end gap-2 shrink-0">
+        <Button variant="outline" onClick={onClose} className="text-xs font-semibold cursor-pointer">
+          Batal
+        </Button>
+        <Button
+          onClick={handleSaveSettings}
+          disabled={lockConfig.isEnabled && !lockConfig.pinHash && !newPin.trim()}
+          className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        >
+          <Check className="w-4 h-4 mr-1.5" /> Simpan Pengaturan
+        </Button>
+      </div>
+    </Card>
+  </div>
   );
 }

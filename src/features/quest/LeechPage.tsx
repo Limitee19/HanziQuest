@@ -58,27 +58,27 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
         className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6"
         style={{ boxShadow: '0 12px 32px -4px rgba(35, 31, 32, 0.08), 0 2px 6px -1px rgba(35, 31, 32, 0.04)' }}
       >
-        <div className="flex items-start sm:items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60 flex items-center justify-center shrink-0 shadow-xs">
-            <Bug className="w-7 h-7" />
+        <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-900/60 flex items-center justify-center shrink-0 shadow-xs">
+            <Bug className="w-6 h-6 sm:w-7 sm:h-7" />
           </div>
-          <div>
-            <div className="flex items-center gap-3">
-              <h1 className="font-serif text-2xl sm:text-3xl font-extrabold text-[#231F20] dark:text-zinc-100 tracking-tight">
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-extrabold text-[#231F20] dark:text-zinc-100 tracking-tight break-words">
                 Ruang Leech · Karantina Kata Bandel
               </h1>
-              <span className="px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-bold">
+              <span className="px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-xs font-bold shrink-0">
                 {items.length} Kata
               </span>
             </div>
-            <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-2xl leading-relaxed">
               Kata yang keliru ≥3 kali saat latihan otomatis dikarantina ke sini. Beri jembatan keledai (mnemonik asosiatif) dan latih berulang kali sampai jinak!
             </p>
           </div>
         </div>
 
         {/* Back and Action Buttons */}
-        <div className="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto sm:justify-end shrink-0">
           {onBackToMap && (
             <button
               type="button"
@@ -86,7 +86,7 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
                 clickTick(sound);
                 onBackToMap();
               }}
-              className="px-4 py-2.5 rounded-2xl border border-zinc-300 dark:border-[#24324E] bg-white dark:bg-[#1C2742] hover:bg-zinc-100 dark:hover:bg-[#253252] text-zinc-800 dark:text-zinc-200 font-bold text-sm cursor-pointer shadow-xs transition-transform active:scale-95 flex items-center gap-2"
+              className="px-4 py-2.5 rounded-2xl border border-zinc-300 dark:border-[#24324E] bg-white dark:bg-[#1C2742] hover:bg-zinc-100 dark:hover:bg-[#253252] text-zinc-800 dark:text-zinc-200 font-bold text-xs sm:text-sm cursor-pointer shadow-xs transition-transform active:scale-95 flex items-center justify-center gap-2"
             >
               <span>←</span> Peta Petualangan
             </button>
@@ -99,9 +99,9 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
                 clickTick(sound);
                 onStartSession(1);
               }}
-              className="px-5 py-2.5 rounded-2xl bg-[#C0392B] hover:bg-[#a93226] text-white font-bold text-sm cursor-pointer transition-transform active:scale-95 shadow-xs flex items-center gap-2"
+              className="px-5 py-2.5 rounded-2xl bg-[#C0392B] hover:bg-[#a93226] text-white font-bold text-xs sm:text-sm cursor-pointer transition-transform active:scale-95 shadow-xs flex items-center justify-center gap-2"
             >
-              <Flame className="w-4 h-4 fill-white" />
+              <Flame className="w-4 h-4 fill-white shrink-0" />
               <span>Latih Sekarang</span>
             </button>
           )}

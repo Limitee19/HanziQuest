@@ -90,13 +90,14 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-20">
       {/* ── HEADER CARD ── */}
-      <div className="card" style={{ padding: '24px 28px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 14 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+      <div className="card p-4 sm:p-6 md:p-7">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
             <div
+              className="shrink-0"
               style={{
-                width: 48,
-                height: 48,
+                width: 44,
+                height: 44,
                 borderRadius: 14,
                 background: '#FEF2F2',
                 border: '1.5px solid #E11D48',
@@ -104,22 +105,22 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#E11D48',
-                fontSize: 24,
+                fontSize: 22,
                 boxShadow: '0 4px 12px -2px rgba(225, 29, 72, 0.15)',
               }}
             >
               <i className="ph-duotone ph-lightning" />
             </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <h1 style={{ fontFamily: 'var(--font-display)', margin: 0, fontSize: '1.4rem', color: 'var(--ink)' }}>
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 style={{ fontFamily: 'var(--font-display)', margin: 0, fontSize: '1.25rem', color: 'var(--ink)' }} className="break-words">
                   Drill Aksara Mirip · HSK {level}
                 </h1>
-                <span className="pack-badge" style={{ padding: '2px 8px', fontSize: '0.75rem' }}>
+                <span className="pack-badge shrink-0" style={{ padding: '2px 8px', fontSize: '0.75rem' }}>
                   Pos {level}
                 </span>
               </div>
-              <p style={{ margin: '4px 0 0', fontSize: '0.86rem', color: 'var(--ink-soft)' }}>
+              <p style={{ margin: '4px 0 0', fontSize: '0.82rem', color: 'var(--ink-soft)' }}>
                 Uji ketajaman visual, nada, dan arti agar aksara tidak mudah tertukar.
               </p>
             </div>
@@ -127,7 +128,7 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
 
           <button
             type="button"
-            className="btn btn--outline"
+            className="btn btn--outline w-full sm:w-auto shrink-0 justify-center"
             onClick={handleGoBack}
           >
             <i className="ph-bold ph-arrow-left" /> Kembali ke Peta

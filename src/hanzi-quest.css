@@ -380,7 +380,7 @@ p {
 .topbar {
   position: sticky;
   top: 14px;
-  z-index: 50;
+  z-index: 30;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -558,7 +558,7 @@ p {
   bottom: 16px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 60;
+  z-index: 40;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(24px);
   -webkit-backdrop-filter: blur(24px);
@@ -888,6 +888,21 @@ html.dark .dock button.active {
   font-size: 19px;
   font-weight: 800;
   color: #92400E;
+}
+
+@media (max-width: 640px) {
+  .pack-badge {
+    padding: 6px 12px;
+    font-size: 12px;
+    gap: 8px;
+    max-width: 100%;
+  }
+  .pack-badge b {
+    font-size: 16px;
+  }
+  .pack-badge i {
+    font-size: 16px;
+  }
 }
 
 .hero__title {
@@ -2223,6 +2238,42 @@ html.dark .dock button.active {
   }
   .inspector-card__actions .btn {
     width: 100%;
+  }
+}
+
+/* Hanzi Quest Modal Overlays (z-index 100 to stay above floating dock) */
+.hq-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(9, 13, 22, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  animation: fadeIn 0.2s ease-out;
+}
+
+.hq-modal-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 24px;
+  box-shadow: 0 24px 60px -12px rgba(0, 0, 0, 0.45);
+  box-sizing: border-box;
+}
+
+@media (max-width: 640px) {
+  .hq-modal-backdrop {
+    padding: 10px;
+  }
+  .hq-modal-card {
+    padding: 16px;
+    border-radius: 20px;
+    max-height: 88vh;
   }
 }
 

@@ -71,8 +71,8 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={value}>
       {children}
-      {/* Toast container — bottom-right on desktop, bottom-center on mobile */}
-      <div className="fixed z-[100] bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-4 flex flex-col gap-2 w-[calc(100vw-2rem)] sm:w-80 pointer-events-none">
+      {/* Toast container — bottom-right on desktop, bottom-center above dock on mobile */}
+      <div className="fixed z-[200] bottom-20 sm:bottom-4 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-4 flex flex-col gap-2 w-[calc(100vw-2rem)] sm:w-80 pointer-events-none">
         {toasts.map((t) => {
           const Icon = ICONS[t.type];
           return (              <div

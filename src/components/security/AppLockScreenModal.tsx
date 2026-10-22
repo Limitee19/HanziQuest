@@ -110,7 +110,7 @@ export function AppLockScreenModal() {
   if (!isLocked) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/95 backdrop-blur-md text-white p-4 font-sans select-none animate-fade-in">
+    <div className="fixed inset-0 z-[150] flex items-center justify-center bg-slate-950/95 backdrop-blur-md text-white p-4 font-sans select-none animate-fade-in">
       <Card className="w-full max-w-sm bg-slate-900 border border-slate-800 shadow-2xl p-6 text-center space-y-6">
         <div className="flex flex-col items-center space-y-2">
           <div className="p-3.5 rounded-full bg-blue-600/20 text-blue-400 border border-blue-500/30">

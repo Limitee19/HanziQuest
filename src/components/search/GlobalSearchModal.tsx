@@ -110,7 +110,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-start justify-center pt-16 px-4 animate-in fade-in duration-200"
+      className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xs flex items-start justify-center pt-8 sm:pt-16 p-3 sm:px-4 animate-in fade-in duration-200"
       onClick={onClose}
     >
       <div

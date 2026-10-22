@@ -27,7 +27,7 @@ export function PracticeSetupModal({ isOpen, onClose, onStartSession }: Practice
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
       <div className="bg-white dark:bg-zinc-900 rounded-2xl p-6 max-w-md w-full border border-zinc-200 dark:border-zinc-800 shadow-2xl space-y-6 relative overflow-hidden">
         {/* Close Button */}
         <button

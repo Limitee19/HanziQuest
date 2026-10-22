@@ -91,7 +91,7 @@ export function HanziPracticeView({
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
+    <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
       <div className="bg-white dark:bg-zinc-900 rounded-2xl p-4 sm:p-6 max-w-lg w-full border border-zinc-200 dark:border-zinc-800 shadow-2xl space-y-4 sm:space-y-6 relative max-h-[92vh] overflow-y-auto">
         {/* Close Button */}
         <button

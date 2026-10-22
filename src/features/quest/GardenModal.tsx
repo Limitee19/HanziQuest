@@ -44,12 +44,12 @@ export const GardenModal: React.FC<GardenModalProps> = ({ isOpen, onClose, sound
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 16 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', minWidth: 0, flex: 1 }}>
             <div
               style={{
-                width: 48,
-                height: 48,
+                width: 44,
+                height: 44,
                 borderRadius: 14,
                 background: '#ECFDF5',
                 border: '2px solid #059669',
@@ -57,22 +57,23 @@ export const GardenModal: React.FC<GardenModalProps> = ({ isOpen, onClose, sound
                 alignItems: 'center',
                 justifyContent: 'center',
                 color: '#059669',
-                fontSize: 26,
+                fontSize: 24,
                 boxShadow: '0 3px 0 #059669',
+                flexShrink: 0,
               }}
             >
               <i className="ph-duotone ph-plant" />
             </div>
-            <div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                <h2 style={{ fontFamily: 'var(--font-display)', margin: 0, fontSize: '1.45rem', color: 'var(--ink)' }}>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                <h2 style={{ fontFamily: 'var(--font-display)', margin: 0, fontSize: '1.35rem', color: 'var(--ink)', wordBreak: 'break-word' }}>
                   Kebun Aksara & Statistik
                 </h2>
-                <span className="pack-badge" style={{ background: '#ECFDF5', borderColor: '#A7F3D0', color: '#065F46' }}>
+                <span className="pack-badge" style={{ background: '#ECFDF5', borderColor: '#A7F3D0', color: '#065F46', flexShrink: 0 }}>
                   🌸 Tumbuh Subur
                 </span>
               </div>
-              <p style={{ margin: '4px 0 0', fontSize: '0.86rem', color: 'var(--ink-subtle)' }}>
+              <p style={{ margin: '4px 0 0', fontSize: '0.84rem', color: 'var(--ink-subtle)', lineHeight: 1.4 }}>
                 Setiap aksara yang kamu kuasai (mastered) mekar menjadi bunga Meihua di kebun petualanganmu.
               </p>
             </div>

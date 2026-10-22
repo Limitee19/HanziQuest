@@ -359,7 +359,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
 
   if (loading) {
     return (
-      <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
+      <div className="fixed inset-0 z-[100] bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
         <div className="text-center space-y-3 text-white">
           <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
           <p className="text-sm font-semibold">Menyiapkan Sesi Belajar Flashcard...</p>
@@ -371,7 +371,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
   // If no cards due
   if (!loading && queue.length === 0 && !sessionCompleted) {
     return (
-      <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 select-none">
+      <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 select-none">
         <Card className="max-w-md w-full p-8 bg-zinc-900 border-zinc-800 text-center space-y-5 rounded-3xl shadow-2xl">
           <div className="w-16 h-16 rounded-3xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center mx-auto">
             <CheckCircle2 className="w-10 h-10" />
@@ -401,7 +401,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
     const accuracy = totalReviewed > 0 ? Math.round(((stats.good + stats.easy) / totalReviewed) * 100) : 100;
 
     return (
-      <div className="fixed inset-0 z-50 bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 select-none">
+      <div className="fixed inset-0 z-[100] bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4 select-none">
         <Card className="max-w-md w-full p-8 bg-zinc-900 border-zinc-800 text-center space-y-6 rounded-3xl shadow-2xl animate-in zoom-in-95 duration-200">
           <Trophy className="w-10 h-10 text-amber-500 mx-auto" />
 
@@ -460,7 +460,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
   const progressPercent = queue.length > 0 ? Math.round(((currentIndex) / queue.length) * 100) : 0;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-950 text-white flex flex-col justify-between select-none overflow-hidden">
+    <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col justify-between select-none overflow-hidden">
       {/* 1. TOP HEADER & PROGRESS */}
       <div className="pt-safe px-3 sm:px-6 py-2.5 sm:py-4 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md flex items-center justify-between gap-2 sm:gap-4 shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
@@ -521,10 +521,10 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
       </div>
 
       {/* 2. FLASHCARD CONTAINER */}
-      <div className="flex-1 flex p-2.5 sm:p-4 md:p-8 max-w-4xl w-full mx-auto overflow-y-auto">
+      <div className="flex-1 min-h-0 flex p-2.5 sm:p-4 md:p-8 max-w-4xl w-full mx-auto overflow-y-auto">
         <div
           onClick={() => !isRevealed && setIsRevealed(true)}
-          className={`m-auto w-full max-h-full bg-[#101726]/95 border border-[#24324E] rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-10 shadow-2xl flex flex-col min-h-[320px] sm:min-h-[380px] md:min-h-[460px] transition-all duration-200 ${
+          className={`m-auto w-full max-h-full bg-[#101726]/95 border border-[#24324E] rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-10 shadow-2xl flex flex-col min-h-[250px] sm:min-h-[340px] md:min-h-[440px] transition-all duration-200 ${
             !isRevealed ? 'cursor-pointer hover:border-[#334155]' : ''
           }`}
         >
@@ -635,7 +635,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
       </div>
 
       {/* 3. BOTTOM ACTION BAR (4 Anki Buttons) */}
-      <div className="pb-safe p-2.5 sm:p-4 md:p-6 border-t border-zinc-800/80 bg-slate-900/80 backdrop-blur-md shrink-0">
+      <div className="pb-safe pb-4 p-3 sm:p-4 md:p-6 border-t border-zinc-800/80 bg-slate-950/95 backdrop-blur-md shrink-0 relative z-10">
         <div className="max-w-3xl mx-auto">
           {!isRevealed ? (
             <Button

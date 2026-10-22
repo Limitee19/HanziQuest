@@ -57,17 +57,17 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
         <header className="topbar">
           {/* Brand Seal & Title */}
           <div
-            className="brand"
+            className="brand min-w-0 shrink"
             style={{ cursor: 'pointer' }}
             onClick={() => {
               clickTick(sound);
               setActiveTab('dashboard');
             }}
           >
-            <div className="chop">字</div>
-            <div className="brand-text">
-              <span className="brand-title">Hanzi Quest</span>
-              <span className="brand-sub">Petualangan Hanzi HSK</span>
+            <div className="chop shrink-0">字</div>
+            <div className="brand-text min-w-0">
+              <span className="brand-title truncate block">Hanzi Quest</span>
+              <span className="brand-sub truncate hidden sm:block">Petualangan Hanzi HSK</span>
             </div>
           </div>
 
@@ -158,13 +158,13 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
             </button>
           </nav>
 
-          {/* Right Controls: Sound, Arcade, Search */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {/* Right Controls: Responsive, compact on mobile to never overflow */}
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
             {/* Search */}
             <button
               type="button"
               className="btn btn--ghost"
-              style={{ padding: '8px 12px', fontSize: 13, borderRadius: '9999px' }}
+              style={{ padding: '7px 10px', fontSize: 13, borderRadius: '9999px' }}
               onClick={() => {
                 clickTick(sound);
                 setIsSearchOpen(true);
@@ -174,12 +174,12 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
               <i className="ph-duotone ph-magnifying-glass" style={{ color: 'var(--ink-soft)' }} />
             </button>
 
-            {/* Sound Toggle */}
+            {/* Sound Toggle (Desktop/Tablet) */}
             <button
               type="button"
-              className={`btn btn--ghost ${sound ? 'btn--sound-on' : ''}`}
+              className={`btn btn--ghost hidden sm:inline-flex ${sound ? 'btn--sound-on' : ''}`}
               style={{
-                padding: '8px 12px',
+                padding: '7px 11px',
                 fontSize: 13,
                 borderRadius: '9999px',
               }}
@@ -192,12 +192,12 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
               />
             </button>
 
-            {/* Arcade Toggle */}
+            {/* Arcade Toggle (Desktop/Tablet) */}
             <button
               type="button"
-              className={`btn btn--ghost ${arcade ? 'btn--arcade-on' : ''}`}
+              className={`btn btn--ghost hidden sm:inline-flex ${arcade ? 'btn--arcade-on' : ''}`}
               style={{
-                padding: '8px 12px',
+                padding: '7px 11px',
                 fontSize: 13,
                 borderRadius: '9999px',
               }}
@@ -215,7 +215,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
               type="button"
               className={`btn btn--ghost ${activeTab === 'settings' ? 'active' : ''}`}
               style={{
-                padding: '8px 12px',
+                padding: '7px 10px',
                 fontSize: 13,
                 borderRadius: '9999px',
               }}
@@ -237,7 +237,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
                 type="button"
                 className="btn btn--ghost"
                 style={{
-                  padding: '8px 12px',
+                  padding: '7px 10px',
                   fontSize: 13,
                   borderRadius: '9999px',
                 }}
@@ -265,14 +265,15 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
           width: '100%',
           maxWidth: 1400,
           margin: '0 auto',
-          padding: '0 16px 64px',
+          padding: '0 16px calc(108px + env(safe-area-inset-bottom, 16px))',
         }}
       >
         {children}
       </main>
 
-      {/* ── MOBILE FLOATING DOCK (max-width: 900px) ── */}
-      <nav className="dock">
+      {/* ── MOBILE FLOATING DOCK (max-width: 900px, hidden during focus session) ── */}
+      {activeTab !== 'session' && (
+        <nav className="dock">
         <button
           type="button"
           className={activeTab === 'dashboard' ? 'active' : ''}
@@ -357,6 +358,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
           <span>AI</span>
         </button>
       </nav>
+      )}
 
       {/* ── SEARCH MODAL ── */}
       <GlobalSearchModal

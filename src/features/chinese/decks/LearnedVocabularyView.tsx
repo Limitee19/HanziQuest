@@ -814,7 +814,7 @@ export function LearnedVocabularyView() {
       {/* 4. Responsive Card Detail Modal (Fixed for Mobile & Desktop) */}
       {selectedCard && (
         <div
-          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+          className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
           onClick={(e) => {
             if (e.target === e.currentTarget) setSelectedCard(null);
           }}

@@ -416,7 +416,7 @@ export function DeckLibraryView() {
 
       {/* Modal Buat Deck Baru */}
       {isCreateDeckModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <Card className="w-full max-w-md p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl space-y-4">
             <h3 className="font-display text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
               <Plus className="w-5 h-5 text-blue-600" /> Buat Deck Flashcard Baru
@@ -465,7 +465,7 @@ export function DeckLibraryView() {
 
       {/* Modal Tambah Kartu Manual */}
       {isAddCardModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
           <Card className="w-full max-w-md p-6 bg-white dark:bg-zinc-900 border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl space-y-4">
             <h3 className="font-display text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
               <Plus className="w-5 h-5 text-blue-600" /> Tambah Kartu ke Deck
