@@ -20,6 +20,7 @@ import {
   DeckItem,
 } from '@/services/chinese/flashcardService';
 import { GameWorldMap } from '@/components/game/GameWorldMap';
+import { fetchOutpostStats } from '@/services/chinese/questService';
 import { clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
 import { course } from '@/data/course';
@@ -59,19 +60,22 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
 
   const [programSummary, setProgramSummary] = useState<ProgramSummary | null>(null);
   const [decks, setDecks] = useState<DeckItem[]>([]);
+  const [outpostStats, setOutpostStats] = useState<Record<number, { total: number; due: number; mastered: number }>>({});
 
   const loadData = async () => {
     try {
-      const [streakData, ankiData, progData, deckList] = await Promise.all([
+      const [streakData, ankiData, progData, deckList, opStats] = await Promise.all([
         fetchStudyStreak(),
         fetchAnkiLearningOverviewStats(),
         getProgramSummary(),
         fetchDecks(),
+        fetchOutpostStats(),
       ]);
       setStreak(streakData);
       setAnkiStats(ankiData);
       setProgramSummary(progData);
       setDecks(deckList);
+      setOutpostStats(opStats);
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
     }
@@ -343,6 +347,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         {/* Kolom Kanan: PETA DUNIA PETUALANGAN HSK (Interactive Game World Map) */}
         <div className="col-main">
           <GameWorldMap
+            counts={outpostStats}
             soundEnabled={sound}
             onSelectStage={() => {
               clickTick(sound);

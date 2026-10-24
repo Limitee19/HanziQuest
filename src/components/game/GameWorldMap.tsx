@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import { Map as MapIcon, LayoutGrid } from 'lucide-react';
 import { clickTick } from '@/lib/fx';
 import { FLAVOR, Landmark, LandmarkSvg, OUTPOST_NAME, Plum } from '@/lib/landmark';
+import { course } from '@/data/course';
+import { fetchOutpostStats } from '@/services/chinese/questService';
 
 interface GameWorldMapProps {
   counts?: Record<number, { total: number; due: number; mastered: number }>;
@@ -34,7 +36,7 @@ const POS_COORDS: PosCoord[] = [
 ];
 
 export function GameWorldMap({
-  counts = {},
+  counts: propCounts,
   soundEnabled = true,
   currentActiveStage = 1,
   onSelectStage,
@@ -45,6 +47,30 @@ export function GameWorldMap({
   // Mode tampilan: 'map' (Peta interaktif bernyawa) atau 'grid' (Tampilan kisi pos)
   const [viewMode, setViewMode] = useState<'map' | 'grid'>('map');
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
+  const [internalCounts, setInternalCounts] = useState<Record<number, { total: number; due: number; mastered: number }>>(propCounts || {});
+
+  useEffect(() => {
+    if (propCounts && Object.keys(propCounts).length > 0) {
+      setInternalCounts(propCounts);
+    }
+  }, [propCounts]);
+
+  useEffect(() => {
+    const refresh = () => {
+      fetchOutpostStats().then((res) => {
+        setInternalCounts(res);
+      });
+    };
+    if (!propCounts || Object.keys(propCounts).length === 0) {
+      refresh();
+    }
+    window.addEventListener('omnilife_db_updated', refresh);
+    window.addEventListener('db_mutation', refresh);
+    return () => {
+      window.removeEventListener('omnilife_db_updated', refresh);
+      window.removeEventListener('db_mutation', refresh);
+    };
+  }, [propCounts]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -54,8 +80,15 @@ export function GameWorldMap({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  const effectiveCounts = (propCounts && Object.keys(propCounts).length > 0) ? propCounts : internalCounts;
   const selPos = selectedLevel !== null ? POS_COORDS.find((p) => p.level === selectedLevel) ?? null : null;
-  const selStats = (selectedLevel !== null && counts[selectedLevel]) ? counts[selectedLevel] : { total: 0, due: 0, mastered: 0 };
+  const levelWordCount = selectedLevel !== null ? course.words.filter((w) => w.level === String(selectedLevel)).length : 0;
+  const rawSelStats = (selectedLevel !== null && effectiveCounts[selectedLevel]) ? effectiveCounts[selectedLevel] : undefined;
+  const selStats = {
+    total: rawSelStats?.total || levelWordCount || 301,
+    due: rawSelStats?.due ?? 0,
+    mastered: rawSelStats?.mastered ?? 0,
+  };
   const selPct = selStats.total ? Math.round((selStats.mastered / selStats.total) * 100) : 0;
   const selBloomed = Math.min(5, Math.round((selPct / 100) * 5));
   const isPlayable = selStats.due > 0 || (selectedLevel === 1 && selStats.total > 0);
@@ -316,7 +349,13 @@ export function GameWorldMap({
 
             {/* 8. Outpost Landmark Nodes (HSK 1 - 6) */}
             {POS_COORDS.map((pos) => {
-              const s = counts[pos.level] || { total: 0, due: 0, mastered: 0 };
+              const posLevelCount = course.words.filter((w) => w.level === String(pos.level)).length;
+              const rawS = effectiveCounts[pos.level];
+              const s = {
+                total: rawS?.total || posLevelCount || 301,
+                due: rawS?.due ?? 0,
+                mastered: rawS?.mastered ?? 0,
+              };
               const isSelected = selectedLevel === pos.level;
               const pct = s.total ? Math.round((s.mastered / s.total) * 100) : 0;
               const bloomedCount = Math.min(5, Math.round((pct / 100) * 5));
@@ -473,7 +512,13 @@ export function GameWorldMap({
       {viewMode === 'grid' && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-in fade-in duration-200">
           {POS_COORDS.map((pos) => {
-            const s = counts[pos.level] || { total: 0, due: 0, mastered: 0 };
+            const posLevelCount = course.words.filter((w) => w.level === String(pos.level)).length;
+            const rawS = effectiveCounts[pos.level];
+            const s = {
+              total: rawS?.total || posLevelCount || 301,
+              due: rawS?.due ?? 0,
+              mastered: rawS?.mastered ?? 0,
+            };
             const pct = s.total ? Math.round((s.mastered / s.total) * 100) : 0;
             const bloomedCount = Math.min(5, Math.round((pct / 100) * 5));
 

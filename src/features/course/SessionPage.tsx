@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, Flame } from 'lucide-react';
+import { Sparkles, Flame, Volume2, VolumeX, EyeOff } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { course } from '@/data/course';
 import type { CourseWord } from '@/data/course.types';
@@ -7,6 +7,8 @@ import { meaningOf } from '@/data/course.types';
 import { speakHanzi, playSuccessChime, playErrorBuzz, clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
 import { recordQuestWordReview, saveMnemonicNote, getMnemonicNotes } from '@/services/chinese/questService';
+import { formatPartOfSpeech } from '@/services/chinese/dictionaryService';
+import { getWordExampleSentence } from '@/services/chinese/exampleSentenceService';
 
 interface SessionPageProps {
   initialLevel?: number;
@@ -23,7 +25,7 @@ const OUTPOST_INFO: Record<number, { name: string; icon: string; subtitle: strin
 };
 
 export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBackToMap }) => {
-  const { sound, arcade, target } = usePrefs();
+  const { sound, arcade, target, hidePinyinAudio, toggleHidePinyinAudio } = usePrefs();
   const [level, setLevel] = useState<number>(initialLevel);
   const [studyMode, setStudyMode] = useState<'flashcard' | 'quiz'>('flashcard');
   const [sessionTarget] = useState<number>(target || 10);
@@ -64,6 +66,9 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
   }, [level, sessionTarget]);
 
   const currentWord: CourseWord | undefined = sessionWords[currentIndex];
+  const currentExample = currentWord
+    ? getWordExampleSentence(currentWord.hanzi, meaningOf(currentWord), currentWord.pinyin)
+    : null;
 
   // Siapkan opsi kuis pilihan ganda jika mode kuis aktif
   useEffect(() => {
@@ -76,12 +81,12 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
     setQuizAnswered(false);
   }, [currentWord, studyMode, level]);
 
-  // Otomatis lafalkan jika kartu baru muncul & suara aktif
+  // Otomatis lafalkan jika kartu baru muncul, suara aktif, DAN tidak dalam mode ingatan (sembunyikan pinyin/suara)
   useEffect(() => {
-    if (currentWord && sound && !isRevealed && !isSessionComplete) {
+    if (currentWord && sound && !isRevealed && !isSessionComplete && !hidePinyinAudio) {
       speakHanzi(currentWord.hanzi);
     }
-  }, [currentWord, sound, isRevealed, isSessionComplete]);
+  }, [currentWord, sound, isRevealed, isSessionComplete, hidePinyinAudio]);
 
   // Handler SRS Rating Flashcard
   const handleRate = async (rating: 'again' | 'hard' | 'good' | 'easy') => {
@@ -378,11 +383,38 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
           className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-6 sm:p-10 space-y-8 relative overflow-hidden"
           style={{ boxShadow: '0 12px 32px -4px rgba(35, 31, 32, 0.08), 0 2px 6px -1px rgba(35, 31, 32, 0.04)' }}
         >
-          {/* Top Word Level Badge */}
-          <div className="flex items-center justify-between">
-            <span className="px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-700/60 text-amber-900 dark:text-amber-200 text-xs font-bold">
-              Pos {level} · HSK {level}
-            </span>
+          {/* Top Word Level Badge & Memory Mode Toggle */}
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-2">
+              <span className="px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-700/60 text-amber-900 dark:text-amber-200 text-xs font-bold">
+                Pos {level} · HSK {level}
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  clickTick(sound);
+                  toggleHidePinyinAudio();
+                }}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold border transition-all cursor-pointer shadow-xs ${
+                  hidePinyinAudio
+                    ? 'bg-rose-50 dark:bg-rose-950/60 border-rose-300 dark:border-rose-700/60 text-rose-800 dark:text-rose-200 ring-1 ring-rose-400/30'
+                    : 'bg-zinc-100 dark:bg-[#1C2742] border-zinc-200 dark:border-[#24324E] text-zinc-600 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-[#253252]'
+                }`}
+                title="Sembunyikan Pinyin dan Audio saat menebak untuk melatih daya ingat"
+              >
+                {hidePinyinAudio ? (
+                  <>
+                    <VolumeX className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+                    <span>Mode Ingatan: Pinyin & Suara Nonaktif</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                    <span>Pinyin & Suara: Aktif</span>
+                  </>
+                )}
+              </button>
+            </div>
             <span className="text-xs text-zinc-400 dark:text-zinc-500 font-medium">
               Frekuensi rank #{currentWord.freq || '-'}
             </span>
@@ -400,22 +432,31 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
             </div>
 
             {/* Pinyin with Audio Pronunciation Button */}
-            <div className="flex items-center justify-center gap-3">
-              <span className="font-mono text-2xl sm:text-3xl font-bold text-indigo-700 dark:text-indigo-400 tracking-wider">
-                {currentWord.pinyin}
-              </span>
-              <button
-                type="button"
-                onClick={() => {
-                  clickTick(sound);
-                  speakHanzi(currentWord.hanzi);
-                }}
-                className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 flex items-center justify-center font-bold text-lg cursor-pointer shadow-xs transition-transform active:scale-95"
-                title="Dengarkan pelafalan audio"
-              >
-                🔊
-              </button>
-            </div>
+            {!hidePinyinAudio || isRevealed ? (
+              <div className="flex items-center justify-center gap-3 animate-in fade-in duration-200">
+                <span className="font-mono text-2xl sm:text-3xl font-bold text-indigo-700 dark:text-indigo-400 tracking-wider">
+                  {currentWord.pinyin}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clickTick(sound);
+                    speakHanzi(currentWord.hanzi);
+                  }}
+                  className="w-10 h-10 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 flex items-center justify-center font-bold text-lg cursor-pointer shadow-xs transition-transform active:scale-95"
+                  title="Dengarkan pelafalan audio"
+                >
+                  🔊
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center gap-2 py-1">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-100 dark:bg-[#0B111E] border border-dashed border-zinc-300 dark:border-[#24324E] text-zinc-500 dark:text-zinc-400 text-xs font-medium select-none">
+                  <EyeOff className="w-3.5 h-3.5 text-zinc-400" />
+                  <span>Pinyin & Suara disembunyikan (fokus ingat aksara)</span>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Reveal or Meaning Section */}
@@ -444,10 +485,42 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                 </p>
                 {currentWord.pos && (
                   <span className="inline-block mt-1 px-2.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/50 text-amber-900 dark:text-amber-200 text-xs font-semibold">
-                    Kelas Kata: {currentWord.pos}
+                    Kelas Kata: {formatPartOfSpeech(currentWord.pos)}
                   </span>
                 )}
               </div>
+
+              {/* 💬 Example Sentence Card */}
+              {currentExample && (
+                <div className="p-5 bg-sky-50/70 dark:bg-sky-950/30 border-2 border-sky-200 dark:border-sky-800/60 rounded-2xl space-y-2.5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-bold text-sky-800 dark:text-sky-300 uppercase tracking-wider flex items-center gap-1.5">
+                      💬 Contoh Kalimat:
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        clickTick(sound);
+                        speakHanzi(currentExample.hanzi);
+                      }}
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-sky-100 dark:bg-sky-900/50 hover:bg-sky-200 dark:hover:bg-sky-800/60 text-sky-800 dark:text-sky-300 text-xs font-bold cursor-pointer transition-transform active:scale-95 shadow-2xs"
+                      title="Dengarkan pelafalan kalimat contoh"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>Dengarkan</span>
+                    </button>
+                  </div>
+                  <p className="font-serif text-lg sm:text-xl font-bold text-zinc-900 dark:text-zinc-100 leading-snug">
+                    {currentExample.hanzi}
+                  </p>
+                  <p className="font-mono text-xs sm:text-sm font-semibold text-indigo-700 dark:text-indigo-400">
+                    {currentExample.pinyin}
+                  </p>
+                  <p className="text-sm font-medium text-zinc-700 dark:text-zinc-300 italic pt-0.5">
+                    "{currentExample.meaning}"
+                  </p>
+                </div>
+              )}
 
               {/* Mnemonic / Personal Note */}
               <div className="p-4 bg-zinc-50 dark:bg-[#0B111E] border border-zinc-200 dark:border-[#24324E] rounded-2xl space-y-2">
@@ -556,9 +629,30 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
             <div className="font-serif text-6xl sm:text-7xl font-black text-[#C0392B] dark:text-[#FB7185]">
               {currentWord.hanzi}
             </div>
-            <div className="font-mono text-xl font-bold text-indigo-700 dark:text-indigo-400">
-              {currentWord.pinyin}
-            </div>
+            {!hidePinyinAudio || quizAnswered ? (
+              <div className="flex items-center justify-center gap-2 animate-in fade-in duration-200">
+                <span className="font-mono text-xl font-bold text-indigo-700 dark:text-indigo-400">
+                  {currentWord.pinyin}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clickTick(sound);
+                    speakHanzi(currentWord.hanzi);
+                  }}
+                  className="w-8 h-8 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 flex items-center justify-center cursor-pointer shadow-xs text-sm"
+                  title="Dengarkan pelafalan audio"
+                >
+                  🔊
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center justify-center py-1">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-[#0B111E] text-zinc-400 text-xs font-medium">
+                  <VolumeX className="w-3.5 h-3.5" /> Pinyin & Suara tersembunyi
+                </span>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 pt-2">
@@ -593,6 +687,36 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
               );
             })}
           </div>
+
+          {quizAnswered && currentExample && (
+            <div className="p-4 bg-sky-50/70 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/60 rounded-2xl space-y-1.5 animate-in fade-in duration-200">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold text-sky-800 dark:text-sky-300 uppercase tracking-wider flex items-center gap-1.5">
+                  💬 Contoh Kalimat:
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    clickTick(sound);
+                    speakHanzi(currentExample.hanzi);
+                  }}
+                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-sky-100 dark:bg-sky-900/50 hover:bg-sky-200 dark:hover:bg-sky-800/60 text-sky-800 dark:text-sky-300 text-xs font-bold cursor-pointer transition-transform active:scale-95 shadow-2xs"
+                  title="Dengarkan kalimat"
+                >
+                  <Volume2 className="w-3.5 h-3.5" /> Dengarkan
+                </button>
+              </div>
+              <p className="font-serif text-base font-bold text-zinc-900 dark:text-zinc-100">
+                {currentExample.hanzi}
+              </p>
+              <p className="font-mono text-xs font-semibold text-indigo-700 dark:text-indigo-400">
+                {currentExample.pinyin}
+              </p>
+              <p className="text-xs text-zinc-700 dark:text-zinc-300 italic">
+                "{currentExample.meaning}"
+              </p>
+            </div>
+          )}
 
           {quizAnswered && (
             <div className="pt-4 flex justify-end">

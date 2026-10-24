@@ -39,13 +39,29 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
   }
 
   try {
-    // Read progress from chinese_program_progress (if exists in SQLite)
-    const rows = await selectSql<{ id: string; stage: string; due_date: string }>(
-      `SELECT id, stage, due_date FROM chinese_program_progress;`
-    );
-
     const todayStr = new Date().toISOString().slice(0, 10);
-    const progressMap = new Map(rows.map((r) => [r.id, r]));
+    const progressMap = new Map<string, { id: string; stage: string; due_date: string; review_count?: number }>();
+
+    // 1) Ambil dari SQLite jika tersedia
+    try {
+      const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number }>(
+        `SELECT id, stage, due_date, review_count FROM chinese_program_progress;`
+      );
+      rows.forEach((r) => progressMap.set(r.id, r));
+    } catch {}
+
+    // 2) Ambil dari localStorage (offline/browser fallback)
+    try {
+      const rawLocal = localStorage.getItem('omnilife_quest_progress');
+      if (rawLocal) {
+        const localMap = JSON.parse(rawLocal);
+        for (const [id, item] of Object.entries(localMap)) {
+          if (!progressMap.has(id)) {
+            progressMap.set(id, item as any);
+          }
+        }
+      }
+    } catch {}
 
     for (const w of course.words) {
       const lv = parseInt(w.level, 10);
@@ -55,20 +71,23 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
           if (prog.due_date <= todayStr && prog.due_date !== '9999-12-31') {
             result[lv].due += 1;
           }
-          if (prog.due_date === '9999-12-31' || prog.stage === 'production') {
+          if (
+            prog.due_date === '9999-12-31' ||
+            prog.stage === 'production' ||
+            prog.stage === 'recognition' ||
+            (prog.review_count && prog.review_count >= 1)
+          ) {
             result[lv].mastered += 1;
           }
         }
       }
     }
 
-    // Default: jika baru pertama buka dan belum ada progress tersimpan,
-    // pos 1 memiliki kata aktif due agar peta langsung interaktif!
+    // Default: jika pos 1 belum pernah dipelajari sama sekali, sediakan 25 kata jatuh tempo pertama
     if (result[1].due === 0 && result[1].mastered === 0) {
       result[1].due = Math.min(25, result[1].total);
     }
   } catch {
-    // Fallback default
     result[1].due = 25;
   }
 
@@ -144,18 +163,34 @@ export function removeLeechRecord(wordId: string): void {
   } catch {}
 }
 
-// ── Mastered Words for Garden ───────────────────────────────────────────
-
 export async function fetchMasteredWords(): Promise<CourseWord[]> {
+  const masteredIds = new Set<string>();
+
   try {
-    const rows = await selectSql<{ id: string }>(
-      `SELECT id FROM chinese_program_progress WHERE due_date = '9999-12-31' OR stage = 'production';`
+    const rows = await selectSql<{ id: string; stage: string; review_count?: number }>(
+      `SELECT id, stage, review_count FROM chinese_program_progress WHERE stage IN ('production', 'recognition') OR due_date = '9999-12-31' OR review_count >= 1;`
     );
-    const ids = new Set(rows.map((r) => r.id));
-    return course.words.filter((w) => ids.has(w.id) || ids.has(w.hanzi));
-  } catch {
-    return [];
-  }
+    rows.forEach((r) => masteredIds.add(r.id));
+  } catch {}
+
+  try {
+    const rawLocal = localStorage.getItem('omnilife_quest_progress');
+    if (rawLocal) {
+      const localMap = JSON.parse(rawLocal);
+      for (const [id, item] of Object.entries(localMap) as any) {
+        if (
+          item.stage === 'production' ||
+          item.stage === 'recognition' ||
+          item.due_date === '9999-12-31' ||
+          (item.review_count && item.review_count >= 1)
+        ) {
+          masteredIds.add(id);
+        }
+      }
+    }
+  } catch {}
+
+  return course.words.filter((w) => masteredIds.has(w.id) || masteredIds.has(w.hanzi));
 }
 
 // ── Drill Aksara Mirip (Tone, Radical, Visual) ──────────────────────────
@@ -238,6 +273,21 @@ export async function recordQuestWordReview(
   const nextDueStr = nextDue.toISOString().slice(0, 10);
   const stage = rating === 'easy' ? 'production' : rating === 'good' ? 'recognition' : 'learning';
 
+  // Simpan juga ke localStorage agar progres selalu instan terbaca di web browser
+  try {
+    const rawLocal = localStorage.getItem('omnilife_quest_progress');
+    const localMap = rawLocal ? JSON.parse(rawLocal) : {};
+    localMap[word.id] = {
+      id: word.id,
+      hanzi: word.hanzi,
+      stage,
+      due_date: nextDueStr,
+      review_count: (localMap[word.id]?.review_count || 0) + 1,
+      updated_at: Date.now(),
+    };
+    localStorage.setItem('omnilife_quest_progress', JSON.stringify(localMap));
+  } catch {}
+
   try {
     const { executeSql } = await import('@/db/client');
     // Ensure table exists
@@ -272,5 +322,8 @@ export async function recordQuestWordReview(
     window.dispatchEvent(new CustomEvent('db_mutation'));
   } catch (err) {
     console.warn('Failed to record quest word review in SQLite:', err);
+    // Masih kirim notifikasi karena localStorage sudah berhasil disimpan
+    window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
+    window.dispatchEvent(new CustomEvent('db_mutation'));
   }
 }

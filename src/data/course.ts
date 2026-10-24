@@ -1,5 +1,6 @@
 import raw from './course.json';
 import type { Course, CourseWord, Group } from './course.types';
+import { getAccurateIndonesianMeaning } from '@/services/chinese/dictionaryService';
 
 const data = raw as unknown as {
   meta: Course['meta'];
@@ -8,6 +9,11 @@ const data = raw as unknown as {
 };
 
 const ALL_WORDS = data.words;
+// Pastikan setiap kata memiliki arti Bahasa Indonesia yang akurat dan tepat
+for (let i = 0; i < ALL_WORDS.length; i++) {
+  const w = ALL_WORDS[i];
+  w.meanId = getAccurateIndonesianMeaning(w.hanzi, w.meanId, w.meanEn);
+}
 /** Jumlah kata per lesson/group. Bite-sized ala benchmark (5-7 kata). */
 const WORDS_PER_GROUP = 5;
 /** Level yang dimuat di MVP: 1-6. 7-9 bisa diaktifkan belakangan. */

@@ -5,6 +5,7 @@ export interface Prefs {
   arcade: boolean;
   sound: boolean;
   target: number;
+  hidePinyinAudio: boolean;
 }
 
 const STORAGE_PREFS_KEY = 'hanzi_quest_prefs';
@@ -18,6 +19,7 @@ function loadPrefs(): Prefs {
     arcade: localStorage.getItem('omnilife_arcade_mode') === 'true',
     sound: localStorage.getItem('omnilife_sound_enabled') !== 'false',
     target: parseInt(localStorage.getItem('omnilife_session_target') || '10', 10),
+    hidePinyinAudio: localStorage.getItem('hanzi_quest_hide_pinyin_audio') === 'true',
   };
 }
 
@@ -35,6 +37,9 @@ export function setPrefs(patch: Partial<Prefs>): void {
     localStorage.setItem('omnilife_arcade_mode', String(currentPrefs.arcade));
     localStorage.setItem('omnilife_sound_enabled', String(currentPrefs.sound));
     localStorage.setItem('omnilife_session_target', String(currentPrefs.target));
+    if (currentPrefs.hidePinyinAudio !== undefined) {
+      localStorage.setItem('hanzi_quest_hide_pinyin_audio', String(currentPrefs.hidePinyinAudio));
+    }
   } catch {}
 
   listeners.forEach((fn) => fn(currentPrefs));
@@ -70,6 +75,12 @@ export function usePrefs() {
     window.dispatchEvent(new CustomEvent('omnilife_arcade_toggled', { detail: { arcade: next } }));
   };
 
+  const toggleHidePinyinAudio = () => {
+    const next = !prefs.hidePinyinAudio;
+    update({ hidePinyinAudio: next });
+    clickTick(prefs.sound);
+  };
+
   const setTarget = (t: number) => {
     update({ target: t });
     clickTick(prefs.sound);
@@ -79,8 +90,10 @@ export function usePrefs() {
     sound: prefs.sound,
     arcade: prefs.arcade,
     target: prefs.target,
+    hidePinyinAudio: prefs.hidePinyinAudio,
     toggleSound,
     toggleArcade,
+    toggleHidePinyinAudio,
     setTarget,
     prefs,
     set: update,

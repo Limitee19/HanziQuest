@@ -40,7 +40,10 @@ export interface Group {
   wordIds: string[];
 }
 
-/** Pilihan tampilan arti: ID jika ada, fallback EN, else kosong */
-export function meaningOf(w: { meanId: string; meanEn: string[] }): string {
-  return w.meanId || w.meanEn[0] || '';
+import { getAccurateIndonesianMeaning } from '@/services/chinese/dictionaryService';
+
+/** Pilihan tampilan arti Bahasa Indonesia akurat (prioritas kamus kurasi ID, lalu meanId, fallback terjemahan) */
+export function meaningOf(w: { meanId?: string; meanEn?: string[]; hanzi?: string }): string {
+  if (!w) return '';
+  return getAccurateIndonesianMeaning(w.hanzi || '', w.meanId, w.meanEn || []);
 }

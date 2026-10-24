@@ -2,23 +2,49 @@
  * Audio FX & Tactile Feedback for Hanzi Quest style
  */
 
-/** Native Mandarin Chinese pronunciation with multi-tier fallback */
+let activeAudioPlayer: HTMLAudioElement | null = null;
+
+/** Native Mandarin Chinese pronunciation with multi-tier fallback (Google TTS -> Youdao -> Web Speech) */
 export function speakHanzi(text: string) {
   if (!text || typeof window === 'undefined') return;
 
+  // Bersihkan tag HTML dan tanda petik
+  const clean = text.replace(/<[^>]*>/g, '').replace(/[“”"']/g, '').trim();
+  if (!clean) return;
+
   try {
-    const encoded = encodeURIComponent(text.trim());
-    const audioUrl = `https://dict.youdao.com/dictvoice?audio=${encoded}&le=zh`;
-    const audio = new Audio(audioUrl);
+    // Hentikan audio sebelumnya jika sedang berjalan
+    if (activeAudioPlayer) {
+      activeAudioPlayer.pause();
+      activeAudioPlayer.currentTime = 0;
+      activeAudioPlayer = null;
+    }
+
+    const encoded = encodeURIComponent(clean);
+    // 1. Google Translate TTS zh-CN (sangat stabil untuk kata tunggal maupun kalimat panjang)
+    const googleUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=zh-CN&client=tw-ob&q=${encoded}`;
+    const audio = new Audio(googleUrl);
+    activeAudioPlayer = audio;
     audio.playbackRate = 0.95;
+
     const playPromise = audio.play();
     if (playPromise !== undefined) {
       playPromise.catch(() => {
-        fallbackSpeechSynthesis(text);
+        // 2. Fallback Youdao dictvoice
+        const youdaoUrl = `https://dict.youdao.com/dictvoice?audio=${encoded}&le=zh`;
+        const ydAudio = new Audio(youdaoUrl);
+        activeAudioPlayer = ydAudio;
+        ydAudio.playbackRate = 0.95;
+        const ydPromise = ydAudio.play();
+        if (ydPromise !== undefined) {
+          ydPromise.catch(() => {
+            fallbackSpeechSynthesis(clean);
+          });
+        }
       });
     }
   } catch {
-    fallbackSpeechSynthesis(text);
+    fallbackSpeechSynthesis(clean);
   }
 }
 

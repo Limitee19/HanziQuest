@@ -21,16 +21,20 @@ export const GardenPage: React.FC<GardenPageProps> = ({ onBackToMap, onStartSess
   const { sound } = usePrefs();
 
   useEffect(() => {
-    Promise.all([fetchMasteredWords(), fetchOutpostStats()]).then(([mastered, stats]) => {
-      if (mastered.length === 0) {
-        // Fallback sample from HSK 1 so the garden looks alive immediately
-        const sample = course.words.slice(0, 24);
-        setMasteredWords(sample);
-      } else {
+    const loadGarden = () => {
+      Promise.all([fetchMasteredWords(), fetchOutpostStats()]).then(([mastered, stats]) => {
         setMasteredWords(mastered);
-      }
-      setOutpostStats(stats);
-    });
+        setOutpostStats(stats);
+      });
+    };
+    loadGarden();
+
+    window.addEventListener('omnilife_db_updated', loadGarden);
+    window.addEventListener('db_mutation', loadGarden);
+    return () => {
+      window.removeEventListener('omnilife_db_updated', loadGarden);
+      window.removeEventListener('db_mutation', loadGarden);
+    };
   }, []);
 
   const totalWords = course.words.length;
