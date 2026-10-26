@@ -17,18 +17,30 @@ CREATE TABLE IF NOT EXISTS app_users (
 
 CREATE INDEX IF NOT EXISTS idx_app_users_username ON app_users(username);
 
--- 2. Akun Master Admin Awal (Username: admin, PIN: 170603)
+-- 2. Akun Master Admin Awal (Username: 260242649788 & admin, PIN: 170603)
 -- Hash di bawah ini adalah SHA-256 dari 'hanzi_quest_class_salt_170603'
 INSERT INTO app_users (id, username, display_name, role, pin_hash, is_active)
-VALUES (
-  'usr_admin_master',
-  'admin',
-  'Guru / Master Admin',
-  'admin',
-  'f0c11306b3a985e50529e8436ba33b664fcfead80709d6fbb6b6fe29b20e0ffb',
-  true
-)
-ON CONFLICT (id) DO NOTHING;
+VALUES 
+  (
+    'usr_admin_260242649788',
+    '260242649788',
+    'Guru / Master Admin',
+    'admin',
+    'a34f2e35e058c457140ac9820e401d9a1d9859d67aeb86e6097e9b68fa960a7e',
+    true
+  ),
+  (
+    'usr_admin_master',
+    'admin',
+    'Guru / Admin',
+    'admin',
+    'a34f2e35e058c457140ac9820e401d9a1d9859d67aeb86e6097e9b68fa960a7e',
+    true
+  )
+ON CONFLICT (id) DO UPDATE SET
+  pin_hash = EXCLUDED.pin_hash,
+  role = 'admin',
+  is_active = true;
 
 -- 3. Tabel Progres Belajar Kartu Pintar per Siswa
 CREATE TABLE IF NOT EXISTS student_quest_progress (

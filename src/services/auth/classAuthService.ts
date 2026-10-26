@@ -76,13 +76,13 @@ function saveStoredLocalUsers(users: Array<StudentUser & { pinHash: string }>): 
  */
 export async function ensureDefaultAdminExists(): Promise<void> {
   const users = getStoredLocalUsers();
-  const hasAdmin = users.some((u) => u.role === 'admin' && u.username.toLowerCase() === 'admin');
+  const defaultAdminHash = await hashPin(ENV_MASTER_PIN);
 
-  if (!hasAdmin) {
-    const defaultAdminHash = await hashPin(ENV_MASTER_PIN);
-    const defaultAdmin: StudentUser & { pinHash: string } = {
-      id: 'usr_admin_master',
-      username: 'admin',
+  // 1. Akun Admin Utama: 260242649788
+  if (!users.some((u) => u.username === '260242649788')) {
+    const adminAccount: StudentUser & { pinHash: string } = {
+      id: 'usr_admin_260242649788',
+      username: '260242649788',
       displayName: 'Guru / Master Admin',
       role: 'admin',
       isActive: true,
@@ -90,25 +90,52 @@ export async function ensureDefaultAdminExists(): Promise<void> {
       createdAt: Date.now(),
       pinHash: defaultAdminHash,
     };
-    users.unshift(defaultAdmin);
-    saveStoredLocalUsers(users);
+    users.unshift(adminAccount);
+  }
 
-    // Sync juga ke Supabase jika terhubung
-    if (supabase) {
-      try {
-        await supabase.from('app_users').upsert({
-          id: defaultAdmin.id,
-          username: defaultAdmin.username,
-          display_name: defaultAdmin.displayName,
-          role: defaultAdmin.role,
-          pin_hash: defaultAdmin.pinHash,
-          is_active: defaultAdmin.isActive,
-          created_at: new Date(defaultAdmin.createdAt).toISOString(),
+  // 2. Alias Admin cadangan: admin
+  if (!users.some((u) => u.username === 'admin')) {
+    users.push({
+      id: 'usr_admin_master',
+      username: 'admin',
+      displayName: 'Guru / Admin',
+      role: 'admin',
+      isActive: true,
+      avatar: '👑',
+      createdAt: Date.now(),
+      pinHash: defaultAdminHash,
+    });
+  }
+
+  saveStoredLocalUsers(users);
+
+  // Sync juga ke Supabase jika terhubung
+  if (supabase) {
+    try {
+      await supabase.from('app_users').upsert([
+        {
+          id: 'usr_admin_260242649788',
+          username: '260242649788',
+          display_name: 'Guru / Master Admin',
+          role: 'admin',
+          pin_hash: defaultAdminHash,
+          is_active: true,
+          created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
-        });
-      } catch (err) {
-        console.warn('Sync default admin to Supabase failed (offline fallback active):', err);
-      }
+        },
+        {
+          id: 'usr_admin_master',
+          username: 'admin',
+          display_name: 'Guru / Admin',
+          role: 'admin',
+          pin_hash: defaultAdminHash,
+          is_active: true,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        },
+      ]);
+    } catch (err) {
+      console.warn('Sync admin accounts to Supabase failed (offline fallback active):', err);
     }
   }
 }
@@ -229,11 +256,11 @@ export async function loginUser(
   const found = localUsers.find((u) => u.username.toLowerCase() === cleanUsername);
 
   if (!found) {
-    // Khusus Admin darurat jika PIN sesuai ENV_MASTER_PIN
-    if (cleanUsername === 'admin' && cleanPin === ENV_MASTER_PIN) {
+    // Khusus Admin darurat jika PIN sesuai ENV_MASTER_PIN (170603)
+    if ((cleanUsername === '260242649788' || cleanUsername === 'admin') && (cleanPin === '170603' || cleanPin === ENV_MASTER_PIN)) {
       const adminUser: StudentUser = {
-        id: 'usr_admin_master',
-        username: 'admin',
+        id: cleanUsername === '260242649788' ? 'usr_admin_260242649788' : 'usr_admin_master',
+        username: cleanUsername,
         displayName: 'Guru / Master Admin',
         role: 'admin',
         isActive: true,
