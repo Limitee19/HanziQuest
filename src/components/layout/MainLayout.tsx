@@ -3,7 +3,7 @@ import { NavTab } from '@/types';
 import { GlobalSearchModal } from '@/components/search/GlobalSearchModal';
 import { clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
-import { lockGatekeeper, isGatekeeperConfigured } from '@/services/auth/gatekeeperService';
+import { isAuthenticated, logoutUser } from '@/services/auth/classAuthService';
 
 interface MainLayoutProps {
   activeTab: NavTab;
@@ -232,7 +232,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
             </button>
 
             {/* Quick Lock Application */}
-            {isGatekeeperConfigured() && (
+            {isAuthenticated() && (
               <button
                 type="button"
                 className="btn btn--ghost"
@@ -243,9 +243,9 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
                 }}
                 onClick={() => {
                   clickTick(sound);
-                  lockGatekeeper();
+                  logoutUser();
                 }}
-                title="Kunci Aplikasi Sekarang"
+                title="Kunci / Keluar Aplikasi Sekarang"
               >
                 <i
                   className="ph-duotone ph-lock-key"

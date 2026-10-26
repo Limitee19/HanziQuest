@@ -2,6 +2,8 @@ import { course } from '@/data/course';
 import type { CourseWord } from '@/data/course.types';
 import { meaningOf } from '@/data/course.types';
 import { selectSql } from '@/db/client';
+import { getActiveUserId } from '@/services/auth/classAuthService';
+import { supabase } from '@/services/sync/supabaseClient';
 
 export interface OutpostStats {
   level: number;
@@ -22,8 +24,17 @@ export interface LeechItem {
   updatedAt: number;
 }
 
-const STORAGE_MNEMONICS_KEY = 'omnilife_mnemonics';
-const STORAGE_LEECH_KEY = 'omnilife_leeches';
+function getQuestStorageKey(): string {
+  return `omnilife_quest_progress_${getActiveUserId()}`;
+}
+
+function getMnemonicStorageKey(): string {
+  return `omnilife_mnemonics_${getActiveUserId()}`;
+}
+
+function getLeechStorageKey(): string {
+  return `omnilife_leeches_${getActiveUserId()}`;
+}
 
 // ── Outpost Stats per HSK Level ─────────────────────────────────────────
 
@@ -41,18 +52,47 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
   try {
     const todayStr = new Date().toISOString().slice(0, 10);
     const progressMap = new Map<string, { id: string; stage: string; due_date: string; review_count?: number }>();
+    const userId = getActiveUserId();
 
-    // 1) Ambil dari SQLite jika tersedia
+    // 1) Ambil dari Supabase cloud jika tersedia untuk user aktif
+    if (supabase) {
+      try {
+        const { data } = await supabase
+          .from('student_quest_progress')
+          .select('word_id, stage, due_date, review_count')
+          .eq('user_id', userId);
+        if (data && data.length > 0) {
+          data.forEach((r: any) => {
+            progressMap.set(r.word_id, {
+              id: r.word_id,
+              stage: r.stage,
+              due_date: r.due_date,
+              review_count: r.review_count,
+            });
+          });
+        }
+      } catch {}
+    }
+
+    // 2) Ambil dari SQLite jika tersedia
     try {
       const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number }>(
         `SELECT id, stage, due_date, review_count FROM chinese_program_progress;`
       );
-      rows.forEach((r) => progressMap.set(r.id, r));
+      rows.forEach((r) => {
+        if (!progressMap.has(r.id)) progressMap.set(r.id, r);
+      });
     } catch {}
 
-    // 2) Ambil dari localStorage (offline/browser fallback)
+    // 3) Ambil dari localStorage per-user
     try {
-      const rawLocal = localStorage.getItem('omnilife_quest_progress');
+      const scopedKey = getQuestStorageKey();
+      let rawLocal = localStorage.getItem(scopedKey);
+      // Migrasi data legacy jika user key belum ada tapi ada omnilife_quest_progress lama
+      if (!rawLocal && localStorage.getItem('omnilife_quest_progress')) {
+        rawLocal = localStorage.getItem('omnilife_quest_progress');
+        if (rawLocal) localStorage.setItem(scopedKey, rawLocal);
+      }
       if (rawLocal) {
         const localMap = JSON.parse(rawLocal);
         for (const [id, item] of Object.entries(localMap)) {
@@ -98,7 +138,7 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
 
 export function getMnemonicNotes(): Record<string, string> {
   try {
-    const raw = localStorage.getItem(STORAGE_MNEMONICS_KEY);
+    const raw = localStorage.getItem(getMnemonicStorageKey());
     return raw ? JSON.parse(raw) : {};
   } catch {
     return {};
@@ -113,13 +153,25 @@ export function saveMnemonicNote(wordId: string, note: string): void {
     } else {
       delete notes[wordId];
     }
-    localStorage.setItem(STORAGE_MNEMONICS_KEY, JSON.stringify(notes));
+    localStorage.setItem(getMnemonicStorageKey(), JSON.stringify(notes));
+
+    // Sync ke Supabase student_quest_meta jika terhubung
+    if (supabase) {
+      const userId = getActiveUserId();
+      void Promise.resolve(
+        supabase.from('student_quest_meta').upsert({
+          user_id: userId,
+          mnemonic_notes: notes,
+          updated_at: Date.now(),
+        })
+      ).catch(() => {});
+    }
   } catch {}
 }
 
 export function getLeechItems(): LeechItem[] {
   try {
-    const raw = localStorage.getItem(STORAGE_LEECH_KEY);
+    const raw = localStorage.getItem(getLeechStorageKey());
     const list: LeechItem[] = raw ? JSON.parse(raw) : [];
     const notes = getMnemonicNotes();
     return list.map((item) => ({ ...item, note: notes[item.wordId] || item.note || '' }));
@@ -152,20 +204,67 @@ export function addLeechRecord(word: CourseWord, fails: number = 3): void {
       items.unshift(entry);
     }
 
-    localStorage.setItem(STORAGE_LEECH_KEY, JSON.stringify(items));
+    localStorage.setItem(getLeechStorageKey(), JSON.stringify(items));
+
+    // Sync ke Supabase student_quest_meta
+    if (supabase) {
+      const userId = getActiveUserId();
+      void Promise.resolve(
+        supabase.from('student_quest_meta').upsert({
+          user_id: userId,
+          leech_words: items,
+          updated_at: Date.now(),
+        })
+      ).catch(() => {});
+    }
   } catch {}
 }
 
 export function removeLeechRecord(wordId: string): void {
   try {
     const items = getLeechItems().filter((i) => i.wordId !== wordId && i.id !== wordId);
-    localStorage.setItem(STORAGE_LEECH_KEY, JSON.stringify(items));
+    localStorage.setItem(getLeechStorageKey(), JSON.stringify(items));
+
+    if (supabase) {
+      const userId = getActiveUserId();
+      void Promise.resolve(
+        supabase.from('student_quest_meta').upsert({
+          user_id: userId,
+          leech_words: items,
+          updated_at: Date.now(),
+        })
+      ).catch(() => {});
+    }
   } catch {}
 }
 
 export async function fetchMasteredWords(): Promise<CourseWord[]> {
   const masteredIds = new Set<string>();
+  const userId = getActiveUserId();
 
+  // 1. Ambil dari Supabase cloud untuk siswa aktif
+  if (supabase) {
+    try {
+      const { data } = await supabase
+        .from('student_quest_progress')
+        .select('word_id, stage, due_date, review_count')
+        .eq('user_id', userId);
+      if (data && data.length > 0) {
+        data.forEach((r: any) => {
+          if (
+            r.stage === 'production' ||
+            r.stage === 'recognition' ||
+            r.due_date === '9999-12-31' ||
+            (r.review_count && r.review_count >= 1)
+          ) {
+            masteredIds.add(r.word_id);
+          }
+        });
+      }
+    } catch {}
+  }
+
+  // 2. Ambil dari SQLite
   try {
     const rows = await selectSql<{ id: string; stage: string; review_count?: number }>(
       `SELECT id, stage, review_count FROM chinese_program_progress WHERE stage IN ('production', 'recognition') OR due_date = '9999-12-31' OR review_count >= 1;`
@@ -173,8 +272,13 @@ export async function fetchMasteredWords(): Promise<CourseWord[]> {
     rows.forEach((r) => masteredIds.add(r.id));
   } catch {}
 
+  // 3. Ambil dari localStorage terisolasi per siswa
   try {
-    const rawLocal = localStorage.getItem('omnilife_quest_progress');
+    const scopedKey = getQuestStorageKey();
+    let rawLocal = localStorage.getItem(scopedKey);
+    if (!rawLocal && localStorage.getItem('omnilife_quest_progress')) {
+      rawLocal = localStorage.getItem('omnilife_quest_progress');
+    }
     if (rawLocal) {
       const localMap = JSON.parse(rawLocal);
       for (const [id, item] of Object.entries(localMap) as any) {
@@ -272,25 +376,45 @@ export async function recordQuestWordReview(
   const nextDue = new Date(now.getTime() + nextDays * 24 * 60 * 60 * 1000);
   const nextDueStr = nextDue.toISOString().slice(0, 10);
   const stage = rating === 'easy' ? 'production' : rating === 'good' ? 'recognition' : 'learning';
+  const userId = getActiveUserId();
 
-  // Simpan juga ke localStorage agar progres selalu instan terbaca di web browser
+  // 1. Simpan ke localStorage per siswa
   try {
-    const rawLocal = localStorage.getItem('omnilife_quest_progress');
+    const scopedKey = getQuestStorageKey();
+    const rawLocal = localStorage.getItem(scopedKey);
     const localMap = rawLocal ? JSON.parse(rawLocal) : {};
+    const prevCount = localMap[word.id]?.review_count || 0;
     localMap[word.id] = {
       id: word.id,
       hanzi: word.hanzi,
       stage,
       due_date: nextDueStr,
-      review_count: (localMap[word.id]?.review_count || 0) + 1,
+      review_count: prevCount + 1,
       updated_at: Date.now(),
     };
-    localStorage.setItem('omnilife_quest_progress', JSON.stringify(localMap));
+    localStorage.setItem(scopedKey, JSON.stringify(localMap));
   } catch {}
 
+  // 2. Simpan ke Supabase student_quest_progress jika terhubung
+  if (supabase) {
+    try {
+      void Promise.resolve(
+        supabase.from('student_quest_progress').upsert({
+          user_id: userId,
+          word_id: word.id,
+          hanzi: word.hanzi,
+          stage,
+          due_date: nextDueStr,
+          review_count: 1,
+          updated_at: Date.now(),
+        })
+      ).catch((e: any) => console.warn('Supabase quest progress sync warning:', e));
+    } catch {}
+  }
+
+  // 3. Simpan ke SQLite
   try {
     const { executeSql } = await import('@/db/client');
-    // Ensure table exists
     await executeSql(`
       CREATE TABLE IF NOT EXISTS chinese_program_progress (
         id TEXT PRIMARY KEY,
@@ -317,12 +441,10 @@ export async function recordQuestWordReview(
       [word.id, stage, nextDueStr, nextDays, Date.now(), nextDays]
     );
 
-    // Trigger update notification
     window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
     window.dispatchEvent(new CustomEvent('db_mutation'));
   } catch (err) {
     console.warn('Failed to record quest word review in SQLite:', err);
-    // Masih kirim notifikasi karena localStorage sudah berhasil disimpan
     window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
     window.dispatchEvent(new CustomEvent('db_mutation'));
   }

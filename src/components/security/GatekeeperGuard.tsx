@@ -1,26 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import {
-  isGatekeeperUnlocked,
-  onGatekeeperStateChange,
-} from '@/services/auth/gatekeeperService';
-import { GatekeeperScreen } from './GatekeeperScreen';
+import { isAuthenticated, onAuthStateChange } from '@/services/auth/classAuthService';
+import { ClassLoginPage } from '@/components/auth/ClassLoginPage';
 
 interface GatekeeperGuardProps {
   children: React.ReactNode;
 }
 
 export const GatekeeperGuard: React.FC<GatekeeperGuardProps> = ({ children }) => {
-  const [unlocked, setUnlocked] = useState<boolean>(() => isGatekeeperUnlocked());
+  const [authed, setAuthed] = useState<boolean>(() => isAuthenticated());
 
   useEffect(() => {
-    const unsubscribe = onGatekeeperStateChange((newStatus) => {
-      setUnlocked(newStatus);
+    const unsubscribe = onAuthStateChange((user) => {
+      setAuthed(user !== null);
     });
     return () => unsubscribe();
   }, []);
 
-  if (!unlocked) {
-    return <GatekeeperScreen onUnlocked={() => setUnlocked(true)} />;
+  if (!authed) {
+    return <ClassLoginPage onLoginSuccess={() => setAuthed(true)} />;
   }
 
   return <>{children}</>;

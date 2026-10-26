@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Search, Globe, Menu, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { Moon, Sun, Search, Globe, Menu, Volume2, VolumeX, Sparkles, Users, LogOut } from 'lucide-react';
 import { format } from 'date-fns';
 import type { NavTab } from '@/types';
 import { getCurrentLanguage, setLanguage, subscribeLanguageChange, Language } from '@/services/localizationService';
 import { clickTick } from '@/lib/fx';
+import { getActiveUser, logoutUser, onAuthStateChange, StudentUser } from '@/services/auth/classAuthService';
+import { ClassManagementModal } from '@/components/auth/ClassManagementModal';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -31,6 +33,13 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
   const [lang, setLangState] = useState<Language>(getCurrentLanguage());
   const [soundOn, setSoundOn] = useState(() => localStorage.getItem('omnilife_sound_enabled') !== 'false');
   const [arcadeMode, setArcadeMode] = useState(() => localStorage.getItem('omnilife_arcade_mode') === 'true');
+
+  const [currentUser, setCurrentUser] = useState<StudentUser | null>(() => getActiveUser());
+  const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+
+  useEffect(() => {
+    return onAuthStateChange((u) => setCurrentUser(u));
+  }, []);
 
   const toggleSound = () => {
     const next = !soundOn;
@@ -166,7 +175,56 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
         >
           {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
+
+        {/* Separator */}
+        <div className="h-5 w-px bg-zinc-200 dark:bg-zinc-700 mx-0.5 hidden sm:block" />
+
+        {/* Admin: Kelola Siswa Button */}
+        {currentUser?.role === 'admin' && (
+          <button
+            onClick={() => {
+              clickTick(soundOn);
+              setIsClassModalOpen(true);
+            }}
+            className="flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 active:scale-95 transition-all cursor-pointer text-xs font-bold shadow-2xs"
+            title="Buka Panel Manajemen Siswa & Kelas"
+          >
+            <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+            <span className="hidden md:inline">Kelola Siswa</span>
+          </button>
+        )}
+
+        {/* User Profile Chip & Logout */}
+        {currentUser && (
+          <div className="flex items-center gap-1 pl-1">
+            <div
+              className="flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200"
+              title={`Login sebagai @${currentUser.username} (${currentUser.role === 'admin' ? 'Guru' : 'Siswa'})`}
+            >
+              <span className="text-sm">{currentUser.role === 'admin' ? '👑' : currentUser.avatar || '🌱'}</span>
+              <span className="max-w-[80px] sm:max-w-[120px] truncate">{currentUser.displayName}</span>
+            </div>
+
+            <button
+              onClick={() => {
+                clickTick(soundOn);
+                const conf = window.confirm('Apakah Anda ingin keluar (logout) dari akun ini?');
+                if (conf) logoutUser();
+              }}
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-900 active:scale-95 transition-all cursor-pointer"
+              title="Keluar / Ganti Akun Siswa"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Teacher Class Management Modal */}
+      <ClassManagementModal
+        isOpen={isClassModalOpen}
+        onClose={() => setIsClassModalOpen(false)}
+      />
     </header>
   );
 }
