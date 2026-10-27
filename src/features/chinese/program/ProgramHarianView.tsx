@@ -276,9 +276,9 @@ function StatTile({ icon, tone, label, value }: { icon: React.ReactNode; tone: s
     <Card className="bg-white dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-800 shadow-xs">
       <CardContent className="p-3 flex items-center gap-2.5">
         <div className={`p-2 rounded-xl shrink-0 ${tones[tone] || tones.blue}`}>{icon}</div>
-        <div className="min-w-0">
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400 truncate">{label}</p>
-          <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 truncate">{value}</h3>
+        <div className="min-w-0 flex-1">
+          <p className="text-[11px] text-zinc-500 dark:text-zinc-400 leading-tight">{label}</p>
+          <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 leading-tight break-words mt-0.5">{value}</h3>
         </div>
       </CardContent>
     </Card>

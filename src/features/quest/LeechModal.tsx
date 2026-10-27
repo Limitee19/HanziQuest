@@ -135,7 +135,7 @@ export function LeechModal({ isOpen, onClose, onStartStudy, soundEnabled = true 
                               Salah {item.fails}x
                             </span>
                           </div>
-                          <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 truncate">
+                          <p className="text-xs font-semibold text-zinc-800 dark:text-zinc-200 leading-snug break-words">
                             {item.meaning}
                           </p>
                         </div>

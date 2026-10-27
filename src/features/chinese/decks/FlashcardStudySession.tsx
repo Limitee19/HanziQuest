@@ -661,8 +661,8 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
                     className={`p-2 sm:p-3 md:p-4 rounded-xl sm:rounded-2xl border flex flex-col items-center justify-center transition-all active:scale-95 cursor-pointer shadow-lg min-w-0 ${colorMap[btn.rating]}`}
                   >
                     <span className="hidden sm:inline text-[11px] md:text-xs opacity-70 font-mono">[{idx + 1}]</span>
-                    <span className="text-[11px] sm:text-xs md:text-base font-bold tracking-tight truncate w-full text-center">{btn.label}</span>
-                    <span className="text-[11px] sm:text-[11px] md:text-xs opacity-80 mt-0.5 truncate w-full text-center">{btn.intervalText}</span>
+                    <span className="text-[11px] sm:text-xs md:text-base font-bold tracking-tight leading-tight break-words w-full text-center">{btn.label}</span>
+                    <span className="text-[10px] sm:text-[11px] md:text-xs opacity-80 mt-0.5 leading-tight break-words w-full text-center">{btn.intervalText}</span>
                   </button>
                 );
               })}

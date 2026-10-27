@@ -429,8 +429,8 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
                 </div>
 
                 {/* Card Meaning */}
-                <div className="p-2.5 rounded-2xl bg-zinc-50/70 dark:bg-[#0B111E] border border-zinc-100 dark:border-[#24324E] text-center min-h-[44px] flex items-center justify-center">
-                  <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 line-clamp-2">
+                <div className="p-2.5 rounded-2xl bg-zinc-50/70 dark:bg-[#0B111E] border border-zinc-100 dark:border-[#24324E] text-center min-h-[48px] flex items-center justify-center">
+                  <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-300 leading-snug break-words">
                     {indonesianMeaning}
                   </p>
                 </div>

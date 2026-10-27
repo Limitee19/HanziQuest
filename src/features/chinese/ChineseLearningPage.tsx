@@ -284,9 +284,9 @@ export function ChineseLearningPage() {
                 <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 shrink-0">
                   <Layers className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 truncate">Total Deck</p>
-                  <h3 className="text-sm sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 truncate">{stats.totalDecks} Decks</h3>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 leading-tight">Total Deck</p>
+                  <h3 className="text-sm sm:text-lg font-bold text-zinc-900 dark:text-zinc-100 leading-tight break-words mt-0.5">{stats.totalDecks} Decks</h3>
                 </div>
               </CardContent>
             </Card>
@@ -296,9 +296,9 @@ export function ChineseLearningPage() {
                 <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-rose-50 dark:bg-rose-950/50 text-[#C0392B] dark:text-[#FB7185] shrink-0">
                   <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 truncate">Jatuh Tempo</p>
-                  <h3 className="text-sm sm:text-lg font-bold text-[#C0392B] dark:text-[#FB7185] truncate">{stats.reviewDueCards} Kartu</h3>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 leading-tight">Jatuh Tempo</p>
+                  <h3 className="text-sm sm:text-lg font-bold text-[#C0392B] dark:text-[#FB7185] leading-tight break-words mt-0.5">{stats.reviewDueCards} Kartu</h3>
                 </div>
               </CardContent>
             </Card>
@@ -308,9 +308,9 @@ export function ChineseLearningPage() {
                 <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 shrink-0">
                   <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 truncate">Streak Belajar</p>
-                  <h3 className="text-sm sm:text-lg font-bold text-amber-600 dark:text-amber-400 truncate">{stats.currentStreak} Hari</h3>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 leading-tight">Streak Belajar</p>
+                  <h3 className="text-sm sm:text-lg font-bold text-amber-600 dark:text-amber-400 leading-tight break-words mt-0.5">{stats.currentStreak} Hari</h3>
                 </div>
               </CardContent>
             </Card>
@@ -320,9 +320,9 @@ export function ChineseLearningPage() {
                 <div className="p-2 sm:p-3 rounded-xl sm:rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 shrink-0">
                   <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
                 </div>
-                <div className="min-w-0">
-                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 truncate">Mastered</p>
-                  <h3 className="text-sm sm:text-lg font-bold text-emerald-600 dark:text-emerald-400 truncate">{stats.masteredCards} Kartu</h3>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400 leading-tight">Mastered</p>
+                  <h3 className="text-sm sm:text-lg font-bold text-emerald-600 dark:text-emerald-400 leading-tight break-words mt-0.5">{stats.masteredCards} Kartu</h3>
                 </div>
               </CardContent>
             </Card>

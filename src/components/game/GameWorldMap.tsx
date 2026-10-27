@@ -617,12 +617,12 @@ export function GameWorldMap({
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-3.5">
-                <div className="w-16 h-16 rounded-2xl bg-amber-50 dark:bg-[#1C2742] border-2 border-[#231F20] dark:border-[#2D3D60] flex items-center justify-center p-2.5 shrink-0 shadow-xs">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-amber-50 dark:bg-[#1C2742] border-2 border-[#231F20] dark:border-[#2D3D60] flex items-center justify-center p-2 sm:p-2.5 shrink-0 shadow-xs">
                   <Landmark level={selPos.level} />
                 </div>
-                <div>
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-300 dark:border-rose-900">
                       HSK {selPos.level}

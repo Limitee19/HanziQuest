@@ -149,19 +149,19 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
           {soundOn ? <Volume2 className="w-4 h-4 text-rose-500" /> : <VolumeX className="w-4 h-4" />}
         </button>
 
-        {/* Arcade Mode Toggle */}
+        {/* Arcade Mode Toggle - Desktop/Tablet only on narrow screens */}
         <button
           onClick={toggleArcade}
           title={arcadeMode ? 'Mode Arkade Aktif (Penuh energi & animasi)' : 'Mode Tenang (Santai & fokus)'}
           aria-label="Toggle arcade mode"
-          className={`flex items-center gap-1 px-2 h-8 rounded-lg border transition-all cursor-pointer ${
+          className={`hidden sm:flex items-center gap-1 px-2 h-8 rounded-lg border transition-all cursor-pointer ${
             arcadeMode
               ? 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700 font-bold'
               : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
           }`}
         >
           <Sparkles className={`w-3.5 h-3.5 ${arcadeMode ? 'text-amber-600 dark:text-amber-400' : ''}`} />
-          <span className="hidden sm:inline text-[11px] font-mono font-semibold">
+          <span className="text-[11px] font-mono font-semibold">
             {arcadeMode ? 'ARKADE' : 'TENANG'}
           </span>
         </button>
@@ -171,7 +171,7 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
           onClick={toggleTheme}
           title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
           aria-label="Toggle theme"
-          className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-600 active:scale-95 transition-all cursor-pointer"
+          className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-600 active:scale-95 transition-all cursor-pointer shrink-0"
         >
           {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
         </button>
@@ -186,7 +186,7 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
               clickTick(soundOn);
               setIsClassModalOpen(true);
             }}
-            className="flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 active:scale-95 transition-all cursor-pointer text-xs font-bold shadow-2xs"
+            className="flex items-center justify-center gap-1.5 px-2 md:px-2.5 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 active:scale-95 transition-all cursor-pointer text-xs font-bold shadow-2xs shrink-0"
             title="Buka Panel Manajemen Siswa & Kelas"
           >
             <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
@@ -196,13 +196,13 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
 
         {/* User Profile Chip & Logout */}
         {currentUser && (
-          <div className="flex items-center gap-1 pl-1">
+          <div className="flex items-center gap-1 pl-0.5 sm:pl-1 shrink-0">
             <div
-              className="flex items-center gap-1.5 px-2.5 h-8 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200"
-              title={`Login sebagai @${currentUser.username} (${currentUser.role === 'admin' ? 'Guru' : 'Siswa'})`}
+              className="flex items-center gap-1.5 px-2 sm:px-2.5 h-8 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200"
+              title={`Login sebagai @${currentUser.username} (${currentUser.role === 'admin' ? 'Guru' : 'Siswa'}: ${currentUser.displayName})`}
             >
-              <span className="text-sm">{currentUser.role === 'admin' ? '👑' : currentUser.avatar || '🌱'}</span>
-              <span className="max-w-[80px] sm:max-w-[120px] truncate">{currentUser.displayName}</span>
+              <span className="text-sm shrink-0">{currentUser.role === 'admin' ? '👑' : currentUser.avatar || '🌱'}</span>
+              <span className="hidden sm:inline max-w-[90px] md:max-w-[120px] truncate">{currentUser.displayName}</span>
             </div>
 
             <button
@@ -211,7 +211,7 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
                 const conf = window.confirm('Apakah Anda ingin keluar (logout) dari akun ini?');
                 if (conf) logoutUser();
               }}
-              className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-900 active:scale-95 transition-all cursor-pointer"
+              className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-900 active:scale-95 transition-all cursor-pointer shrink-0"
               title="Keluar / Ganti Akun Siswa"
             >
               <LogOut className="w-3.5 h-3.5" />

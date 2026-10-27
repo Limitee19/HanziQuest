@@ -736,7 +736,7 @@ export function LearnedVocabularyView() {
                           </button>
                         </div>
                         {disp.meaning && (
-                          <p className="text-xs text-zinc-600 dark:text-zinc-300 font-medium line-clamp-2 leading-snug">
+                          <p className="text-xs text-zinc-600 dark:text-zinc-300 font-medium leading-snug break-words">
                             {disp.meaning}
                           </p>
                         )}

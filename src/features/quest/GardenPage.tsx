@@ -110,59 +110,59 @@ export const GardenPage: React.FC<GardenPageProps> = ({ onBackToMap, onStartSess
       {/* Metric Overview Grid */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
         <div 
-          className="p-3.5 sm:p-5 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between"
+          className="p-3 sm:p-4.5 rounded-2xl bg-rose-50 dark:bg-rose-950/30 border border-rose-200 dark:border-rose-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between min-h-[120px] sm:min-h-[136px]"
           style={{ boxShadow: '0 4px 14px -2px rgba(225, 29, 72, 0.08)' }}
         >
-          <span className="text-[11px] sm:text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block truncate">
+          <span className="text-[10.5px] sm:text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider leading-tight min-h-[28px] sm:min-h-[32px] flex items-center">
             Jatuh Tempo Hari Ini
           </span>
-          <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#C0392B] dark:text-[#FB7185] mt-1.5 flex items-center gap-1.5 sm:gap-2 min-w-0">
-            <span className="shrink-0">⏳</span>
+          <div className="text-xl sm:text-2xl md:text-3xl font-black text-[#C0392B] dark:text-[#FB7185] my-1 flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="shrink-0 text-base sm:text-2xl">⏳</span>
             <span className="truncate">{totalDue}</span>
           </div>
-          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 block truncate">Aksara yang butuh ditinjau</span>
+          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug break-words">Aksara yang butuh ditinjau</span>
         </div>
 
         <div 
-          className="p-3.5 sm:p-5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between"
+          className="p-3 sm:p-4.5 rounded-2xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between min-h-[120px] sm:min-h-[136px]"
           style={{ boxShadow: '0 4px 14px -2px rgba(217, 119, 6, 0.08)' }}
         >
-          <span className="text-[11px] sm:text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block truncate">
+          <span className="text-[10.5px] sm:text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider leading-tight min-h-[28px] sm:min-h-[32px] flex items-center">
             Aksara Mekar (Mastered)
           </span>
-          <div className="text-xl sm:text-2xl md:text-3xl font-black text-amber-700 dark:text-amber-400 mt-1.5 flex items-center gap-1.5 sm:gap-2 min-w-0">
-            <span className="shrink-0">🌸</span>
+          <div className="text-xl sm:text-2xl md:text-3xl font-black text-amber-700 dark:text-amber-400 my-1 flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="shrink-0 text-base sm:text-2xl">🌸</span>
             <span className="truncate">{totalMastered}</span>
           </div>
-          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 block truncate">Telah mendarah daging</span>
+          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug break-words">Telah mendarah daging</span>
         </div>
 
         <div 
-          className="p-3.5 sm:p-5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between"
+          className="p-3 sm:p-4.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between min-h-[120px] sm:min-h-[136px]"
           style={{ boxShadow: '0 4px 14px -2px rgba(5, 150, 105, 0.08)' }}
         >
-          <span className="text-[11px] sm:text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block truncate">
+          <span className="text-[10.5px] sm:text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider leading-tight min-h-[28px] sm:min-h-[32px] flex items-center">
             Kamus Bank Kosakata
           </span>
-          <div className="text-xl sm:text-2xl md:text-3xl font-black text-emerald-800 dark:text-emerald-400 mt-1.5 flex items-center gap-1.5 sm:gap-2 min-w-0">
-            <span className="shrink-0">📚</span>
+          <div className="text-xl sm:text-2xl md:text-3xl font-black text-emerald-800 dark:text-emerald-400 my-1 flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="shrink-0 text-base sm:text-2xl">📚</span>
             <span className="truncate tracking-tight">{totalWords.toLocaleString()}</span>
           </div>
-          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 block truncate">Standar HSK 3.0 (Pos 1–6)</span>
+          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug break-words">Standar HSK 3.0 (Pos 1–6)</span>
         </div>
 
         <div 
-          className="p-3.5 sm:p-5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between"
+          className="p-3 sm:p-4.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-200 dark:border-indigo-900/50 transition-transform hover:-translate-y-0.5 overflow-hidden min-w-0 flex flex-col justify-between min-h-[120px] sm:min-h-[136px]"
           style={{ boxShadow: '0 4px 14px -2px rgba(79, 70, 229, 0.08)' }}
         >
-          <span className="text-[11px] sm:text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider block truncate">
+          <span className="text-[10.5px] sm:text-xs font-bold text-zinc-600 dark:text-zinc-400 uppercase tracking-wider leading-tight min-h-[28px] sm:min-h-[32px] flex items-center">
             Tingkat Penguasaan
           </span>
-          <div className="text-xl sm:text-2xl md:text-3xl font-black text-indigo-800 dark:text-indigo-400 mt-1.5 flex items-center gap-1.5 sm:gap-2 min-w-0">
-            <span className="shrink-0">🎯</span>
+          <div className="text-xl sm:text-2xl md:text-3xl font-black text-indigo-800 dark:text-indigo-400 my-1 flex items-center gap-1.5 sm:gap-2 min-w-0">
+            <span className="shrink-0 text-base sm:text-2xl">🎯</span>
             <span className="truncate">{totalWords > 0 ? Math.round((totalMastered / totalWords) * 100) : 0}%</span>
           </div>
-          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 block truncate">Persentase keseluruhan</span>
+          <span className="text-[10px] sm:text-[11px] text-zinc-500 dark:text-zinc-400 leading-snug break-words">Persentase keseluruhan</span>
         </div>
       </div>
 

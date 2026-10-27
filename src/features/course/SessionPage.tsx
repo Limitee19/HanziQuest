@@ -202,7 +202,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
     <div className="w-full max-w-4xl mx-auto px-4 py-8 space-y-6 animate-in fade-in duration-300">
       {/* ── Top Header Navigation Bar ── */}
       <div 
-        className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+        className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-4 sm:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
         style={{ boxShadow: '0 10px 24px -4px rgba(35, 31, 32, 0.08)' }}
       >
         <div className="flex items-center gap-3">
@@ -213,19 +213,19 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                 clickTick(sound);
                 onBackToMap();
               }}
-              className="p-2.5 rounded-2xl border-2 border-zinc-300 dark:border-[#24324E] bg-white dark:bg-[#1C2742] hover:bg-zinc-100 dark:hover:bg-[#253252] text-zinc-800 dark:text-zinc-200 font-bold text-sm cursor-pointer shadow-xs transition-transform active:scale-95"
+              className="p-2 sm:p-2.5 rounded-2xl border-2 border-zinc-300 dark:border-[#24324E] bg-white dark:bg-[#1C2742] hover:bg-zinc-100 dark:hover:bg-[#253252] text-zinc-800 dark:text-zinc-200 font-bold text-xs sm:text-sm cursor-pointer shadow-xs transition-transform active:scale-95 shrink-0"
               title="Kembali ke Peta Petualangan"
             >
               ← Peta
             </button>
           )}
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xl">{outpost.icon}</span>
-              <h1 className="font-serif text-lg sm:text-xl font-bold text-[#231F20] dark:text-zinc-100">
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="text-xl shrink-0">{outpost.icon}</span>
+              <h1 className="font-serif text-base sm:text-xl font-bold text-[#231F20] dark:text-zinc-100">
                 {outpost.name}
               </h1>
-              <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 text-xs font-bold border border-amber-300 dark:border-amber-700/60">
+              <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-200 text-[11px] sm:text-xs font-bold border border-amber-300 dark:border-amber-700/60">
                 {outpost.subtitle}
               </span>
             </div>
@@ -259,11 +259,11 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
 
       {/* ── Session Progress & Mode Bar ── */}
       <div 
-        className="bg-white dark:bg-[#151E32] border border-zinc-200 dark:border-[#24324E] rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4"
+        className="bg-white dark:bg-[#151E32] border border-zinc-200 dark:border-[#24324E] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4"
         style={{ boxShadow: '0 4px 12px -2px rgba(15, 23, 42, 0.05)' }}
       >
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
+          <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 shrink-0">
             Kartu {Math.min(currentIndex + 1, sessionWords.length)} / {sessionWords.length}
           </span>
           <div className="flex-1 sm:w-48 h-3 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-700">
@@ -274,7 +274,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-between sm:justify-end gap-2.5 w-full sm:w-auto">
           {arcade && (
             <div className="flex items-center gap-3 text-xs font-bold">
               <span className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-700/60 text-amber-800 dark:text-amber-300 flex items-center gap-1">

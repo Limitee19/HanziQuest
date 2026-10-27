@@ -172,16 +172,16 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
               >
                 {/* Top Row: Hanzi, Pinyin, Fails Badge */}
                 <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-3.5">
+                  <div className="flex items-center gap-3 sm:gap-3.5 flex-1 min-w-0">
                     <button
                       type="button"
                       onClick={() => speakHanzi(item.hanzi)}
                       title="Klik untuk dengarkan suara"
-                      className="w-14 h-14 rounded-2xl bg-amber-50 dark:bg-[#1C2742] border-2 border-amber-200 dark:border-amber-700/60 flex items-center justify-center font-serif text-3xl font-bold text-[#C0392B] dark:text-[#FB7185] hover:bg-amber-100 dark:hover:bg-[#253252] transition-colors cursor-pointer shrink-0"
+                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 dark:bg-[#1C2742] border-2 border-amber-200 dark:border-amber-700/60 flex items-center justify-center font-serif text-2xl sm:text-3xl font-bold text-[#C0392B] dark:text-[#FB7185] hover:bg-amber-100 dark:hover:bg-[#253252] transition-colors cursor-pointer shrink-0"
                     >
                       {item.hanzi}
                     </button>
-                    <div>
+                    <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-sm font-bold text-indigo-700 dark:text-indigo-400">
                           {item.pinyin}
@@ -195,7 +195,7 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
                           🔊
                         </button>
                       </div>
-                      <p className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 line-clamp-1">
+                      <p className="text-xs sm:text-sm font-semibold text-zinc-900 dark:text-zinc-100 mt-0.5 leading-snug break-words">
                         {item.meaning}
                       </p>
                     </div>
