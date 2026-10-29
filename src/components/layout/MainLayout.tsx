@@ -3,7 +3,7 @@ import { NavTab } from '@/types';
 import { GlobalSearchModal } from '@/components/search/GlobalSearchModal';
 import { clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
-import { isAuthenticated, logoutUser, syncActiveUserProfileFromCloud } from '@/services/auth/classAuthService';
+import { syncActiveUserProfileFromCloud } from '@/services/auth/classAuthService';
 
 interface MainLayoutProps {
   activeTab: NavTab;
@@ -14,7 +14,7 @@ interface MainLayoutProps {
 
 export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children }: MainLayoutProps) {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const { sound, arcade, toggleSound, toggleArcade } = usePrefs();
+  const { sound } = usePrefs();
 
   useEffect(() => {
     syncActiveUserProfileFromCloud().catch(() => {});
@@ -165,56 +165,20 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
             </button>
           </nav>
 
-          {/* Right Controls: Responsive, compact on mobile to never overflow */}
-          <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+          {/* Right Controls: Hanya tersisa Search dan Settings agar bersih & tidak boros tempat */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Search */}
             <button
               type="button"
               className="btn btn--ghost"
-              style={{ padding: '7px 10px', fontSize: 13, borderRadius: '9999px' }}
+              style={{ padding: '7px 11px', fontSize: 13, borderRadius: '9999px' }}
               onClick={() => {
                 clickTick(sound);
                 setIsSearchOpen(true);
               }}
-              title="Cari Kosakata (Ctrl+K)"
+              title="Cari Kosakata & Modul (Ctrl+K)"
             >
               <i className="ph-duotone ph-magnifying-glass" style={{ color: 'var(--ink-soft)' }} />
-            </button>
-
-            {/* Sound Toggle (Desktop/Tablet) */}
-            <button
-              type="button"
-              className={`btn btn--ghost hidden sm:inline-flex ${sound ? 'btn--sound-on' : ''}`}
-              style={{
-                padding: '7px 11px',
-                fontSize: 13,
-                borderRadius: '9999px',
-              }}
-              onClick={toggleSound}
-              title={sound ? 'Audio Suara Aktif' : 'Audio Suara Bisu'}
-            >
-              <i
-                className={`ph-duotone ${sound ? 'ph-speaker-high' : 'ph-speaker-slash'}`}
-                style={{ color: sound ? 'var(--jade)' : 'var(--ink-soft)' }}
-              />
-            </button>
-
-            {/* Arcade Toggle (Desktop/Tablet) */}
-            <button
-              type="button"
-              className={`btn btn--ghost hidden sm:inline-flex ${arcade ? 'btn--arcade-on' : ''}`}
-              style={{
-                padding: '7px 11px',
-                fontSize: 13,
-                borderRadius: '9999px',
-              }}
-              onClick={toggleArcade}
-              title={arcade ? 'Mode Arkade Aktif (Bonus XP & Konfeti)' : 'Mode Santai'}
-            >
-              <i
-                className="ph-duotone ph-joystick"
-                style={{ color: arcade ? 'var(--ochre)' : 'var(--ink-soft)' }}
-              />
             </button>
 
             {/* Settings (Pengaturan) Quick Access */}
@@ -222,7 +186,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
               type="button"
               className={`btn btn--ghost ${activeTab === 'settings' ? 'active' : ''}`}
               style={{
-                padding: '7px 10px',
+                padding: '7px 11px',
                 fontSize: 13,
                 borderRadius: '9999px',
               }}
@@ -237,29 +201,6 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
                 style={{ color: activeTab === 'settings' ? 'var(--cinnabar)' : 'var(--ink-soft)' }}
               />
             </button>
-
-            {/* Quick Lock Application */}
-            {isAuthenticated() && (
-              <button
-                type="button"
-                className="btn btn--ghost"
-                style={{
-                  padding: '7px 10px',
-                  fontSize: 13,
-                  borderRadius: '9999px',
-                }}
-                onClick={() => {
-                  clickTick(sound);
-                  logoutUser();
-                }}
-                title="Kunci / Keluar Aplikasi Sekarang"
-              >
-                <i
-                  className="ph-duotone ph-lock-key"
-                  style={{ color: 'var(--cinnabar)' }}
-                />
-              </button>
-            )}
           </div>
         </header>
       </div>

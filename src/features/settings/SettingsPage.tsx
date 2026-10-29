@@ -27,10 +27,12 @@ import { getActiveUser, updateUserProfile, logoutUser, StudentUser } from '@/ser
 import { clickTick, playSuccessChime, playErrorBuzz } from '@/lib/fx';
 import { NotificationSettingsModal } from './NotificationSettingsModal';
 import { CustomAvatar, AVATAR_COLLECTION } from '@/components/common/CustomAvatar';
+import { LogoutConfirmModal } from '@/components/auth/LogoutConfirmModal';
 
 export function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const [isNotifSettingsOpen, setIsNotifSettingsOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [quizSfxOn, setQuizSfxOn] = useState<boolean>(() => isQuizSfxEnabled());
 
   // Profil & Akun states
@@ -231,11 +233,11 @@ export function SettingsPage() {
                     type="text"
                     value={nicknameInput}
                     onChange={(e) => setNicknameInput(e.target.value)}
-                    placeholder="misal: Ariel atau Mei Mei"
+                    placeholder="misal: Xiao Long, Budi, atau Lin"
                     className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0B111E] border border-zinc-200 dark:border-[#24324E] text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#C0392B]"
                   />
                   <p className="text-[10.5px] text-zinc-500 dark:text-zinc-400">
-                    Digunakan untuk menyapa ramah di Dashboard ("Selamat Pagi, Ariel!").
+                    Digunakan untuk menyapa ramah di Dashboard ("Selamat Pagi, Xiao Long!").
                   </p>
                 </div>
 
@@ -314,8 +316,7 @@ export function SettingsPage() {
                   type="button"
                   onClick={() => {
                     clickTick(true);
-                    const conf = window.confirm('Apakah Anda ingin keluar (logout) dari akun ini?');
-                    if (conf) logoutUser();
+                    setIsLogoutModalOpen(true);
                   }}
                   className="text-xs font-bold text-zinc-500 hover:text-rose-600 dark:text-zinc-400 dark:hover:text-rose-400 flex items-center justify-center gap-1.5 py-2 cursor-pointer transition-colors"
                 >
@@ -534,6 +535,16 @@ export function SettingsPage() {
       <NotificationSettingsModal
         isOpen={isNotifSettingsOpen}
         onClose={() => setIsNotifSettingsOpen(false)}
+      />
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={() => {
+          setIsLogoutModalOpen(false);
+          logoutUser();
+        }}
+        user={currentUser}
       />
     </div>
   );

@@ -94,20 +94,7 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-start sm:items-center gap-3 sm:gap-4 min-w-0 flex-1">
             <div
-              className="shrink-0"
-              style={{
-                width: 44,
-                height: 44,
-                borderRadius: 14,
-                background: '#FEF2F2',
-                border: '1.5px solid #E11D48',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#E11D48',
-                fontSize: 22,
-                boxShadow: '0 4px 12px -2px rgba(225, 29, 72, 0.15)',
-              }}
+              className="shrink-0 w-11 h-11 rounded-2xl bg-rose-50 dark:bg-rose-950/70 border-2 border-rose-300 dark:border-rose-800 text-rose-600 dark:text-rose-400 flex items-center justify-center text-xl shadow-xs transition-colors"
             >
               <i className="ph-duotone ph-lightning" />
             </div>

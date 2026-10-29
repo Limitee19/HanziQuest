@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Moon, Sun, Search, Globe, Menu, Volume2, VolumeX, Sparkles, Users, LogOut } from 'lucide-react';
+import { Moon, Sun, Search, Globe, Menu, Users, LogOut } from 'lucide-react';
 import { format } from 'date-fns';
 import type { NavTab } from '@/types';
 import { getCurrentLanguage, setLanguage, subscribeLanguageChange, Language } from '@/services/localizationService';
@@ -7,6 +7,7 @@ import { clickTick } from '@/lib/fx';
 import { getActiveUser, logoutUser, onAuthStateChange, StudentUser } from '@/services/auth/classAuthService';
 import { ClassManagementModal } from '@/components/auth/ClassManagementModal';
 import { CustomAvatar } from '@/components/common/CustomAvatar';
+import { LogoutConfirmModal } from '@/components/auth/LogoutConfirmModal';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -32,30 +33,15 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
   const info = tabTitles[activeTab] || tabTitles.dashboard;
   const todayStr = format(new Date(), 'EEEE, d MMMM yyyy').toUpperCase();
   const [lang, setLangState] = useState<Language>(getCurrentLanguage());
-  const [soundOn, setSoundOn] = useState(() => localStorage.getItem('omnilife_sound_enabled') !== 'false');
-  const [arcadeMode, setArcadeMode] = useState(() => localStorage.getItem('omnilife_arcade_mode') === 'true');
+  const [soundOn] = useState(() => localStorage.getItem('omnilife_sound_enabled') !== 'false');
 
   const [currentUser, setCurrentUser] = useState<StudentUser | null>(() => getActiveUser());
   const [isClassModalOpen, setIsClassModalOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   useEffect(() => {
     return onAuthStateChange((u) => setCurrentUser(u));
   }, []);
-
-  const toggleSound = () => {
-    const next = !soundOn;
-    setSoundOn(next);
-    localStorage.setItem('omnilife_sound_enabled', String(next));
-    clickTick(next);
-  };
-
-  const toggleArcade = () => {
-    const next = !arcadeMode;
-    setArcadeMode(next);
-    localStorage.setItem('omnilife_arcade_mode', String(next));
-    clickTick(soundOn);
-    window.dispatchEvent(new CustomEvent('omnilife_arcade_toggled', { detail: { arcade: next } }));
-  };
 
   useEffect(() => {
     return subscribeLanguageChange((newLang) => setLangState(newLang));
@@ -140,33 +126,6 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
           </span>
         </div>
 
-        {/* Sound Toggle (Tactile Audio FX) */}
-        <button
-          onClick={toggleSound}
-          title={soundOn ? 'Efek Suara Aktif (Klik untuk matikan)' : 'Efek Suara Bisu (Klik untuk aktifkan)'}
-          aria-label="Toggle sound"
-          className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-600 active:scale-95 transition-all cursor-pointer"
-        >
-          {soundOn ? <Volume2 className="w-4 h-4 text-rose-500" /> : <VolumeX className="w-4 h-4" />}
-        </button>
-
-        {/* Arcade Mode Toggle - Desktop/Tablet only on narrow screens */}
-        <button
-          onClick={toggleArcade}
-          title={arcadeMode ? 'Mode Arkade Aktif (Penuh energi & animasi)' : 'Mode Tenang (Santai & fokus)'}
-          aria-label="Toggle arcade mode"
-          className={`hidden sm:flex items-center gap-1 px-2 h-8 rounded-lg border transition-all cursor-pointer ${
-            arcadeMode
-              ? 'bg-amber-100 text-amber-800 border-amber-300 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-700 font-bold'
-              : 'bg-white dark:bg-zinc-800 border-zinc-200 dark:border-zinc-700 text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
-          }`}
-        >
-          <Sparkles className={`w-3.5 h-3.5 ${arcadeMode ? 'text-amber-600 dark:text-amber-400' : ''}`} />
-          <span className="text-[11px] font-mono font-semibold">
-            {arcadeMode ? 'ARKADE' : 'TENANG'}
-          </span>
-        </button>
-
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
@@ -213,8 +172,7 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
             <button
               onClick={() => {
                 clickTick(soundOn);
-                const conf = window.confirm('Apakah Anda ingin keluar (logout) dari akun ini?');
-                if (conf) logoutUser();
+                setIsLogoutModalOpen(true);
               }}
               className="flex items-center justify-center w-8 h-8 rounded-lg border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-400 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-900 active:scale-95 transition-all cursor-pointer shrink-0"
               title="Keluar / Ganti Akun Siswa"
@@ -229,6 +187,17 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
       <ClassManagementModal
         isOpen={isClassModalOpen}
         onClose={() => setIsClassModalOpen(false)}
+      />
+
+      {/* Logout Confirmation Modal */}
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={() => {
+          setIsLogoutModalOpen(false);
+          logoutUser();
+        }}
+        user={currentUser}
       />
     </header>
   );

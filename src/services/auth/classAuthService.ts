@@ -33,6 +33,28 @@ const STORAGE_ACTIVE_USER_KEY = 'omnilife_active_student_user';
 const STORAGE_LOCAL_USERS_KEY = 'omnilife_class_local_users';
 const AUTH_STATE_CHANGE_EVENT = 'omnilife_class_auth_state_change';
 
+function getStoredUserNicknameKey(userId: string): string {
+  return `omnilife_user_nickname_${userId}`;
+}
+
+export function getStoredUserNickname(userId: string): string {
+  try {
+    return localStorage.getItem(getStoredUserNicknameKey(userId)) || '';
+  } catch {
+    return '';
+  }
+}
+
+export function setStoredUserNickname(userId: string, nickname: string): void {
+  try {
+    if (nickname && nickname.trim()) {
+      localStorage.setItem(getStoredUserNicknameKey(userId), nickname.trim());
+    } else {
+      localStorage.removeItem(getStoredUserNicknameKey(userId));
+    }
+  } catch {}
+}
+
 // Master PIN cadangan dari environment (jika ada)
 const ENV_MASTER_PIN = (((import.meta as any).env?.VITE_APP_MASTER_PIN as string) || '170603').trim();
 
@@ -254,6 +276,12 @@ export async function loginUser(
             }
           } catch {}
 
+          if (!cloudNickname) {
+            cloudNickname = getStoredUserNickname(data.id);
+          } else {
+            setStoredUserNickname(data.id, cloudNickname);
+          }
+
           const loggedUser: StudentUser = {
             id: data.id,
             username: data.username,
@@ -283,13 +311,16 @@ export async function loginUser(
   if (!found) {
     // Khusus Admin darurat jika PIN sesuai ENV_MASTER_PIN (170603)
     if ((cleanUsername === '260242649788' || cleanUsername === 'admin') && (cleanPin === '170603' || cleanPin === ENV_MASTER_PIN)) {
+      const adminId = cleanUsername === '260242649788' ? 'usr_admin_260242649788' : 'usr_admin_master';
+      const adminNickname = getStoredUserNickname(adminId);
       const adminUser: StudentUser = {
-        id: cleanUsername === '260242649788' ? 'usr_admin_260242649788' : 'usr_admin_master',
+        id: adminId,
         username: cleanUsername,
         displayName: 'Guru / Master Admin',
+        nickname: adminNickname,
         role: 'admin',
         isActive: true,
-        avatar: '👑',
+        avatar: 'avatar_master',
         createdAt: Date.now(),
       };
       localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(adminUser));
@@ -310,13 +341,17 @@ export async function loginUser(
     return { success: false, error: 'PIN yang Anda masukkan salah.' };
   }
 
+  const userNickname = found.nickname || getStoredUserNickname(found.id) || '';
+  if (userNickname) setStoredUserNickname(found.id, userNickname);
+
   const sessionUser: StudentUser = {
     id: found.id,
     username: found.username,
     displayName: found.displayName,
+    nickname: userNickname,
     role: found.role,
     isActive: found.isActive,
-    avatar: found.avatar,
+    avatar: found.avatar || (found.role === 'admin' ? 'avatar_master' : 'avatar_panda'),
     createdAt: found.createdAt,
   };
 
@@ -437,6 +472,7 @@ export async function updateUserProfile(updates: {
   }
 
   try {
+    setStoredUserNickname(currentUser.id, updatedNickname);
     localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(updatedUser));
   } catch {}
 
@@ -536,6 +572,12 @@ export async function syncActiveUserProfileFromCloud(): Promise<StudentUser | nu
         if (pm.avatar) updatedAvatar = pm.avatar;
       }
     } catch {}
+
+    if (!updatedNickname) {
+      updatedNickname = getStoredUserNickname(currentUser.id);
+    } else {
+      setStoredUserNickname(currentUser.id, updatedNickname);
+    }
 
     const freshUser: StudentUser = {
       ...currentUser,
