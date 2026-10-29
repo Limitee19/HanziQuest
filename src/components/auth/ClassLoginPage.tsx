@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Lock, User, LogIn, AlertCircle, Sparkles, BookOpen } from 'lucide-react';
-import { loginUser } from '@/services/auth/classAuthService';
+import { Lock, User, LogIn, AlertCircle, Sparkles, BookOpen, Compass } from 'lucide-react';
+import { loginUser, loginGuestUser } from '@/services/auth/classAuthService';
 import { clickTick, playSuccessChime, playErrorBuzz } from '@/lib/fx';
 
 interface ClassLoginPageProps {
@@ -43,6 +43,13 @@ export const ClassLoginPage: React.FC<ClassLoginPageProps> = ({ onLoginSuccess }
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleGuestLogin = () => {
+    clickTick(true);
+    playSuccessChime(true);
+    loginGuestUser();
+    onLoginSuccess();
   };
 
   return (
@@ -154,6 +161,30 @@ export const ClassLoginPage: React.FC<ClassLoginPageProps> = ({ onLoginSuccess }
             )}
           </button>
         </form>
+
+        {/* Divider Atau Mode Tamu */}
+        <div className="relative flex py-1 items-center">
+          <div className="grow border-t border-zinc-200 dark:border-zinc-800" />
+          <span className="shrink mx-3 text-zinc-400 dark:text-zinc-500 text-[11px] uppercase font-bold tracking-wider">
+            atau
+          </span>
+          <div className="grow border-t border-zinc-200 dark:border-zinc-800" />
+        </div>
+
+        {/* Guest Login Button */}
+        <div>
+          <button
+            type="button"
+            onClick={handleGuestLogin}
+            className="w-full py-3 px-4 rounded-2xl bg-zinc-100 hover:bg-zinc-200/80 dark:bg-[#1E293B] dark:hover:bg-[#2A3B54] text-zinc-800 dark:text-zinc-100 font-bold text-xs sm:text-sm tracking-wide transition-all flex items-center justify-center gap-2 cursor-pointer border border-zinc-200 dark:border-zinc-700 active:scale-98 shadow-xs"
+          >
+            <Compass className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+            <span>Masuk sebagai Tamu (Mode Bebas)</span>
+          </button>
+          <p className="text-[10.5px] text-zinc-400 dark:text-zinc-500 text-center mt-1.5 leading-tight">
+            Mode Tamu tidak menyimpan data ke cloud server &amp; tidak memakan database.
+          </p>
+        </div>
 
         {/* Notice: No Public Register */}
         <div className="pt-2 border-t border-zinc-200 dark:border-[#24324E]/80 text-center space-y-2">

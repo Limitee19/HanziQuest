@@ -21,11 +21,12 @@ import {
 } from '@/services/chinese/flashcardService';
 import { GameWorldMap } from '@/components/game/GameWorldMap';
 import { fetchOutpostStats } from '@/services/chinese/questService';
-import { clickTick } from '@/lib/fx';
+import { clickTick, speakHanzi } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
 import { course } from '@/data/course';
 import { NavTab } from '@/types';
 import { cn } from '@/lib/utils';
+import { getActiveUser, onAuthStateChange, StudentUser } from '@/services/auth/classAuthService';
 
 interface DashboardPageProps {
   onNavigate: (tab: NavTab) => void;
@@ -61,6 +62,11 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [programSummary, setProgramSummary] = useState<ProgramSummary | null>(null);
   const [decks, setDecks] = useState<DeckItem[]>([]);
   const [outpostStats, setOutpostStats] = useState<Record<number, { total: number; due: number; mastered: number }>>({});
+  const [currentUser, setCurrentUser] = useState<StudentUser | null>(() => getActiveUser());
+
+  useEffect(() => {
+    return onAuthStateChange((u) => setCurrentUser(u));
+  }, []);
 
   const loadData = async () => {
     try {
@@ -111,8 +117,105 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
 
   const totalCourseWords = course.words.length;
 
+  // Sapaan Ramah Pengguna berdasarkan waktu lokal
+  const getGreetingData = () => {
+    const hour = new Date().getHours();
+    if (hour >= 4 && hour < 11) {
+      return {
+        mandarin: '早上好',
+        pinyin: 'Zǎoshang hǎo',
+        indo: 'Selamat Pagi',
+        icon: '🌅',
+        motto: '千里之行，始于足下 — Perjalanan ribuan li selalu berawal dari satu langkah kecil hari ini.',
+      };
+    } else if (hour >= 11 && hour < 15) {
+      return {
+        mandarin: '中午好',
+        pinyin: 'Zhōngwǔ hǎo',
+        indo: 'Selamat Siang',
+        icon: '☀️',
+        motto: '学而时习之，不亦说乎 — Belajar dan terus melatihnya berulang kali, bukankah sangat menyenangkan?',
+      };
+    } else if (hour >= 15 && hour < 18) {
+      return {
+        mandarin: '下午好',
+        pinyin: 'Xiàwǔ hǎo',
+        indo: 'Selamat Sore',
+        icon: '🌇',
+        motto: '熟能生巧 — Kunci utama kemahiran bahasa Mandarin adalah kebiasaan mengulang setiap hari.',
+      };
+    } else {
+      return {
+        mandarin: '晚上好',
+        pinyin: 'Wǎnshang hǎo',
+        indo: 'Selamat Malam',
+        icon: '🌙',
+        motto: '温故而知新 — Meninjau materi lama akan menghadirkan pemahaman baru yang mendalam.',
+      };
+    }
+  };
+
+  const greeting = getGreetingData();
+  const callingName = currentUser?.nickname?.trim() || currentUser?.displayName?.trim() || 'Teman Petualang';
+
   return (
-    <div className="space-y-8 max-w-7xl mx-auto pb-20">
+    <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto pb-20 animate-in fade-in duration-300">
+      {/* ── 0. WELCOME GREETING BANNER DENGAN SAPAAN MANDARIN ── */}
+      <div 
+        className="bg-linear-to-r from-amber-50 via-rose-50/70 to-orange-50/50 dark:from-[#151E32] dark:via-[#19243C] dark:to-[#121929] border border-amber-200/80 dark:border-[#24324E] rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm relative overflow-hidden"
+      >
+        <div className="flex items-center gap-3.5 sm:gap-4 relative z-10 min-w-0 flex-1">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white dark:bg-[#1E293B] border-2 border-amber-300 dark:border-amber-700/60 flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">
+            {currentUser?.avatar || greeting.icon}
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
+                <span>{greeting.icon}</span>
+                <span>{greeting.mandarin}</span>
+                <span className="font-mono text-xs opacity-75">({greeting.pinyin})</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => speakHanzi(greeting.mandarin)}
+                className="text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400 text-xs cursor-pointer p-0.5"
+                title="Dengarkan Pengucapan Sapaan Mandarin"
+              >
+                🔊
+              </button>
+              {currentUser?.role === 'guest' && (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold border border-emerald-300 dark:border-emerald-800">
+                  Mode Tamu
+                </span>
+              )}
+            </div>
+
+            <h2 className="font-serif text-xl sm:text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight mt-0.5 break-words">
+              {greeting.indo}, {callingName}!
+            </h2>
+
+            <p className="text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400 mt-1 italic max-w-2xl leading-relaxed">
+              "{greeting.motto}"
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 self-stretch sm:self-auto sm:justify-end relative z-10 shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              clickTick(sound);
+              onNavigate('settings');
+            }}
+            className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white/80 dark:bg-[#1E293B]/80 hover:bg-white dark:hover:bg-[#253252] border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center justify-center gap-1.5"
+            title="Buka Pengaturan untuk Mengubah Nama Panggilan"
+          >
+            <span>Ubah Panggilan</span>
+            <span>✎</span>
+          </button>
+        </div>
+      </div>
+
       {/* ── 1. CORE HANZI QUEST ADVENTURE LAYOUT ── */}
       <div className="layout" style={{ margin: '0 0 32px 0', padding: 0 }}>
         {/* Kolom Kiri: Kemah Petualang & Tas Bekal */}

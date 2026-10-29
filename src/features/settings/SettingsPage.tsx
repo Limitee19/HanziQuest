@@ -10,18 +10,39 @@ import {
   Bell,
   Sparkles,
   CheckCircle2,
+  User,
+  KeyRound,
+  Smile,
+  ShieldCheck,
+  Check,
+  AlertCircle,
+  LogOut,
 } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { useTheme } from '@/hooks/useTheme';
 import { isQuizSfxEnabled, setQuizSfxEnabled } from '@/services/chinese/sfxSettings';
 import { getTtsCacheInfo, clearTtsCache, TtsCacheInfo } from '@/services/chinese/passiveLearningService';
+import { getActiveUser, updateUserProfile, logoutUser, StudentUser } from '@/services/auth/classAuthService';
+import { clickTick, playSuccessChime, playErrorBuzz } from '@/lib/fx';
 import { NotificationSettingsModal } from './NotificationSettingsModal';
+
+const AVATAR_OPTIONS = ['🌱', '👑', '🎒', '🐼', '🐉', '🎋', '🏮', '🌸', '⚡', '🍵', '🏹', '🦊'];
 
 export function SettingsPage() {
   const { theme, setTheme } = useTheme();
   const [isNotifSettingsOpen, setIsNotifSettingsOpen] = useState(false);
   const [quizSfxOn, setQuizSfxOn] = useState<boolean>(() => isQuizSfxEnabled());
+
+  // Profil & Akun states
+  const [currentUser, setCurrentUser] = useState<StudentUser | null>(() => getActiveUser());
+  const [nicknameInput, setNicknameInput] = useState(() => currentUser?.nickname || '');
+  const [displayNameInput, setDisplayNameInput] = useState(() => currentUser?.displayName || '');
+  const [usernameInput, setUsernameInput] = useState(() => currentUser?.username || '');
+  const [pinInput, setPinInput] = useState('');
+  const [avatarChoice, setAvatarChoice] = useState(() => currentUser?.avatar || (currentUser?.role === 'admin' ? '👑' : '🌱'));
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileFeedback, setProfileFeedback] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
   // Cache audio TTS (belajar pasif) — ukuran + tombol hapus
   const [ttsInfo, setTtsInfo] = useState<TtsCacheInfo | null>(null);
@@ -53,6 +74,47 @@ export function SettingsPage() {
     }
   };
 
+  const handleSaveProfile = async (e: React.FormEvent) => {
+    e.preventDefault();
+    clickTick(true);
+    setProfileFeedback(null);
+    setProfileSaving(true);
+
+    try {
+      const res = await updateUserProfile({
+        nickname: nicknameInput,
+        displayName: displayNameInput,
+        username: usernameInput,
+        pin: pinInput || undefined,
+        avatar: avatarChoice,
+      });
+
+      if (res.success && res.user) {
+        playSuccessChime(true);
+        setCurrentUser(res.user);
+        setPinInput('');
+        setProfileFeedback({
+          type: 'success',
+          msg: 'Profil & nama panggilan berhasil diperbarui!',
+        });
+      } else {
+        playErrorBuzz(true);
+        setProfileFeedback({
+          type: 'error',
+          msg: res.error || 'Gagal memperbarui profil.',
+        });
+      }
+    } catch {
+      playErrorBuzz(true);
+      setProfileFeedback({
+        type: 'error',
+        msg: 'Terjadi kendala saat menyimpan profil.',
+      });
+    } finally {
+      setProfileSaving(false);
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-4xl mx-auto pb-16 animate-in fade-in duration-300">
       {/* Header */}
@@ -71,6 +133,183 @@ export function SettingsPage() {
       </div>
 
       <div className="space-y-5">
+        {/* Profile & Account Identity Settings */}
+        <Card className="p-6 rounded-3xl border-2 border-zinc-200 dark:border-zinc-800 bg-[#FFFDF9] dark:bg-[#151E32] shadow-sm">
+          <CardHeader className="p-0 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <CardTitle className="text-base font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-serif">
+                  <User className="w-4 h-4 text-rose-500" />
+                  Profil &amp; Identitas Pengguna
+                </CardTitle>
+                <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
+                  Atur nama panggilan sapaan, identitas akun, avatar emoji, dan ganti PIN login Anda
+                </CardDescription>
+              </div>
+
+              {currentUser && (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border self-start sm:self-center shrink-0 bg-white dark:bg-[#0B111E] border-zinc-200 dark:border-zinc-700">
+                  <span>{currentUser.role === 'admin' ? '👑 Guru / Admin' : currentUser.role === 'guest' ? '🎒 Akun Tamu' : '🌱 Siswa Kelas'}</span>
+                </div>
+              )}
+            </div>
+          </CardHeader>
+
+          <CardContent className="p-0 pt-2 space-y-4">
+            {/* Feedback Alert */}
+            {profileFeedback && (
+              <div
+                className={`p-3 rounded-2xl border text-xs flex items-center gap-2.5 animate-in fade-in duration-200 ${
+                  profileFeedback.type === 'success'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200'
+                    : 'bg-rose-50 dark:bg-rose-950/60 border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-200'
+                }`}
+              >
+                {profileFeedback.type === 'success' ? (
+                  <Check className="w-4 h-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                ) : (
+                  <AlertCircle className="w-4 h-4 shrink-0 text-rose-600 dark:text-rose-400" />
+                )}
+                <span className="font-semibold">{profileFeedback.msg}</span>
+              </div>
+            )}
+
+            <form onSubmit={handleSaveProfile} className="space-y-4">
+              {/* Avatar Selector Row */}
+              <div className="space-y-1.5">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                  <Smile className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Pilih Avatar / Emoji Pribadi</span>
+                </label>
+                <div className="flex items-center gap-2 flex-wrap">
+                  {AVATAR_OPTIONS.map((em) => (
+                    <button
+                      key={em}
+                      type="button"
+                      onClick={() => {
+                        clickTick(true);
+                        setAvatarChoice(em);
+                      }}
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-lg sm:text-xl transition-all cursor-pointer ${
+                        avatarChoice === em
+                          ? 'bg-rose-100 dark:bg-rose-950/80 border-2 border-[#C0392B] scale-110 shadow-sm'
+                          : 'bg-white dark:bg-[#0B111E] border border-zinc-200 dark:border-zinc-700 hover:border-zinc-400'
+                      }`}
+                    >
+                      {em}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Grid Form Inputs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* 1. Nama Panggilan (Nickname untuk Sapaan Dashboard) */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Nama Panggilan (Sapaan Dashboard)</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={nicknameInput}
+                    onChange={(e) => setNicknameInput(e.target.value)}
+                    placeholder="misal: Ariel atau Mei Mei"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0B111E] border border-zinc-200 dark:border-[#24324E] text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#C0392B]"
+                  />
+                  <p className="text-[10.5px] text-zinc-500 dark:text-zinc-400">
+                    Digunakan untuk menyapa ramah di Dashboard ("Selamat Pagi, Ariel!").
+                  </p>
+                </div>
+
+                {/* 2. Nama Lengkap / Tampilan */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                    <User className="w-3.5 h-3.5 text-zinc-400" />
+                    <span>Nama Lengkap Siswa</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={displayNameInput}
+                    onChange={(e) => setDisplayNameInput(e.target.value)}
+                    placeholder="Nama lengkap di rapor/kelas"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0B111E] border border-zinc-200 dark:border-[#24324E] text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-[#C0392B]"
+                  />
+                  <p className="text-[10.5px] text-zinc-500 dark:text-zinc-400">
+                    Nama resmi siswa yang terdaftar di sistem kelas.
+                  </p>
+                </div>
+
+                {/* 3. Username Login */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
+                    <span>Username Login</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={usernameInput}
+                    onChange={(e) => setUsernameInput(e.target.value)}
+                    disabled={currentUser?.role === 'guest'}
+                    placeholder="Username login"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0B111E] border border-zinc-200 dark:border-[#24324E] text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#C0392B] disabled:opacity-60"
+                  />
+                  <p className="text-[10.5px] text-zinc-500 dark:text-zinc-400">
+                    {currentUser?.role === 'guest'
+                      ? 'Username mode tamu bersifat otomatis.'
+                      : 'Digunakan bersama PIN saat masuk ke aplikasi.'}
+                  </p>
+                </div>
+
+                {/* 4. PIN Baru */}
+                <div className="space-y-1">
+                  <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
+                    <KeyRound className="w-3.5 h-3.5 text-rose-500" />
+                    <span>Ganti PIN Rahasia</span>
+                  </label>
+                  <input
+                    type="password"
+                    inputMode="numeric"
+                    maxLength={8}
+                    value={pinInput}
+                    onChange={(e) => setPinInput(e.target.value)}
+                    disabled={currentUser?.role === 'guest'}
+                    placeholder={currentUser?.role === 'guest' ? 'Tidak perlu PIN di mode tamu' : 'Kosongkan jika tidak ingin ganti PIN'}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-[#0B111E] border border-zinc-200 dark:border-[#24324E] text-zinc-900 dark:text-zinc-100 text-xs sm:text-sm font-mono focus:outline-none focus:ring-2 focus:ring-[#C0392B] disabled:opacity-60"
+                  />
+                  <p className="text-[10.5px] text-zinc-500 dark:text-zinc-400">
+                    Minimal 4 digit angka rahasia baru.
+                  </p>
+                </div>
+              </div>
+
+              {/* Submit Button & Switch Account */}
+              <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-zinc-200 dark:border-zinc-800">
+                <Button
+                  type="submit"
+                  disabled={profileSaving}
+                  className="bg-[#C0392B] hover:bg-[#A93226] text-white font-bold text-xs py-2.5 px-5 rounded-xl cursor-pointer"
+                >
+                  {profileSaving ? 'Menyimpan Profil…' : 'Simpan Perubahan Profil'}
+                </Button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    clickTick(true);
+                    const conf = window.confirm('Apakah Anda ingin keluar (logout) dari akun ini?');
+                    if (conf) logoutUser();
+                  }}
+                  className="text-xs font-bold text-zinc-500 hover:text-rose-600 dark:text-zinc-400 dark:hover:text-rose-400 flex items-center justify-center gap-1.5 py-2 cursor-pointer transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Keluar / Ganti Akun Lain</span>
+                </button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+
         {/* Appearance Settings with Rich Visual Previews */}
         <Card className="p-6 rounded-3xl border-2 border-zinc-200 dark:border-zinc-800 bg-[#FFFDF9] dark:bg-[#151E32] shadow-sm">
           <CardHeader className="p-0 pb-4">

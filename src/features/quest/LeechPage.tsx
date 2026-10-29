@@ -72,7 +72,7 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
               </span>
             </div>
             <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-2xl leading-relaxed">
-              Kata yang keliru ≥3 kali saat latihan otomatis dikarantina ke sini. Beri jembatan keledai (mnemonik asosiatif) dan latih berulang kali sampai jinak!
+              Kata yang keliru atau butuh diulang saat latihan otomatis dikarantina ke sini. Beri jembatan keledai (mnemonik asosiatif) dan latih berulang kali sampai jinak!
             </p>
           </div>
         </div>
@@ -173,14 +173,27 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
                 {/* Top Row: Hanzi, Pinyin, Fails Badge */}
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3 sm:gap-3.5 flex-1 min-w-0">
-                    <button
-                      type="button"
-                      onClick={() => speakHanzi(item.hanzi)}
-                      title="Klik untuk dengarkan suara"
-                      className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-amber-50 dark:bg-[#1C2742] border-2 border-amber-200 dark:border-amber-700/60 flex items-center justify-center font-serif text-2xl sm:text-3xl font-bold text-[#C0392B] dark:text-[#FB7185] hover:bg-amber-100 dark:hover:bg-[#253252] transition-colors cursor-pointer shrink-0"
-                    >
-                      {item.hanzi}
-                    </button>
+                    {(() => {
+                      const len = item.hanzi ? item.hanzi.length : 1;
+                      const sizeClass = len <= 1 
+                        ? 'w-12 h-12 sm:w-14 sm:h-14 text-2xl sm:text-3xl' 
+                        : len === 2 
+                        ? 'min-w-[56px] px-2.5 h-12 sm:h-14 text-xl sm:text-2xl' 
+                        : len === 3 
+                        ? 'min-w-[76px] px-3 h-12 sm:h-14 text-base sm:text-lg tracking-normal' 
+                        : 'min-w-[92px] px-3.5 h-12 sm:h-14 text-xs sm:text-sm tracking-tight';
+
+                      return (
+                        <button
+                          type="button"
+                          onClick={() => speakHanzi(item.hanzi)}
+                          title="Klik untuk dengarkan suara"
+                          className={`${sizeClass} rounded-2xl bg-amber-50 dark:bg-[#1C2742] border-2 border-amber-200 dark:border-amber-700/60 flex items-center justify-center font-serif font-bold text-[#C0392B] dark:text-[#FB7185] hover:bg-amber-100 dark:hover:bg-[#253252] transition-colors cursor-pointer shrink-0 whitespace-nowrap overflow-hidden shadow-2xs`}
+                        >
+                          {item.hanzi}
+                        </button>
+                      );
+                    })()}
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-mono text-sm font-bold text-indigo-700 dark:text-indigo-400">

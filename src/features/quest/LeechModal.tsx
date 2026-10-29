@@ -116,7 +116,9 @@ export function LeechModal({ isOpen, onClose, onStartStudy, soundEnabled = true 
                   <div key={item.wordId} className="py-3.5 space-y-2.5">
                     <div className="flex items-center justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
-                        <span className="font-serif text-3xl font-bold text-zinc-900 dark:text-zinc-100 shrink-0">
+                        <span className={`font-serif font-bold text-zinc-900 dark:text-zinc-100 shrink-0 whitespace-nowrap ${
+                          (item.hanzi?.length || 1) <= 1 ? 'text-3xl' : (item.hanzi?.length || 1) === 2 ? 'text-2xl' : 'text-lg sm:text-xl'
+                        }`}>
                           {item.hanzi}
                         </span>
                         <div className="min-w-0">

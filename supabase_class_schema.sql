@@ -12,7 +12,9 @@ CREATE TABLE IF NOT EXISTS app_users (
   pin_hash TEXT NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT true,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  nickname TEXT,
+  avatar TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_app_users_username ON app_users(username);

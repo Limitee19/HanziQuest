@@ -13,7 +13,8 @@ export interface StudentUser {
   id: string;
   username: string;
   displayName: string;
-  role: 'admin' | 'student';
+  nickname?: string;
+  role: 'admin' | 'student' | 'guest';
   isActive: boolean;
   avatar?: string;
   createdAt: number;
@@ -308,6 +309,132 @@ export function logoutUser(): void {
     localStorage.removeItem(STORAGE_ACTIVE_USER_KEY);
   } catch {}
   notifyAuthChange(null);
+}
+
+/**
+ * Login sebagai Tamu (Mode Bebas Tanpa Akun & Tanpa Konsumsi Database Cloud)
+ */
+export function loginGuestUser(): StudentUser {
+  const guestUser: StudentUser = {
+    id: 'usr_guest',
+    username: 'tamu',
+    displayName: 'Tamu Petualang',
+    nickname: 'Tamu',
+    role: 'guest',
+    isActive: true,
+    avatar: '🎒',
+    createdAt: Date.now(),
+  };
+
+  try {
+    localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(guestUser));
+  } catch {}
+
+  notifyAuthChange(guestUser);
+  return guestUser;
+}
+
+/**
+ * Perbarui profil pengguna yang sedang login (Nama Panggilan, Nama Tampilan, Username, PIN, Avatar)
+ */
+export async function updateUserProfile(updates: {
+  displayName?: string;
+  nickname?: string;
+  username?: string;
+  pin?: string;
+  avatar?: string;
+}): Promise<{ success: boolean; error?: string; user?: StudentUser }> {
+  const currentUser = getActiveUser();
+  if (!currentUser) {
+    return { success: false, error: 'Tidak ada sesi pengguna aktif.' };
+  }
+
+  // Jika akun tamu: perbarui di state lokal saja
+  if (currentUser.role === 'guest') {
+    const updatedUser: StudentUser = {
+      ...currentUser,
+      displayName: updates.displayName?.trim() || currentUser.displayName,
+      nickname: updates.nickname !== undefined ? updates.nickname.trim() : currentUser.nickname,
+      avatar: updates.avatar || currentUser.avatar,
+    };
+    try {
+      localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(updatedUser));
+    } catch {}
+    notifyAuthChange(updatedUser);
+    return { success: true, user: updatedUser };
+  }
+
+  const localUsers = getStoredLocalUsers();
+  const userIdx = localUsers.findIndex((u) => u.id === currentUser.id);
+  const targetUser = userIdx >= 0 ? localUsers[userIdx] : null;
+
+  let newUsername = currentUser.username;
+  if (updates.username && updates.username.trim()) {
+    const cleanU = updates.username.trim().toLowerCase().replace(/\s+/g, '_');
+    if (cleanU.length < 2) {
+      return { success: false, error: 'Username minimal 2 karakter (tanpa spasi).' };
+    }
+    const conflict = localUsers.find((u) => u.username.toLowerCase() === cleanU && u.id !== currentUser.id);
+    if (conflict) {
+      return { success: false, error: `Username "${cleanU}" sudah digunakan oleh akun lain.` };
+    }
+    newUsername = cleanU;
+  }
+
+  let newPinHash = targetUser?.pinHash;
+  if (updates.pin && updates.pin.trim()) {
+    const cleanPin = updates.pin.trim();
+    if (cleanPin.length < 4) {
+      return { success: false, error: 'PIN baru minimal 4 angka.' };
+    }
+    newPinHash = await hashPin(cleanPin);
+  }
+
+  const updatedDisplayName = updates.displayName?.trim() || currentUser.displayName;
+  const updatedNickname = updates.nickname !== undefined ? updates.nickname.trim() : (currentUser.nickname || '');
+  const updatedAvatar = updates.avatar || currentUser.avatar || (currentUser.role === 'admin' ? '👑' : '🌱');
+
+  const updatedUser: StudentUser = {
+    ...currentUser,
+    username: newUsername,
+    displayName: updatedDisplayName,
+    nickname: updatedNickname,
+    avatar: updatedAvatar,
+  };
+
+  // Simpan perubahan ke local storage
+  if (targetUser) {
+    targetUser.username = newUsername;
+    targetUser.displayName = updatedDisplayName;
+    targetUser.nickname = updatedNickname;
+    targetUser.avatar = updatedAvatar;
+    if (newPinHash) targetUser.pinHash = newPinHash;
+    saveStoredLocalUsers(localUsers);
+  }
+
+  try {
+    localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(updatedUser));
+  } catch {}
+
+  // Sync update profil ke Supabase app_users jika online
+  if (supabase) {
+    try {
+      const dbUpdates: Record<string, any> = {
+        username: newUsername,
+        display_name: updatedDisplayName,
+        updated_at: new Date().toISOString(),
+      };
+      if (newPinHash) {
+        dbUpdates.pin_hash = newPinHash;
+      }
+      await supabase.from('app_users').update(dbUpdates).eq('id', currentUser.id);
+    } catch (err) {
+      console.warn('Gagal sync update profil ke Supabase (offline mode aktif):', err);
+    }
+  }
+
+  notifyAuthChange(updatedUser);
+  return { success: true, user: updatedUser };
 }
 
 // ══════════════════════════════════════════════════════════════════════════

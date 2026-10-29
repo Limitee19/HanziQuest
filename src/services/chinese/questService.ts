@@ -155,9 +155,9 @@ export function saveMnemonicNote(wordId: string, note: string): void {
     }
     localStorage.setItem(getMnemonicStorageKey(), JSON.stringify(notes));
 
-    // Sync ke Supabase student_quest_meta jika terhubung
-    if (supabase) {
-      const userId = getActiveUserId();
+    // Sync ke Supabase student_quest_meta jika terhubung dan bukan akun tamu
+    const userId = getActiveUserId();
+    if (supabase && userId !== 'usr_guest') {
       void Promise.resolve(
         supabase.from('student_quest_meta').upsert({
           user_id: userId,
@@ -167,6 +167,19 @@ export function saveMnemonicNote(wordId: string, note: string): void {
       ).catch(() => {});
     }
   } catch {}
+}
+
+function getWordFailsStorageKey(): string {
+  return `omnilife_word_fails_${getActiveUserId()}`;
+}
+
+export function getWordFailsMap(): Record<string, number> {
+  try {
+    const raw = localStorage.getItem(getWordFailsStorageKey());
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
 }
 
 export function getLeechItems(): LeechItem[] {
@@ -180,11 +193,22 @@ export function getLeechItems(): LeechItem[] {
   }
 }
 
-export function addLeechRecord(word: CourseWord, fails: number = 3): void {
+export function addLeechRecord(word: CourseWord, fails: number = 1): void {
   try {
+    const userId = getActiveUserId();
+    const isGuest = userId === 'usr_guest';
     const items = getLeechItems();
     const existingIdx = items.findIndex((i) => i.wordId === word.id || i.hanzi === word.hanzi);
     const notes = getMnemonicNotes();
+
+    // Hitung kesalahan secara real per kata (bukan di-hardcode 3)
+    const failsMap = getWordFailsMap();
+    const prevFails = failsMap[word.id] !== undefined
+      ? failsMap[word.id]
+      : (existingIdx >= 0 ? items[existingIdx].fails : 0);
+    const currentFails = prevFails + Math.max(1, fails);
+    failsMap[word.id] = currentFails;
+    localStorage.setItem(getWordFailsStorageKey(), JSON.stringify(failsMap));
 
     const entry: LeechItem = {
       id: `leech_${word.id}`,
@@ -193,7 +217,7 @@ export function addLeechRecord(word: CourseWord, fails: number = 3): void {
       pinyin: word.pinyin,
       meaning: meaningOf(word),
       level: parseInt(word.level, 10) || 1,
-      fails: existingIdx >= 0 ? items[existingIdx].fails + 1 : fails,
+      fails: currentFails,
       note: notes[word.id] || '',
       updatedAt: Date.now(),
     };
@@ -206,9 +230,8 @@ export function addLeechRecord(word: CourseWord, fails: number = 3): void {
 
     localStorage.setItem(getLeechStorageKey(), JSON.stringify(items));
 
-    // Sync ke Supabase student_quest_meta
-    if (supabase) {
-      const userId = getActiveUserId();
+    // Sync ke Supabase student_quest_meta jika bukan tamu
+    if (supabase && !isGuest) {
       void Promise.resolve(
         supabase.from('student_quest_meta').upsert({
           user_id: userId,
@@ -222,11 +245,17 @@ export function addLeechRecord(word: CourseWord, fails: number = 3): void {
 
 export function removeLeechRecord(wordId: string): void {
   try {
+    const userId = getActiveUserId();
+    const isGuest = userId === 'usr_guest';
     const items = getLeechItems().filter((i) => i.wordId !== wordId && i.id !== wordId);
     localStorage.setItem(getLeechStorageKey(), JSON.stringify(items));
 
-    if (supabase) {
-      const userId = getActiveUserId();
+    // Reset fail count untuk kata yang sudah jinak
+    const failsMap = getWordFailsMap();
+    delete failsMap[wordId];
+    localStorage.setItem(getWordFailsStorageKey(), JSON.stringify(failsMap));
+
+    if (supabase && !isGuest) {
       void Promise.resolve(
         supabase.from('student_quest_meta').upsert({
           user_id: userId,
@@ -364,7 +393,7 @@ export async function recordQuestWordReview(
 
   if (rating === 'again') {
     nextDays = 0;
-    addLeechRecord(word);
+    addLeechRecord(word, 1);
   } else if (rating === 'hard') {
     nextDays = 1;
   } else if (rating === 'good') {
@@ -395,8 +424,8 @@ export async function recordQuestWordReview(
     localStorage.setItem(scopedKey, JSON.stringify(localMap));
   } catch {}
 
-  // 2. Simpan ke Supabase student_quest_progress jika terhubung
-  if (supabase) {
+  // 2. Simpan ke Supabase student_quest_progress jika terhubung dan bukan akun tamu
+  if (supabase && userId !== 'usr_guest') {
     try {
       void Promise.resolve(
         supabase.from('student_quest_progress').upsert({
