@@ -141,9 +141,11 @@ export async function ensureDefaultAdminExists(): Promise<void> {
   }
 }
 
-// Inisialisasi otomatis akun default saat browser pertama kali memuat modul
+// Inisialisasi otomatis akun default & sinkronisasi profil dari cloud saat browser pertama kali memuat modul
 if (typeof window !== 'undefined') {
-  ensureDefaultAdminExists().catch(() => {});
+  ensureDefaultAdminExists().then(() => {
+    syncActiveUserProfileFromCloud().catch(() => {});
+  }).catch(() => {});
 }
 
 /**
@@ -232,10 +234,32 @@ export async function loginUser(
           return { success: false, error: 'Akun Anda dinonaktifkan oleh guru.' };
         }
         if (data.pin_hash === inputHash) {
+          let cloudNickname = (data as any).nickname || '';
+          let cloudAvatar = (data as any).avatar || (data.role === 'admin' ? 'avatar_master' : 'avatar_panda');
+          let cloudDisplayName = data.display_name;
+
+          // Cek metadata profil dari student_quest_meta
+          try {
+            const { data: meta } = await supabase
+              .from('student_quest_meta')
+              .select('mnemonic_notes')
+              .eq('user_id', data.id)
+              .maybeSingle();
+
+            if (meta?.mnemonic_notes?.__profile_meta) {
+              const pm = meta.mnemonic_notes.__profile_meta;
+              if (pm.nickname) cloudNickname = pm.nickname;
+              if (pm.avatar) cloudAvatar = pm.avatar;
+              if (pm.displayName) cloudDisplayName = pm.displayName;
+            }
+          } catch {}
+
           const loggedUser: StudentUser = {
             id: data.id,
             username: data.username,
-            displayName: data.display_name,
+            displayName: cloudDisplayName,
+            nickname: cloudNickname,
+            avatar: cloudAvatar,
             role: data.role as 'admin' | 'student',
             isActive: data.is_active,
             createdAt: new Date(data.created_at).getTime(),
@@ -416,18 +440,53 @@ export async function updateUserProfile(updates: {
     localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(updatedUser));
   } catch {}
 
-  // Sync update profil ke Supabase app_users jika online
+  // Sync update profil ke Supabase app_users dan student_quest_meta jika online
   if (supabase) {
     try {
+      // 1. Coba update app_users dengan semua kolom
       const dbUpdates: Record<string, any> = {
         username: newUsername,
         display_name: updatedDisplayName,
+        nickname: updatedNickname,
+        avatar: updatedAvatar,
         updated_at: new Date().toISOString(),
       };
       if (newPinHash) {
         dbUpdates.pin_hash = newPinHash;
       }
-      await supabase.from('app_users').update(dbUpdates).eq('id', currentUser.id);
+
+      const { error: primaryErr } = await supabase.from('app_users').update(dbUpdates).eq('id', currentUser.id);
+      if (primaryErr) {
+        // Fallback jika kolom nickname/avatar belum ada di app_users
+        const safeUpdates: Record<string, any> = {
+          username: newUsername,
+          display_name: updatedDisplayName,
+          updated_at: new Date().toISOString(),
+        };
+        if (newPinHash) safeUpdates.pin_hash = newPinHash;
+        await supabase.from('app_users').update(safeUpdates).eq('id', currentUser.id);
+      }
+
+      // 2. Simpan juga ke student_quest_meta agar selalu 100% tersinkronkan antar device (HP & PC)
+      const { data: existingMeta } = await supabase
+        .from('student_quest_meta')
+        .select('mnemonic_notes')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      const curNotes = (existingMeta?.mnemonic_notes as Record<string, any>) || {};
+      curNotes.__profile_meta = {
+        nickname: updatedNickname,
+        displayName: updatedDisplayName,
+        avatar: updatedAvatar,
+        updatedAt: Date.now(),
+      };
+
+      await supabase.from('student_quest_meta').upsert({
+        user_id: currentUser.id,
+        mnemonic_notes: curNotes,
+        updated_at: Date.now(),
+      });
     } catch (err) {
       console.warn('Gagal sync update profil ke Supabase (offline mode aktif):', err);
     }
@@ -435,6 +494,66 @@ export async function updateUserProfile(updates: {
 
   notifyAuthChange(updatedUser);
   return { success: true, user: updatedUser };
+}
+
+/**
+ * Sinkronkan profil user aktif dari Supabase Cloud (Dipanggil otomatis saat app dimuat di PC maupun HP)
+ */
+export async function syncActiveUserProfileFromCloud(): Promise<StudentUser | null> {
+  const currentUser = getActiveUser();
+  if (!currentUser || currentUser.role === 'guest' || !supabase) {
+    return currentUser;
+  }
+
+  try {
+    // 1. Ambil data terbaru dari app_users
+    const { data, error } = await supabase
+      .from('app_users')
+      .select('*')
+      .eq('id', currentUser.id)
+      .maybeSingle();
+
+    if (error || !data) {
+      return currentUser;
+    }
+
+    let updatedDisplayName = data.display_name || currentUser.displayName;
+    let updatedNickname = (data as any).nickname || currentUser.nickname || '';
+    let updatedAvatar = (data as any).avatar || currentUser.avatar || (data.role === 'admin' ? 'avatar_master' : 'avatar_panda');
+
+    // 2. Cek juga di student_quest_meta untuk sinkronisasi cadangan
+    try {
+      const { data: meta } = await supabase
+        .from('student_quest_meta')
+        .select('mnemonic_notes')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+
+      if (meta?.mnemonic_notes?.__profile_meta) {
+        const pm = meta.mnemonic_notes.__profile_meta;
+        if (pm.nickname) updatedNickname = pm.nickname;
+        if (pm.displayName) updatedDisplayName = pm.displayName;
+        if (pm.avatar) updatedAvatar = pm.avatar;
+      }
+    } catch {}
+
+    const freshUser: StudentUser = {
+      ...currentUser,
+      username: data.username || currentUser.username,
+      displayName: updatedDisplayName,
+      nickname: updatedNickname,
+      avatar: updatedAvatar,
+      role: data.role as 'admin' | 'student',
+      isActive: data.is_active,
+    };
+
+    localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(freshUser));
+    notifyAuthChange(freshUser);
+    return freshUser;
+  } catch (err) {
+    console.warn('Gagal sinkronkan profil dari cloud:', err);
+    return currentUser;
+  }
 }
 
 // ══════════════════════════════════════════════════════════════════════════

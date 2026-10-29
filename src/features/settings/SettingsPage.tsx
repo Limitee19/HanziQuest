@@ -26,8 +26,7 @@ import { getTtsCacheInfo, clearTtsCache, TtsCacheInfo } from '@/services/chinese
 import { getActiveUser, updateUserProfile, logoutUser, StudentUser } from '@/services/auth/classAuthService';
 import { clickTick, playSuccessChime, playErrorBuzz } from '@/lib/fx';
 import { NotificationSettingsModal } from './NotificationSettingsModal';
-
-const AVATAR_OPTIONS = ['🌱', '👑', '🎒', '🐼', '🐉', '🎋', '🏮', '🌸', '⚡', '🍵', '🏹', '🦊'];
+import { CustomAvatar, AVATAR_COLLECTION } from '@/components/common/CustomAvatar';
 
 export function SettingsPage() {
   const { theme, setTheme } = useTheme();
@@ -40,7 +39,7 @@ export function SettingsPage() {
   const [displayNameInput, setDisplayNameInput] = useState(() => currentUser?.displayName || '');
   const [usernameInput, setUsernameInput] = useState(() => currentUser?.username || '');
   const [pinInput, setPinInput] = useState('');
-  const [avatarChoice, setAvatarChoice] = useState(() => currentUser?.avatar || (currentUser?.role === 'admin' ? '👑' : '🌱'));
+  const [avatarChoice, setAvatarChoice] = useState(() => currentUser?.avatar || (currentUser?.role === 'admin' ? 'avatar_master' : 'avatar_panda'));
   const [profileSaving, setProfileSaving] = useState(false);
   const [profileFeedback, setProfileFeedback] = useState<{ type: 'success' | 'error'; msg: string } | null>(null);
 
@@ -149,7 +148,8 @@ export function SettingsPage() {
 
               {currentUser && (
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border self-start sm:self-center shrink-0 bg-white dark:bg-[#0B111E] border-zinc-200 dark:border-zinc-700">
-                  <span>{currentUser.role === 'admin' ? '👑 Guru / Admin' : currentUser.role === 'guest' ? '🎒 Akun Tamu' : '🌱 Siswa Kelas'}</span>
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block mr-1"></span>
+                  <span>{currentUser.role === 'admin' ? 'Guru / Master Admin' : currentUser.role === 'guest' ? 'Akun Tamu (Offline)' : 'Siswa Kelas'}</span>
                 </div>
               )}
             </div>
@@ -175,30 +175,47 @@ export function SettingsPage() {
             )}
 
             <form onSubmit={handleSaveProfile} className="space-y-4">
-              {/* Avatar Selector Row */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center gap-1.5">
-                  <Smile className="w-3.5 h-3.5 text-amber-500" />
-                  <span>Pilih Avatar / Emoji Pribadi</span>
+              {/* Avatar Selector Gallery */}
+              <div className="space-y-2">
+                <label className="text-xs font-bold text-zinc-700 dark:text-zinc-300 flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Smile className="w-3.5 h-3.5 text-amber-500" />
+                    <span>Pilih Karakter Avatar Petualang</span>
+                  </span>
+                  <span className="text-[11px] text-zinc-400 font-normal">
+                    Ilustrasi oriental eksklusif (bukan emoji bawaan)
+                  </span>
                 </label>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {AVATAR_OPTIONS.map((em) => (
-                    <button
-                      key={em}
-                      type="button"
-                      onClick={() => {
-                        clickTick(true);
-                        setAvatarChoice(em);
-                      }}
-                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center text-lg sm:text-xl transition-all cursor-pointer ${
-                        avatarChoice === em
-                          ? 'bg-rose-100 dark:bg-rose-950/80 border-2 border-[#C0392B] scale-110 shadow-sm'
-                          : 'bg-white dark:bg-[#0B111E] border border-zinc-200 dark:border-zinc-700 hover:border-zinc-400'
-                      }`}
-                    >
-                      {em}
-                    </button>
-                  ))}
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  {AVATAR_COLLECTION.map((av) => {
+                    const isSelected = avatarChoice === av.id;
+                    return (
+                      <button
+                        key={av.id}
+                        type="button"
+                        onClick={() => {
+                          clickTick(true);
+                          setAvatarChoice(av.id);
+                        }}
+                        className={`p-2.5 rounded-2xl border-2 transition-all cursor-pointer text-left flex items-center gap-2.5 relative group ${
+                          isSelected
+                            ? 'bg-rose-50/80 dark:bg-rose-950/60 border-[#C0392B] ring-2 ring-rose-300 dark:ring-rose-800 shadow-md'
+                            : 'bg-white dark:bg-[#0B111E] border-zinc-200 dark:border-zinc-800 hover:border-zinc-400 dark:hover:border-zinc-700'
+                        }`}
+                      >
+                        <CustomAvatar id={av.id} size="sm" className="shrink-0" />
+                        <div className="min-w-0 flex-1">
+                          <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 block truncate">
+                            {av.name}
+                          </span>
+                          <span className="text-[10px] text-zinc-400 dark:text-zinc-500 block truncate">
+                            {av.title}
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

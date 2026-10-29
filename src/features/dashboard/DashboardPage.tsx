@@ -27,6 +27,7 @@ import { course } from '@/data/course';
 import { NavTab } from '@/types';
 import { cn } from '@/lib/utils';
 import { getActiveUser, onAuthStateChange, StudentUser } from '@/services/auth/classAuthService';
+import { CustomAvatar } from '@/components/common/CustomAvatar';
 
 interface DashboardPageProps {
   onNavigate: (tab: NavTab) => void;
@@ -117,7 +118,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
 
   const totalCourseWords = course.words.length;
 
-  // Sapaan Ramah Pengguna berdasarkan waktu lokal
+  // Sapaan Ramah Pengguna berdasarkan waktu lokal (Klasik Oriental tanpa emoji)
   const getGreetingData = () => {
     const hour = new Date().getHours();
     if (hour >= 4 && hour < 11) {
@@ -125,7 +126,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         mandarin: '早上好',
         pinyin: 'Zǎoshang hǎo',
         indo: 'Selamat Pagi',
-        icon: '🌅',
+        seal: '晨曦 · Pagi',
         motto: '千里之行，始于足下 — Perjalanan ribuan li selalu berawal dari satu langkah kecil hari ini.',
       };
     } else if (hour >= 11 && hour < 15) {
@@ -133,7 +134,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         mandarin: '中午好',
         pinyin: 'Zhōngwǔ hǎo',
         indo: 'Selamat Siang',
-        icon: '☀️',
+        seal: '日中 · Siang',
         motto: '学而时习之，不亦说乎 — Belajar dan terus melatihnya berulang kali, bukankah sangat menyenangkan?',
       };
     } else if (hour >= 15 && hour < 18) {
@@ -141,7 +142,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         mandarin: '下午好',
         pinyin: 'Xiàwǔ hǎo',
         indo: 'Selamat Sore',
-        icon: '🌇',
+        seal: '暮色 · Sore',
         motto: '熟能生巧 — Kunci utama kemahiran bahasa Mandarin adalah kebiasaan mengulang setiap hari.',
       };
     } else {
@@ -149,7 +150,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         mandarin: '晚上好',
         pinyin: 'Wǎnshang hǎo',
         indo: 'Selamat Malam',
-        icon: '🌙',
+        seal: '星夜 · Malam',
         motto: '温故而知新 — Meninjau materi lama akan menghadirkan pemahaman baru yang mendalam.',
       };
     }
@@ -162,17 +163,21 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
     <div className="space-y-6 sm:space-y-8 max-w-7xl mx-auto pb-20 animate-in fade-in duration-300">
       {/* ── 0. WELCOME GREETING BANNER DENGAN SAPAAN MANDARIN ── */}
       <div 
-        className="bg-linear-to-r from-amber-50 via-rose-50/70 to-orange-50/50 dark:from-[#151E32] dark:via-[#19243C] dark:to-[#121929] border border-amber-200/80 dark:border-[#24324E] rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-sm relative overflow-hidden"
+        className="bg-linear-to-r from-amber-50 via-rose-50/70 to-orange-50/50 dark:from-[#151E32] dark:via-[#19243C] dark:to-[#121929] border border-amber-200/80 dark:border-[#24324E] rounded-3xl p-5 sm:p-6 flex items-center justify-between gap-4 shadow-sm relative overflow-hidden"
       >
         <div className="flex items-center gap-3.5 sm:gap-4 relative z-10 min-w-0 flex-1">
-          <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-white dark:bg-[#1E293B] border-2 border-amber-300 dark:border-amber-700/60 flex items-center justify-center text-3xl sm:text-4xl shadow-sm shrink-0">
-            {currentUser?.avatar || greeting.icon}
-          </div>
+          <CustomAvatar
+            id={currentUser?.avatar || (currentUser?.role === 'admin' ? 'avatar_master' : 'avatar_panda')}
+            size="lg"
+            className="ring-2 ring-amber-400/40 shadow-md shrink-0"
+          />
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2 flex-wrap">
+              <span className="px-2.5 py-0.5 rounded-lg bg-amber-500/10 dark:bg-amber-400/10 text-amber-900 dark:text-amber-300 font-serif text-xs font-bold border border-amber-500/25 tracking-wide">
+                {greeting.seal}
+              </span>
               <span className="text-xs sm:text-sm font-bold text-amber-900 dark:text-amber-300 flex items-center gap-1.5">
-                <span>{greeting.icon}</span>
-                <span>{greeting.mandarin}</span>
+                <span className="font-serif text-sm sm:text-base font-extrabold">{greeting.mandarin}</span>
                 <span className="font-mono text-xs opacity-75">({greeting.pinyin})</span>
               </span>
               <button
@@ -194,25 +199,10 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               {greeting.indo}, {callingName}!
             </h2>
 
-            <p className="text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400 mt-1 italic max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-[13px] text-zinc-600 dark:text-zinc-400 mt-1 italic max-w-3xl leading-relaxed">
               "{greeting.motto}"
             </p>
           </div>
-        </div>
-
-        <div className="flex items-center gap-2 self-stretch sm:self-auto sm:justify-end relative z-10 shrink-0">
-          <button
-            type="button"
-            onClick={() => {
-              clickTick(sound);
-              onNavigate('settings');
-            }}
-            className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-white/80 dark:bg-[#1E293B]/80 hover:bg-white dark:hover:bg-[#253252] border border-zinc-200 dark:border-zinc-700 text-zinc-700 dark:text-zinc-200 text-xs font-bold transition-all cursor-pointer shadow-2xs flex items-center justify-center gap-1.5"
-            title="Buka Pengaturan untuk Mengubah Nama Panggilan"
-          >
-            <span>Ubah Panggilan</span>
-            <span>✎</span>
-          </button>
         </div>
       </div>
 

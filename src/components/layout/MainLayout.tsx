@@ -3,7 +3,7 @@ import { NavTab } from '@/types';
 import { GlobalSearchModal } from '@/components/search/GlobalSearchModal';
 import { clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
-import { isAuthenticated, logoutUser } from '@/services/auth/classAuthService';
+import { isAuthenticated, logoutUser, syncActiveUserProfileFromCloud } from '@/services/auth/classAuthService';
 
 interface MainLayoutProps {
   activeTab: NavTab;
@@ -17,6 +17,12 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
   const { sound, arcade, toggleSound, toggleArcade } = usePrefs();
 
   useEffect(() => {
+    syncActiveUserProfileFromCloud().catch(() => {});
+    const onWindowFocus = () => {
+      syncActiveUserProfileFromCloud().catch(() => {});
+    };
+    window.addEventListener('focus', onWindowFocus);
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
@@ -34,6 +40,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
     window.addEventListener('open_garden_modal', handleOpenGarden);
 
     return () => {
+      window.removeEventListener('focus', onWindowFocus);
       window.removeEventListener('keydown', handleKeyDown);
       window.removeEventListener('open_drill_modal', handleOpenDrill);
       window.removeEventListener('open_leech_modal', handleOpenLeech);

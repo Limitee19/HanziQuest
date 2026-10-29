@@ -6,6 +6,7 @@ import { getCurrentLanguage, setLanguage, subscribeLanguageChange, Language } fr
 import { clickTick } from '@/lib/fx';
 import { getActiveUser, logoutUser, onAuthStateChange, StudentUser } from '@/services/auth/classAuthService';
 import { ClassManagementModal } from '@/components/auth/ClassManagementModal';
+import { CustomAvatar } from '@/components/common/CustomAvatar';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -201,7 +202,11 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
               className="flex items-center gap-1.5 px-2 sm:px-2.5 h-8 rounded-lg bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-xs font-semibold text-zinc-800 dark:text-zinc-200"
               title={`Login sebagai @${currentUser.username} (${currentUser.role === 'admin' ? 'Guru' : 'Siswa'}: ${currentUser.displayName})`}
             >
-              <span className="text-sm shrink-0">{currentUser.role === 'admin' ? '👑' : currentUser.role === 'guest' ? '🎒' : currentUser.avatar || '🌱'}</span>
+              <CustomAvatar
+                id={currentUser.avatar || (currentUser.role === 'admin' ? 'avatar_master' : 'avatar_panda')}
+                size="xs"
+                className="w-5 h-5 shrink-0 rounded-md"
+              />
               <span className="hidden sm:inline max-w-[90px] md:max-w-[120px] truncate">{currentUser.nickname || currentUser.displayName}</span>
             </div>
 
