@@ -30,6 +30,27 @@ export interface StudentProgressSummary {
 }
 
 const STORAGE_ACTIVE_USER_KEY = 'omnilife_active_student_user';
+const STORAGE_ADMIN_AUTH_HASH_KEY = 'omnilife_admin_auth_hash';
+
+function getAdminAuthHash(): string {
+  try {
+    return sessionStorage.getItem(STORAGE_ADMIN_AUTH_HASH_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+function setAdminAuthHash(hash: string): void {
+  try {
+    sessionStorage.setItem(STORAGE_ADMIN_AUTH_HASH_KEY, hash);
+  } catch {}
+}
+
+function clearAdminAuthHash(): void {
+  try {
+    sessionStorage.removeItem(STORAGE_ADMIN_AUTH_HASH_KEY);
+  } catch {}
+}
 const STORAGE_LOCAL_USERS_KEY = 'omnilife_class_local_users';
 const AUTH_STATE_CHANGE_EVENT = 'omnilife_class_auth_state_change';
 
@@ -267,6 +288,7 @@ export async function loginUser(
           createdAt: rpcRes.user.createdAt || Date.now(),
         };
         localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(loggedUser));
+        if (loggedUser.role === 'admin') setAdminAuthHash(inputHash);
         notifyAuthChange(loggedUser);
         import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
         return { success: true, user: loggedUser };
@@ -323,6 +345,7 @@ export async function loginUser(
             createdAt: new Date(data.created_at).getTime(),
           };
           localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(loggedUser));
+          if (loggedUser.role === 'admin') setAdminAuthHash(inputHash);
           notifyAuthChange(loggedUser);
           import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
           return { success: true, user: loggedUser };
@@ -356,6 +379,7 @@ export async function loginUser(
         createdAt: Date.now(),
       };
       localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(adminUser));
+      setAdminAuthHash(inputHash);
       notifyAuthChange(adminUser);
       import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
       return { success: true, user: adminUser };
@@ -389,6 +413,7 @@ export async function loginUser(
   };
 
   localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(sessionUser));
+  if (sessionUser.role === 'admin') setAdminAuthHash(inputHash);
   notifyAuthChange(sessionUser);
   import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
   return { success: true, user: sessionUser };
@@ -400,6 +425,7 @@ export async function loginUser(
 export function logoutUser(): void {
   try {
     localStorage.removeItem(STORAGE_ACTIVE_USER_KEY);
+    clearAdminAuthHash();
   } catch {}
   notifyAuthChange(null);
 }
@@ -727,21 +753,41 @@ export async function createStudentAccount(
   localUsers.push(newStudent);
   saveStoredLocalUsers(localUsers);
 
-  // Simpan ke Supabase jika terhubung
+  // Simpan ke Supabase jika terhubung (Gunakan RPC aman atau fallback direct insert)
   if (supabase) {
     try {
-      const { error } = await supabase.from('app_users').insert({
-        id: newStudent.id,
-        username: newStudent.username,
-        display_name: newStudent.displayName,
-        role: newStudent.role,
-        pin_hash: newStudent.pinHash,
-        is_active: true,
-        created_at: new Date(now).toISOString(),
-        updated_at: new Date(now).toISOString(),
-      });
-      if (error) {
-        console.warn('Gagal sync akun siswa ke Supabase:', error.message);
+      const adminUser = getActiveUser();
+      const adminAuthHash = getAdminAuthHash();
+      let rpcUsed = false;
+
+      if (adminUser && adminAuthHash) {
+        const { data: rpcRes, error: rpcErr } = await supabase.rpc('admin_create_student', {
+          p_admin_username: adminUser.username,
+          p_admin_pin_hash: adminAuthHash,
+          p_student_id: newStudent.id,
+          p_student_name: newStudent.displayName,
+          p_student_username: newStudent.username,
+          p_student_pin_hash: newStudent.pinHash,
+        });
+        if (!rpcErr && rpcRes && rpcRes.success) {
+          rpcUsed = true;
+        }
+      }
+
+      if (!rpcUsed) {
+        const { error } = await supabase.from('app_users').insert({
+          id: newStudent.id,
+          username: newStudent.username,
+          display_name: newStudent.displayName,
+          role: newStudent.role,
+          pin_hash: newStudent.pinHash,
+          is_active: true,
+          created_at: new Date(now).toISOString(),
+          updated_at: new Date(now).toISOString(),
+        });
+        if (error) {
+          console.warn('Gagal sync akun siswa ke Supabase:', error.message);
+        }
       }
     } catch (err) {
       console.warn('Supabase insert error (fallback lokal tetap aktif):', err);
@@ -786,16 +832,34 @@ export async function resetStudentPin(
     saveStoredLocalUsers(localUsers);
   }
 
-  // Update Supabase
+  // Update Supabase (Gunakan RPC aman atau fallback direct update)
   if (supabase) {
     try {
-      await supabase
-        .from('app_users')
-        .update({
-          pin_hash: newPinHash,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', userId);
+      const adminUser = getActiveUser();
+      const adminAuthHash = getAdminAuthHash();
+      let rpcUsed = false;
+
+      if (adminUser && adminAuthHash) {
+        const { data: rpcRes, error: rpcErr } = await supabase.rpc('admin_reset_student_pin', {
+          p_admin_username: adminUser.username,
+          p_admin_pin_hash: adminAuthHash,
+          p_student_id: userId,
+          p_new_pin_hash: newPinHash,
+        });
+        if (!rpcErr && rpcRes && rpcRes.success) {
+          rpcUsed = true;
+        }
+      }
+
+      if (!rpcUsed) {
+        await supabase
+          .from('app_users')
+          .update({
+            pin_hash: newPinHash,
+            updated_at: new Date().toISOString(),
+          })
+          .eq('id', userId);
+      }
     } catch (err) {
       console.warn('Gagal update PIN di Supabase:', err);
     }
@@ -823,12 +887,29 @@ export async function deleteStudentAccount(userId: string): Promise<{ success: b
     localStorage.removeItem(`omnilife_mnemonic_notes_${userId}`);
   } catch {}
 
-  // Hapus di Supabase
+  // Hapus di Supabase (Gunakan RPC aman atau fallback direct delete)
   if (supabase) {
     try {
-      await supabase.from('app_users').delete().eq('id', userId);
-      await supabase.from('student_quest_progress').delete().eq('user_id', userId);
-      await supabase.from('student_quest_meta').delete().eq('user_id', userId);
+      const adminUser = getActiveUser();
+      const adminAuthHash = getAdminAuthHash();
+      let rpcUsed = false;
+
+      if (adminUser && adminAuthHash) {
+        const { data: rpcRes, error: rpcErr } = await supabase.rpc('admin_delete_student', {
+          p_admin_username: adminUser.username,
+          p_admin_pin_hash: adminAuthHash,
+          p_student_id: userId,
+        });
+        if (!rpcErr && rpcRes && rpcRes.success) {
+          rpcUsed = true;
+        }
+      }
+
+      if (!rpcUsed) {
+        await supabase.from('app_users').delete().eq('id', userId);
+        await supabase.from('student_quest_progress').delete().eq('user_id', userId);
+        await supabase.from('student_quest_meta').delete().eq('user_id', userId);
+      }
     } catch (err) {
       console.warn('Gagal hapus di Supabase:', err);
     }
