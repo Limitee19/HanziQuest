@@ -55,8 +55,10 @@ export function setStoredUserNickname(userId: string, nickname: string): void {
   } catch {}
 }
 
-// Master PIN cadangan dari environment (jika ada)
-const ENV_MASTER_PIN = (((import.meta as any).env?.VITE_APP_MASTER_PIN as string) || '170603').trim();
+// Master Admin Hash cadangan (SHA-256 dari salt + pin awal '170603')
+// Nilai mentah PIN tidak pernah disimpan/diekspos di bundle frontend.
+const DEFAULT_MASTER_ADMIN_HASH = 'a34f2e35e058c457140ac9820e401d9a1d9859d67aeb86e6097e9b68fa960a7e';
+const ENV_MASTER_PIN = (((import.meta as any).env?.VITE_APP_MASTER_PIN as string) || '').trim();
 
 /**
  * SHA-256 Hash helper dengan salt rahasia aplikasi
@@ -99,7 +101,7 @@ function saveStoredLocalUsers(users: Array<StudentUser & { pinHash: string }>): 
  */
 export async function ensureDefaultAdminExists(): Promise<void> {
   const users = getStoredLocalUsers();
-  const defaultAdminHash = await hashPin(ENV_MASTER_PIN);
+  const defaultAdminHash = ENV_MASTER_PIN ? await hashPin(ENV_MASTER_PIN) : DEFAULT_MASTER_ADMIN_HASH;
 
   // 1. Akun Admin Utama: 260242649788
   if (!users.some((u) => u.username === '260242649788')) {
@@ -242,12 +244,40 @@ export async function loginUser(
   await ensureDefaultAdminExists();
   const inputHash = await hashPin(cleanPin);
 
-  // 1. Coba verifikasi via Supabase jika online & terkonfigurasi
+  // 1. Coba verifikasi via Supabase RPC (Server-Side Verification tanpa ekspos pin_hash ke browser)
   if (supabase) {
+    try {
+      const { data: rpcRes, error: rpcErr } = await supabase.rpc('verify_class_login', {
+        p_username: cleanUsername,
+        p_pin_hash: inputHash,
+      });
+
+      if (!rpcErr && rpcRes && typeof rpcRes === 'object') {
+        if (!rpcRes.success) {
+          return { success: false, error: rpcRes.error || 'PIN yang Anda masukkan salah.' };
+        }
+        const loggedUser: StudentUser = {
+          id: rpcRes.user.id,
+          username: rpcRes.user.username,
+          displayName: rpcRes.user.displayName,
+          nickname: rpcRes.user.nickname || getStoredUserNickname(rpcRes.user.id),
+          avatar: rpcRes.user.avatar || (rpcRes.user.role === 'admin' ? 'avatar_master' : 'avatar_panda'),
+          role: rpcRes.user.role as 'admin' | 'student',
+          isActive: rpcRes.user.isActive ?? true,
+          createdAt: rpcRes.user.createdAt || Date.now(),
+        };
+        localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(loggedUser));
+        notifyAuthChange(loggedUser);
+        import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
+        return { success: true, user: loggedUser };
+      }
+    } catch {}
+
+    // Fallback direct table query jika RPC belum diinstall di Supabase
     try {
       const { data, error } = await supabase
         .from('app_users')
-        .select('*')
+        .select('id, username, display_name, role, is_active, created_at, nickname, avatar, pin_hash')
         .eq('username', cleanUsername)
         .maybeSingle();
 
@@ -310,8 +340,9 @@ export async function loginUser(
   const found = localUsers.find((u) => u.username.toLowerCase() === cleanUsername);
 
   if (!found) {
-    // Khusus Admin darurat jika PIN sesuai ENV_MASTER_PIN (170603)
-    if ((cleanUsername === '260242649788' || cleanUsername === 'admin') && (cleanPin === '170603' || cleanPin === ENV_MASTER_PIN)) {
+    // Khusus Admin darurat jika hash PIN cocok secara kriptografis
+    const isMasterAdminMatch = inputHash === DEFAULT_MASTER_ADMIN_HASH || (ENV_MASTER_PIN ? inputHash === await hashPin(ENV_MASTER_PIN) : false);
+    if ((cleanUsername === '260242649788' || cleanUsername === 'admin') && isMasterAdminMatch) {
       const adminId = cleanUsername === '260242649788' ? 'usr_admin_260242649788' : 'usr_admin_master';
       const adminNickname = getStoredUserNickname(adminId);
       const adminUser: StudentUser = {
@@ -545,10 +576,10 @@ export async function syncActiveUserProfileFromCloud(): Promise<StudentUser | nu
   }
 
   try {
-    // 1. Ambil data terbaru dari app_users
+    // 1. Ambil data terbaru dari app_users (hanya kolom publik profil tanpa pin_hash)
     const { data, error } = await supabase
       .from('app_users')
-      .select('*')
+      .select('id, username, display_name, role, is_active, created_at, updated_at, nickname, avatar')
       .eq('id', currentUser.id)
       .maybeSingle();
 
@@ -615,7 +646,7 @@ export async function listAllStudents(): Promise<StudentUser[]> {
     try {
       const { data, error } = await supabase
         .from('app_users')
-        .select('*')
+        .select('id, username, display_name, role, is_active, created_at, nickname, avatar')
         .order('created_at', { ascending: false });
 
       if (!error && data && data.length > 0) {
