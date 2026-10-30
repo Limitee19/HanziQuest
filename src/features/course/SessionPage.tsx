@@ -6,7 +6,7 @@ import type { CourseWord } from '@/data/course.types';
 import { meaningOf } from '@/data/course.types';
 import { speakHanzi, playSuccessChime, playErrorBuzz, clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
-import { recordQuestWordReview, saveMnemonicNote, getMnemonicNotes } from '@/services/chinese/questService';
+import { recordQuestWordReview, saveMnemonicNote, getMnemonicNotes, syncStudentQuestProgress } from '@/services/chinese/questService';
 import { formatPartOfSpeech } from '@/services/chinese/dictionaryService';
 import { getWordExampleSentence } from '@/services/chinese/exampleSentenceService';
 
@@ -117,6 +117,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
         confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
       }
       setIsSessionComplete(true);
+      syncStudentQuestProgress(true).catch(() => {});
     } else {
       setCurrentIndex((prev) => prev + 1);
       setIsRevealed(false);
@@ -159,6 +160,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
         confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
       }
       setIsSessionComplete(true);
+      syncStudentQuestProgress(true).catch(() => {});
     } else {
       setCurrentIndex((prev) => prev + 1);
       setSelectedQuizIdx(null);

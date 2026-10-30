@@ -294,6 +294,7 @@ export async function loginUser(
           };
           localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(loggedUser));
           notifyAuthChange(loggedUser);
+          import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
           return { success: true, user: loggedUser };
         } else {
           return { success: false, error: 'PIN yang Anda masukkan salah.' };
@@ -325,6 +326,7 @@ export async function loginUser(
       };
       localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(adminUser));
       notifyAuthChange(adminUser);
+      import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
       return { success: true, user: adminUser };
     }
     return {
@@ -357,6 +359,7 @@ export async function loginUser(
 
   localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(sessionUser));
   notifyAuthChange(sessionUser);
+  import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
   return { success: true, user: sessionUser };
 }
 

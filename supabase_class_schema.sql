@@ -64,8 +64,14 @@ CREATE TABLE IF NOT EXISTS student_quest_meta (
   user_id TEXT PRIMARY KEY REFERENCES app_users(id) ON DELETE CASCADE,
   leech_words JSONB DEFAULT '[]'::jsonb,
   mnemonic_notes JSONB DEFAULT '{}'::jsonb,
+  quest_progress JSONB DEFAULT '{}'::jsonb,
   updated_at BIGINT NOT NULL
 );
+
+-- Migrasi aman jika tabel sudah pernah dibuat sebelumnya
+ALTER TABLE app_users ADD COLUMN IF NOT EXISTS nickname TEXT;
+ALTER TABLE app_users ADD COLUMN IF NOT EXISTS avatar TEXT;
+ALTER TABLE student_quest_meta ADD COLUMN IF NOT EXISTS quest_progress JSONB DEFAULT '{}'::jsonb;
 
 -- 5. Nonaktifkan RLS agar dapat dibaca & ditulis oleh public web anon key (Protected by PIN & client app)
 ALTER TABLE app_users DISABLE ROW LEVEL SECURITY;

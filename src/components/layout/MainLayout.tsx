@@ -4,6 +4,7 @@ import { GlobalSearchModal } from '@/components/search/GlobalSearchModal';
 import { clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
 import { syncActiveUserProfileFromCloud } from '@/services/auth/classAuthService';
+import { syncStudentQuestProgress } from '@/services/chinese/questService';
 
 interface MainLayoutProps {
   activeTab: NavTab;
@@ -18,8 +19,10 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
 
   useEffect(() => {
     syncActiveUserProfileFromCloud().catch(() => {});
+    syncStudentQuestProgress().catch(() => {});
     const onWindowFocus = () => {
       syncActiveUserProfileFromCloud().catch(() => {});
+      syncStudentQuestProgress().catch(() => {});
     };
     window.addEventListener('focus', onWindowFocus);
 

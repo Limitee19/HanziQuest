@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import { Map as MapIcon, LayoutGrid } from 'lucide-react';
+import { Map as MapIcon, LayoutGrid, RefreshCw } from 'lucide-react';
 import { clickTick } from '@/lib/fx';
 import { FLAVOR, Landmark, LandmarkSvg, OUTPOST_NAME, Plum } from '@/lib/landmark';
 import { course } from '@/data/course';
-import { fetchOutpostStats } from '@/services/chinese/questService';
+import { fetchOutpostStats, syncStudentQuestProgress } from '@/services/chinese/questService';
 
 interface GameWorldMapProps {
   counts?: Record<number, { total: number; due: number; mastered: number }>;
@@ -48,6 +48,19 @@ export function GameWorldMap({
   const [viewMode, setViewMode] = useState<'map' | 'grid'>('map');
   const [selectedLevel, setSelectedLevel] = useState<number | null>(null);
   const [internalCounts, setInternalCounts] = useState<Record<number, { total: number; due: number; mastered: number }>>(propCounts || {});
+  const [isSyncing, setIsSyncing] = useState(false);
+
+  const handleManualSync = async () => {
+    clickTick(soundEnabled);
+    setIsSyncing(true);
+    try {
+      await syncStudentQuestProgress(true);
+      const updated = await fetchOutpostStats();
+      setInternalCounts(updated);
+    } finally {
+      setTimeout(() => setIsSyncing(false), 500);
+    }
+  };
 
   useEffect(() => {
     if (propCounts && Object.keys(propCounts).length > 0) {
@@ -111,6 +124,16 @@ export function GameWorldMap({
           <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 uppercase tracking-wider">
             Tampilan Petualangan:
           </span>
+          <button
+            type="button"
+            onClick={handleManualSync}
+            disabled={isSyncing}
+            className="px-2.5 py-1 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-600 active:scale-95 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 text-xs font-semibold"
+            title="Sinkronkan Progres dengan Cloud (HP & PC)"
+          >
+            <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-rose-500' : 'text-zinc-400'}`} />
+            <span className="text-[11px] font-mono">{isSyncing ? 'Menyinkronkan…' : 'Sinkron Cloud'}</span>
+          </button>
         </div>
 
         <div className="bg-[#FFFDF9] dark:bg-[#151E32] border-2 border-[#231F20] dark:border-[#334155] p-1 rounded-2xl flex items-center gap-1 shadow-xs">

@@ -33,6 +33,15 @@ function AppContent() {
       .catch(() => {}); // gagal → fitur goresan/audio resmi fallback, app tetap jalan
   }, []);
 
+  // Sinkronkan progres petualangan siswa dengan Supabase Cloud saat database siap
+  useEffect(() => {
+    if (isInitialized) {
+      import('@/services/chinese/questService')
+        .then((m) => m.syncStudentQuestProgress())
+        .catch(() => {});
+    }
+  }, [isInitialized]);
+
   if (!isInitialized) {
     return (
       <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#FAF9F6] dark:bg-[#090D16] text-[#0F172A] dark:text-[#F8FAFC] gap-5 select-none font-sans p-6">

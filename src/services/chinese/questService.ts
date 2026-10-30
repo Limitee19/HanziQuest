@@ -38,7 +38,288 @@ function getLeechStorageKey(): string {
 
 // ── Outpost Stats per HSK Level ─────────────────────────────────────────
 
+let isSyncInProgress = false;
+let lastSyncTimestamp = 0;
+
+/**
+ * Sinkronisasi progres petualangan kartu Hanzi (Pos 1 s/d Pos 6) 
+ * secara dua arah (bidirectional merge) antara perangkat lokal dan Supabase Cloud.
+ */
+export async function syncStudentQuestProgress(force = false): Promise<void> {
+  const userId = getActiveUserId();
+  if (!supabase || userId === 'usr_guest') return;
+
+  const now = Date.now();
+  if (!force && isSyncInProgress) return;
+  if (!force && now - lastSyncTimestamp < 3500) return;
+
+  isSyncInProgress = true;
+  lastSyncTimestamp = now;
+
+  try {
+    const scopedKey = getQuestStorageKey();
+
+    // 1. Ambil data lokal
+    const localMap: Record<string, { id: string; word_id?: string; hanzi?: string; stage: string; due_date: string; review_count: number; updated_at: number }> = {};
+
+    // a) LocalStorage per user
+    try {
+      const raw = localStorage.getItem(scopedKey);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        Object.assign(localMap, parsed);
+      }
+    } catch {}
+
+    // b) Legacy localStorage fallback
+    try {
+      const legacyRaw = localStorage.getItem('omnilife_quest_progress');
+      if (legacyRaw) {
+        const legacyParsed = JSON.parse(legacyRaw);
+        for (const [id, item] of Object.entries(legacyParsed)) {
+          if (!localMap[id]) {
+            localMap[id] = item as any;
+          }
+        }
+      }
+    } catch {}
+
+    // c) SQLite lokal
+    try {
+      const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number; updated_at?: number }>(
+        `SELECT id, stage, due_date, review_count, updated_at FROM chinese_program_progress;`
+      );
+      rows.forEach((r) => {
+        if (!localMap[r.id]) {
+          localMap[r.id] = {
+            id: r.id,
+            word_id: r.id,
+            stage: r.stage,
+            due_date: r.due_date,
+            review_count: r.review_count || 1,
+            updated_at: r.updated_at || now,
+          };
+        }
+      });
+    } catch {}
+
+    // 2. Ambil data cloud (student_quest_progress & student_quest_meta)
+    const cloudProgressMap: Record<string, { word_id: string; hanzi?: string; stage: string; due_date: string; review_count: number; updated_at: number }> = {};
+
+    // a) student_quest_progress (paginasi per 1000 agar tidak terpotong batasan max_rows)
+    try {
+      let page = 0;
+      const PAGE_SIZE = 1000;
+      while (true) {
+        const { data, error } = await supabase
+          .from('student_quest_progress')
+          .select('word_id, hanzi, stage, due_date, review_count, updated_at')
+          .eq('user_id', userId)
+          .range(page * PAGE_SIZE, (page + 1) * PAGE_SIZE - 1);
+        if (error || !data || data.length === 0) break;
+        for (const row of data) {
+          cloudProgressMap[row.word_id] = {
+            word_id: row.word_id,
+            hanzi: row.hanzi,
+            stage: row.stage,
+            due_date: row.due_date,
+            review_count: row.review_count || 1,
+            updated_at: Number(row.updated_at) || 0,
+          };
+        }
+        if (data.length < PAGE_SIZE) break;
+        page++;
+      }
+    } catch (e) {
+      console.warn('Fetch student_quest_progress error:', e);
+    }
+
+    // b) student_quest_meta (snapshot backup & leech words)
+    let metaSnapshot: any = null;
+    let existingNotes: Record<string, any> = {};
+    let cloudLeechWords: LeechItem[] = [];
+    try {
+      const { data: meta } = await supabase
+        .from('student_quest_meta')
+        .select('leech_words, mnemonic_notes')
+        .eq('user_id', userId)
+        .maybeSingle();
+      if (meta) {
+        existingNotes = meta.mnemonic_notes || {};
+        metaSnapshot = existingNotes.__quest_progress || (meta as any).quest_progress || null;
+        cloudLeechWords = Array.isArray(meta.leech_words) ? meta.leech_words : [];
+
+        if (metaSnapshot && typeof metaSnapshot === 'object') {
+          for (const [id, item] of Object.entries(metaSnapshot) as any) {
+            if (!cloudProgressMap[id]) {
+              cloudProgressMap[id] = {
+                word_id: id,
+                hanzi: item.hanzi,
+                stage: item.stage,
+                due_date: item.due_date,
+                review_count: item.review_count || 1,
+                updated_at: Number(item.updated_at) || 0,
+              };
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Fetch student_quest_meta error:', e);
+    }
+
+    // 3. Bidirectional Merge
+    const stageRank = (s?: string) => {
+      if (s === 'production') return 3;
+      if (s === 'recognition') return 2;
+      if (s === 'learning') return 1;
+      return 0;
+    };
+
+    const mergedMap: Record<string, any> = { ...localMap };
+    const toUploadList: any[] = [];
+    let hasLocalChanges = false;
+
+    // Gabungkan semua ID kata yang ada di cloud dan lokal
+    const allWordIds = new Set([...Object.keys(localMap), ...Object.keys(cloudProgressMap)]);
+
+    for (const wordId of allWordIds) {
+      const localItem = localMap[wordId];
+      const cloudItem = cloudProgressMap[wordId];
+
+      if (localItem && !cloudItem) {
+        // Ada di lokal tapi belum di cloud -> jadwalkan upload ke cloud
+        toUploadList.push(localItem);
+      } else if (!localItem && cloudItem) {
+        // Ada di cloud tapi belum di lokal -> update ke lokal
+        mergedMap[wordId] = {
+          id: cloudItem.word_id,
+          word_id: cloudItem.word_id,
+          hanzi: cloudItem.hanzi,
+          stage: cloudItem.stage,
+          due_date: cloudItem.due_date,
+          review_count: cloudItem.review_count,
+          updated_at: cloudItem.updated_at,
+        };
+        hasLocalChanges = true;
+      } else if (localItem && cloudItem) {
+        // Ada di kedua sisi -> pilih yang progresnya paling maju / terbaru
+        const localScore = stageRank(localItem.stage);
+        const cloudScore = stageRank(cloudItem.stage);
+        const localCount = localItem.review_count || 1;
+        const cloudCount = cloudItem.review_count || 1;
+        const localTs = localItem.updated_at || 0;
+        const cloudTs = cloudItem.updated_at || 0;
+
+        let localIsBetter = false;
+        let cloudIsBetter = false;
+
+        if (localScore > cloudScore) {
+          localIsBetter = true;
+        } else if (cloudScore > localScore) {
+          cloudIsBetter = true;
+        } else if (localCount > cloudCount) {
+          localIsBetter = true;
+        } else if (cloudCount > localCount) {
+          cloudIsBetter = true;
+        } else if (localTs > cloudTs) {
+          localIsBetter = true;
+        } else if (cloudTs > localTs) {
+          cloudIsBetter = true;
+        }
+
+        if (cloudIsBetter) {
+          mergedMap[wordId] = {
+            id: cloudItem.word_id,
+            word_id: cloudItem.word_id,
+            hanzi: cloudItem.hanzi || localItem.hanzi,
+            stage: cloudItem.stage,
+            due_date: cloudItem.due_date,
+            review_count: cloudItem.review_count,
+            updated_at: cloudItem.updated_at,
+          };
+          hasLocalChanges = true;
+        } else if (localIsBetter) {
+          toUploadList.push(localItem);
+        }
+      }
+    }
+
+    // 4. Upload ke Cloud jika ada data baru / lebih maju dari lokal
+    if (toUploadList.length > 0) {
+      for (let i = 0; i < toUploadList.length; i += 200) {
+        const batch = toUploadList.slice(i, i + 200).map((item) => ({
+          user_id: userId,
+          word_id: item.word_id || item.id,
+          hanzi: item.hanzi || '',
+          stage: item.stage || 'learning',
+          due_date: item.due_date || new Date().toISOString().slice(0, 10),
+          review_count: item.review_count || 1,
+          updated_at: item.updated_at || Date.now(),
+        }));
+        await supabase.from('student_quest_progress').upsert(batch);
+      }
+    }
+
+    // Selalu simpan snapshot cadangan ke student_quest_meta agar 100% aman
+    const updatedNotes = { ...existingNotes, __quest_progress: mergedMap };
+    await supabase.from('student_quest_meta').upsert({
+      user_id: userId,
+      mnemonic_notes: updatedNotes,
+      updated_at: Date.now(),
+    });
+
+    // 5. Simpan hasil merge ke LocalStorage
+    localStorage.setItem(scopedKey, JSON.stringify(mergedMap));
+
+    // Sinkronkan Leech words jika cloud memiliki catatan yang lebih baru
+    if (cloudLeechWords.length > 0) {
+      const localLeeches = getLeechItems();
+      const leechMap = new Map<string, LeechItem>();
+      localLeeches.forEach((l) => leechMap.set(l.wordId, l));
+      cloudLeechWords.forEach((l) => {
+        if (!leechMap.has(l.wordId) || (l.updatedAt && l.updatedAt > (leechMap.get(l.wordId)?.updatedAt || 0))) {
+          leechMap.set(l.wordId, l);
+        }
+      });
+      localStorage.setItem(getLeechStorageKey(), JSON.stringify(Array.from(leechMap.values())));
+    }
+
+    // Sinkronkan ke SQLite chinese_program_progress
+    try {
+      const { executeSql } = await import('@/db/client');
+      for (const item of Object.values(mergedMap)) {
+        if (item.stage === 'production' || item.stage === 'recognition' || (item.review_count && item.review_count >= 1)) {
+          await executeSql(
+            `INSERT INTO chinese_program_progress (id, stage, due_date, last_interval, review_count, updated_at)
+             VALUES (?, ?, ?, 1, ?, ?)
+             ON CONFLICT(id) DO UPDATE SET
+               stage = excluded.stage,
+               due_date = excluded.due_date,
+               review_count = excluded.review_count,
+               updated_at = excluded.updated_at;`,
+            [item.id || item.word_id, item.stage, item.due_date || '2026-12-31', item.review_count || 1, item.updated_at || now]
+          );
+        }
+      }
+    } catch {}
+
+    if (toUploadList.length > 0 || hasLocalChanges) {
+      window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
+    }
+  } catch (err) {
+    console.warn('syncStudentQuestProgress failed:', err);
+  } finally {
+    isSyncInProgress = false;
+  }
+}
+
 export async function fetchOutpostStats(): Promise<Record<number, { total: number; due: number; mastered: number }>> {
+  // Jalankan sinkronisasi cloud terlebih dahulu
+  try {
+    await syncStudentQuestProgress();
+  } catch {}
+
   const result: Record<number, { total: number; due: number; mastered: number }> = {};
   for (let l = 1; l <= 6; l++) {
     const wordsInLevel = course.words.filter((w) => w.level === String(l));
@@ -52,29 +333,20 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
   try {
     const todayStr = new Date().toISOString().slice(0, 10);
     const progressMap = new Map<string, { id: string; stage: string; due_date: string; review_count?: number }>();
-    const userId = getActiveUserId();
+    const scopedKey = getQuestStorageKey();
 
-    // 1) Ambil dari Supabase cloud jika tersedia untuk user aktif
-    if (supabase) {
-      try {
-        const { data } = await supabase
-          .from('student_quest_progress')
-          .select('word_id, stage, due_date, review_count')
-          .eq('user_id', userId);
-        if (data && data.length > 0) {
-          data.forEach((r: any) => {
-            progressMap.set(r.word_id, {
-              id: r.word_id,
-              stage: r.stage,
-              due_date: r.due_date,
-              review_count: r.review_count,
-            });
-          });
+    // 1) Ambil dari localStorage per-user (sudah disinkronkan & dimerge)
+    try {
+      const rawLocal = localStorage.getItem(scopedKey);
+      if (rawLocal) {
+        const localMap = JSON.parse(rawLocal);
+        for (const [id, item] of Object.entries(localMap)) {
+          progressMap.set(id, item as any);
         }
-      } catch {}
-    }
+      }
+    } catch {}
 
-    // 2) Ambil dari SQLite jika tersedia
+    // 2) Ambil dari SQLite jika ada kata tambahan
     try {
       const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number }>(
         `SELECT id, stage, due_date, review_count FROM chinese_program_progress;`
@@ -84,18 +356,12 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
       });
     } catch {}
 
-    // 3) Ambil dari localStorage per-user
+    // 3) Fallback legacy jika ada
     try {
-      const scopedKey = getQuestStorageKey();
-      let rawLocal = localStorage.getItem(scopedKey);
-      // Migrasi data legacy jika user key belum ada tapi ada omnilife_quest_progress lama
-      if (!rawLocal && localStorage.getItem('omnilife_quest_progress')) {
-        rawLocal = localStorage.getItem('omnilife_quest_progress');
-        if (rawLocal) localStorage.setItem(scopedKey, rawLocal);
-      }
-      if (rawLocal) {
-        const localMap = JSON.parse(rawLocal);
-        for (const [id, item] of Object.entries(localMap)) {
+      const legacyRaw = localStorage.getItem('omnilife_quest_progress');
+      if (legacyRaw) {
+        const legacyMap = JSON.parse(legacyRaw);
+        for (const [id, item] of Object.entries(legacyMap)) {
           if (!progressMap.has(id)) {
             progressMap.set(id, item as any);
           }
@@ -159,11 +425,20 @@ export function saveMnemonicNote(wordId: string, note: string): void {
     const userId = getActiveUserId();
     if (supabase && userId !== 'usr_guest') {
       void Promise.resolve(
-        supabase.from('student_quest_meta').upsert({
-          user_id: userId,
-          mnemonic_notes: notes,
-          updated_at: Date.now(),
-        })
+        (async () => {
+          const { data: existing } = await supabase
+            .from('student_quest_meta')
+            .select('leech_words, mnemonic_notes')
+            .eq('user_id', userId)
+            .maybeSingle();
+          const mergedNotes = { ...(existing?.mnemonic_notes || {}), ...notes };
+          await supabase.from('student_quest_meta').upsert({
+            user_id: userId,
+            mnemonic_notes: mergedNotes,
+            leech_words: existing?.leech_words || getLeechItems(),
+            updated_at: Date.now(),
+          });
+        })()
       ).catch(() => {});
     }
   } catch {}
@@ -233,11 +508,19 @@ export function addLeechRecord(word: CourseWord, fails: number = 1): void {
     // Sync ke Supabase student_quest_meta jika bukan tamu
     if (supabase && !isGuest) {
       void Promise.resolve(
-        supabase.from('student_quest_meta').upsert({
-          user_id: userId,
-          leech_words: items,
-          updated_at: Date.now(),
-        })
+        (async () => {
+          const { data: existing } = await supabase
+            .from('student_quest_meta')
+            .select('mnemonic_notes')
+            .eq('user_id', userId)
+            .maybeSingle();
+          await supabase.from('student_quest_meta').upsert({
+            user_id: userId,
+            leech_words: items,
+            mnemonic_notes: existing?.mnemonic_notes || getMnemonicNotes(),
+            updated_at: Date.now(),
+          });
+        })()
       ).catch(() => {});
     }
   } catch {}
@@ -257,43 +540,51 @@ export function removeLeechRecord(wordId: string): void {
 
     if (supabase && !isGuest) {
       void Promise.resolve(
-        supabase.from('student_quest_meta').upsert({
-          user_id: userId,
-          leech_words: items,
-          updated_at: Date.now(),
-        })
+        (async () => {
+          const { data: existing } = await supabase
+            .from('student_quest_meta')
+            .select('mnemonic_notes')
+            .eq('user_id', userId)
+            .maybeSingle();
+          await supabase.from('student_quest_meta').upsert({
+            user_id: userId,
+            leech_words: items,
+            mnemonic_notes: existing?.mnemonic_notes || getMnemonicNotes(),
+            updated_at: Date.now(),
+          });
+        })()
       ).catch(() => {});
     }
   } catch {}
 }
 
 export async function fetchMasteredWords(): Promise<CourseWord[]> {
+  try {
+    await syncStudentQuestProgress();
+  } catch {}
+
   const masteredIds = new Set<string>();
-  const userId = getActiveUserId();
+  const scopedKey = getQuestStorageKey();
 
-  // 1. Ambil dari Supabase cloud untuk siswa aktif
-  if (supabase) {
-    try {
-      const { data } = await supabase
-        .from('student_quest_progress')
-        .select('word_id, stage, due_date, review_count')
-        .eq('user_id', userId);
-      if (data && data.length > 0) {
-        data.forEach((r: any) => {
-          if (
-            r.stage === 'production' ||
-            r.stage === 'recognition' ||
-            r.due_date === '9999-12-31' ||
-            (r.review_count && r.review_count >= 1)
-          ) {
-            masteredIds.add(r.word_id);
-          }
-        });
+  // 1. Ambil dari localStorage terisolasi per siswa (sudah disinkronkan)
+  try {
+    const rawLocal = localStorage.getItem(scopedKey);
+    if (rawLocal) {
+      const localMap = JSON.parse(rawLocal);
+      for (const [id, item] of Object.entries(localMap) as any) {
+        if (
+          item.stage === 'production' ||
+          item.stage === 'recognition' ||
+          item.due_date === '9999-12-31' ||
+          (item.review_count && item.review_count >= 1)
+        ) {
+          masteredIds.add(id);
+        }
       }
-    } catch {}
-  }
+    }
+  } catch {}
 
-  // 2. Ambil dari SQLite
+  // 2. Ambil dari SQLite jika ada
   try {
     const rows = await selectSql<{ id: string; stage: string; review_count?: number }>(
       `SELECT id, stage, review_count FROM chinese_program_progress WHERE stage IN ('production', 'recognition') OR due_date = '9999-12-31' OR review_count >= 1;`
@@ -301,16 +592,12 @@ export async function fetchMasteredWords(): Promise<CourseWord[]> {
     rows.forEach((r) => masteredIds.add(r.id));
   } catch {}
 
-  // 3. Ambil dari localStorage terisolasi per siswa
+  // 3. Fallback legacy jika ada
   try {
-    const scopedKey = getQuestStorageKey();
-    let rawLocal = localStorage.getItem(scopedKey);
-    if (!rawLocal && localStorage.getItem('omnilife_quest_progress')) {
-      rawLocal = localStorage.getItem('omnilife_quest_progress');
-    }
-    if (rawLocal) {
-      const localMap = JSON.parse(rawLocal);
-      for (const [id, item] of Object.entries(localMap) as any) {
+    const legacyRaw = localStorage.getItem('omnilife_quest_progress');
+    if (legacyRaw) {
+      const legacyMap = JSON.parse(legacyRaw);
+      for (const [id, item] of Object.entries(legacyMap) as any) {
         if (
           item.stage === 'production' ||
           item.stage === 'recognition' ||
@@ -408,37 +695,57 @@ export async function recordQuestWordReview(
   const userId = getActiveUserId();
 
   // 1. Simpan ke localStorage per siswa
+  const scopedKey = getQuestStorageKey();
+  let nextReviewCount = 1;
+  const updateTimestamp = Date.now();
   try {
-    const scopedKey = getQuestStorageKey();
     const rawLocal = localStorage.getItem(scopedKey);
     const localMap = rawLocal ? JSON.parse(rawLocal) : {};
     const prevCount = localMap[word.id]?.review_count || 0;
+    nextReviewCount = prevCount + 1;
     localMap[word.id] = {
       id: word.id,
+      word_id: word.id,
       hanzi: word.hanzi,
       stage,
       due_date: nextDueStr,
-      review_count: prevCount + 1,
-      updated_at: Date.now(),
+      review_count: nextReviewCount,
+      updated_at: updateTimestamp,
     };
     localStorage.setItem(scopedKey, JSON.stringify(localMap));
   } catch {}
 
-  // 2. Simpan ke Supabase student_quest_progress jika terhubung dan bukan akun tamu
+  // 2. Simpan langsung ke Supabase student_quest_progress jika terhubung dan bukan akun tamu
   if (supabase && userId !== 'usr_guest') {
     try {
-      void Promise.resolve(
-        supabase.from('student_quest_progress').upsert({
-          user_id: userId,
-          word_id: word.id,
-          hanzi: word.hanzi,
-          stage,
-          due_date: nextDueStr,
-          review_count: 1,
-          updated_at: Date.now(),
-        })
-      ).catch((e: any) => console.warn('Supabase quest progress sync warning:', e));
-    } catch {}
+      await supabase.from('student_quest_progress').upsert({
+        user_id: userId,
+        word_id: word.id,
+        hanzi: word.hanzi,
+        stage,
+        due_date: nextDueStr,
+        review_count: nextReviewCount,
+        updated_at: updateTimestamp,
+      });
+
+      // Update juga snapshot cadangan di student_quest_meta
+      const rawCurrent = localStorage.getItem(scopedKey);
+      if (rawCurrent) {
+        const fullCurrentMap = JSON.parse(rawCurrent);
+        void Promise.resolve(
+          supabase.from('student_quest_meta').upsert({
+            user_id: userId,
+            mnemonic_notes: {
+              ...getMnemonicNotes(),
+              __quest_progress: fullCurrentMap,
+            },
+            updated_at: updateTimestamp,
+          })
+        ).catch(() => {});
+      }
+    } catch (e: any) {
+      console.warn('Supabase quest progress sync warning:', e);
+    }
   }
 
   // 3. Simpan ke SQLite
