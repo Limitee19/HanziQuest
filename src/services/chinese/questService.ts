@@ -4,6 +4,7 @@ import { meaningOf } from '@/data/course.types';
 import { selectSql } from '@/db/client';
 import { getActiveUserId } from '@/services/auth/classAuthService';
 import { supabase } from '@/services/sync/supabaseClient';
+import { lightIncrementalPull } from '@/services/sync/syncService';
 
 export interface OutpostStats {
   level: number;
@@ -57,6 +58,16 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
   lastSyncTimestamp = now;
 
   try {
+    // Bila force (saat login), tarik data cloud terlebih dahulu
+    if (force) {
+      console.log('🔄 Force sync triggered by login — pulling cloud data...');
+      try {
+        await lightIncrementalPull(true);
+      } catch (pullErr) {
+        console.warn('Incremental pull on login failed, will try direct fetch:', pullErr);
+      }
+    }
+
     const scopedKey = getQuestStorageKey();
 
     // 1. Ambil data lokal dari localStorage terisolasi per user

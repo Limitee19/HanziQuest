@@ -689,12 +689,11 @@ let realtimeChannel: any = null;
 // Realtime is the PRIMARY live-sync path on Android: the OS suspends WebSockets
 // while the app is backgrounded, so every table the user edits daily must be here
 // or edits made on desktop/another device will not appear until the next manual pull.
-const REALTIME_TABLES = [
-  'chinese_program_progress',
-  'chinese_program_settings',
-  'chinese_program_log',
-];
+// WebSocket disabled in initRealtimeSubscription() — see that function.
 // 7. Supabase Realtime Channel Subscription for Instant Live Sync (<1s)
+// DISABLED WebSocket Realtime — caused NS_ERROR_WEBSOCKET_CONNECTION_REFUSED
+// di beberapa browser/network. Ganti dengan HTTP polling saja (lightIncrementalPull).
+// Realtime channel tetap dikonfigurasi tapi tidak di-subscribe.
 export function initRealtimeSubscription(): void {
   if (!supabase) return;
   if (realtimeChannel) {
@@ -704,69 +703,11 @@ export function initRealtimeSubscription(): void {
     realtimeChannel = null;
   }
 
-  try {
-    const channelName = `omnilife-live-${Date.now()}`;
-    realtimeChannel = supabase.channel(channelName);
-
-    for (const tableName of REALTIME_TABLES) {
-      realtimeChannel.on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: tableName },
-        async (payload: any) => {
-          const { table, eventType, new: newRow, old: oldRow } = payload;
-          const activeUid = currentUserId();
-          
-          // Saring: hanya proses perubahan milik akun aktif atau data legacy tanpa user_id
-          if (isUserScopedTable(table) || table === 'chinese_program_progress') {
-            if (newRow?.user_id && newRow.user_id !== activeUid) {
-              return; // bukan milik akun aktif — abaikan
-            }
-            if (oldRow?.user_id && oldRow.user_id !== activeUid) {
-              return;
-            }
-          }
-
-          console.log(`⚡ Realtime change received for table '${table}' [${eventType}]`);
-
-          try {
-            setApplyingCloudSync(true);
-            if (eventType === 'DELETE') {
-              const idCol = table === 'app_metadata' ? 'key' : 'id';
-              const idVal = oldRow?.[idCol] || oldRow?.id || oldRow?.key;
-              if (idVal) {
-                try {
-                  await executeSql(
-                    `INSERT OR REPLACE INTO deleted_records (table_name, record_id, deleted_at) VALUES (?, ?, ?);`,
-                    [table, String(idVal), new Date().toISOString()],
-                    true
-                  );
-                } catch {}
-                await executeSql(`DELETE FROM ${table} WHERE ${idCol} = ?;`, [idVal], true);
-              }
-            } else if (newRow && typeof newRow === 'object') {
-              await safeUpsertSqliteRow(table, newRow);
-            }
-
-            // Dispatch global event for live UI reactivity
-            if (typeof window !== 'undefined') {
-              window.dispatchEvent(new CustomEvent('omnilife_db_updated', { detail: { table, eventType } }));
-              window.dispatchEvent(new CustomEvent('db_mutation', { detail: { table, eventType } }));
-            }
-          } catch (applyErr) {
-            console.warn(`Failed to apply live sync row for ${table}:`, applyErr);
-          } finally {
-            setApplyingCloudSync(false);
-          }
-        }
-      );
-    }
-
-    realtimeChannel.subscribe((status: string) => {
-      console.log('📡 Supabase Live Realtime Status:', status);
-    });
-  } catch (channelErr) {
-    console.warn('Failed to start Realtime subscription:', channelErr);
-  }
+  // NOTE: WebSocket disabled — caused connection refused di browser tertentu.
+  // Ganti dengan HTTP polling (initAutoSyncEngine → lightIncrementalPull setiap 10 menit).
+  // User bisa juga trigger manual pull via Settings → "Sync Now".
+  
+  console.log('📡 Supabase Realtime WebSocket disabled — using HTTP polling instead.');
 }
 
 // 8. Initialize Auto-Sync Engine — ZERO-EGRESS MODE
