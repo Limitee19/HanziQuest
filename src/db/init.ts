@@ -1235,6 +1235,89 @@ async function seedDefaultData() {
   `);
   await executeSql(`CREATE INDEX IF NOT EXISTS idx_program_log_date ON chinese_program_log(log_date);`);
 
+  // ============================================================
+  // AKUN: partisi data pembelajaran per pengguna (multi-akun &
+  // multi-device). Data lama diberi klaim ke akun yang aktif saat
+  // migrasi berjalan — lingkup fix data tidak sinkron antar akun.
+  // ============================================================
+  await migrateAccountScopedTables();
+
   await flushWebDbSnapshot();
   return { appStartDate: new Date().toISOString() };
+}
+
+async function migrateAccountScopedTables(): Promise<void> {
+  let activeUserId = 'usr_guest';
+  try {
+    const mod = await import('../services/auth/classAuthService');
+    activeUserId = mod.getActiveUserId();
+  } catch {}
+
+  const tryAdd = async (table: string, column: string, def: string): Promise<void> => {
+    try {
+      await executeSql(`ALTER TABLE ${table} ADD COLUMN ${column} ${def};`);
+    } catch {}
+  };
+
+  await tryAdd('chinese_program_progress', 'user_id', "TEXT DEFAULT ''");
+  await tryAdd('chinese_program_progress', 'word_id', "TEXT DEFAULT ''");
+  await tryAdd('chinese_program_progress', 'source', "TEXT DEFAULT ''");
+  await tryAdd('chinese_program_log', 'user_id', "TEXT DEFAULT ''");
+  await tryAdd('learning_decks', 'user_id', "TEXT DEFAULT ''");
+  await tryAdd('flashcard_notes', 'user_id', "TEXT DEFAULT ''");
+  await tryAdd('flashcard_cards', 'user_id', "TEXT DEFAULT ''");
+  await executeSql(`CREATE INDEX IF NOT EXISTS idx_program_progress_user ON chinese_program_progress(user_id);`);
+  await executeSql(`CREATE INDEX IF NOT EXISTS idx_program_log_user ON chinese_program_log(user_id);`);
+  await executeSql(`CREATE INDEX IF NOT EXISTS idx_decks_user ON learning_decks(user_id);`);
+  await executeSql(`CREATE INDEX IF NOT EXISTS idx_fnotes_user ON flashcard_notes(user_id);`);
+  await executeSql(`CREATE INDEX IF NOT EXISTS idx_fcards_user ON flashcard_cards(user_id);`);
+
+  const SCOPE_FLAG = 'account_scope_migrated_v1';
+  try {
+    const flagRows = await selectSql(`SELECT value FROM app_metadata WHERE key = ? LIMIT 1;`, [SCOPE_FLAG]);
+    if (flagRows.length > 0) return;
+  } catch {}
+
+  // 1) Progres Program Harian/Hanzi Quest: id lama (word id mentah) diubah
+  //    menjadi `${uid}::${wordId}` + kolom user_id/word_id diisi.
+  try {
+    const legacyRows = await selectSql<{ id: string }>(
+      `SELECT id FROM chinese_program_progress WHERE user_id = '' OR user_id IS NULL;`
+    );
+    for (const row of legacyRows) {
+      const oldId = row.id || '';
+      if (!oldId) continue;
+      if (oldId.includes('::')) {
+        // Pulled dari cloud versi baru tapi kolom user_id kosong
+        await executeSql(
+          `UPDATE chinese_program_progress SET user_id = ? WHERE id = ?;`,
+          [oldId.split('::')[0], oldId]
+        );
+      } else {
+        await executeSql(
+          `UPDATE chinese_program_progress SET id = ?, user_id = ?, word_id = ? WHERE id = ?;`,
+          [`${activeUserId}::${oldId}`, activeUserId, oldId, oldId]
+        );
+      }
+    }
+  } catch (err) {
+    console.warn('Account scope migration (program progress) warning:', err);
+  }
+
+  // 2) Deck/notes/card Anki + log Program Harian: klaim data legacy ke akun aktif
+  for (const table of ['learning_decks', 'flashcard_notes', 'flashcard_cards', 'chinese_program_log']) {
+    try {
+      await executeSql(`UPDATE ${table} SET user_id = ? WHERE user_id = '' OR user_id IS NULL;`, [activeUserId]);
+    } catch (err) {
+      console.warn(`Account scope migration (${table}) warning:`, err);
+    }
+  }
+
+  const nowStr = new Date().toISOString();
+  try {
+    await executeSql(
+      `INSERT OR REPLACE INTO app_metadata (key, value, created_at, updated_at) VALUES (?, ?, ?, ?);`,
+      [SCOPE_FLAG, nowStr, nowStr, nowStr]
+    );
+  } catch {}
 }

@@ -2,11 +2,38 @@ import { selectSql, executeSql, setApplyingCloudSync, isWebFallbackMode } from '
 import { supabase, getAdminClient, getCurrentSession, updateMockSession } from './supabaseClient';
 import { CloudSyncState, SyncOutboxItem, AuthSession } from './syncTypes';
 import { syncAppLockFromDb } from '../mobile/appLockService';
+import { isUserScopedTable, currentUserId } from '@/services/auth/accountScope';
 
 export interface MigrationResult {
   success: boolean;
   message: string;
   tableCounts: Record<string, number>;
+}
+
+/**
+ * Strip kolom pemisah akun (user_id/word_id/source) dari payload — dipakai
+ * sebagai fallback sementara bila skrip SQL Supabase belum menambah kolom
+ * tersebut sehingga upsert tetap berhasil (data lalu terbagi legacy sampai
+ * kolom dibuat).
+ */
+function stripUnsyncableAccountCols(payload: any, table: string): any {
+  if (!isUserScopedTable(table) && table !== 'chinese_program_progress') return payload;
+  const strip = (obj: any) => {
+    if (!obj || typeof obj !== 'object' || Array.isArray(obj)) return obj;
+    const clean: Record<string, any> = { ...obj };
+    delete clean.user_id;
+    delete clean.word_id;
+    delete clean.source;
+    return clean;
+  };
+  return Array.isArray(payload) ? payload.map(strip) : strip(payload);
+}
+
+/** Saring baris cloud agar hanya milik akun aktif (baris legacy tanpa user_id diizinkan). */
+function filterRowsForActiveUser(table: string, rows: any[]): any[] {
+  if (!isUserScopedTable(table) && table !== 'chinese_program_progress') return rows;
+  const uid = currentUserId();
+  return (rows || []).filter((r) => !r || !r.user_id || r.user_id === uid);
 }
 
 export const ALL_SYNC_TABLES = [
@@ -55,15 +82,21 @@ export async function migrateLocalDataToSupabase(): Promise<MigrationResult> {
         rows = [];
       }
 
-      if (rows && rows.length > 0) {
+      // Filter baris milik akun aktif sebelum push ke cloud
+      const filtered = isUserScopedTable(table)
+        ? rows.filter((r) => !r.user_id || r.user_id === currentUserId())
+        : rows;
+
+      if (filtered && filtered.length > 0) {
         // Upsert in batches of 100 to avoid payload size limits
         const chunkSize = 100;
         let tableUploaded = 0;
         let hasError = false;
 
-        for (let i = 0; i < rows.length; i += chunkSize) {
-          const chunk = rows.slice(i, i + chunkSize);
-          const { error } = await adminClient.from(table).upsert(chunk);
+        for (let i = 0; i < filtered.length; i += chunkSize) {
+          const chunk = filtered.slice(i, i + chunkSize);
+          const clean = stripUnsyncableAccountCols(chunk, table);
+          const { error } = await adminClient.from(table).upsert(clean);
           if (error) {
             console.error(`Supabase upsert error for table ${table}:`, error.message);
             errorLogs.push(`${table}: ${error.message}`);
@@ -260,7 +293,9 @@ export async function pullCloudDataFromSupabase(): Promise<MigrationResult> {
           break;
         }
         const page = data || [];
-        cloudRows.push(...page);
+        // Saring baris cloud agar hanya milik akun aktif
+        const filtered = filterRowsForActiveUser(table, page);
+        cloudRows.push(...filtered);
         if (page.length < PAGE_SIZE) break;
         offset += PAGE_SIZE;
       }
@@ -679,6 +714,18 @@ export function initRealtimeSubscription(): void {
         { event: '*', schema: 'public', table: tableName },
         async (payload: any) => {
           const { table, eventType, new: newRow, old: oldRow } = payload;
+          const activeUid = currentUserId();
+          
+          // Saring: hanya proses perubahan milik akun aktif atau data legacy tanpa user_id
+          if (isUserScopedTable(table) || table === 'chinese_program_progress') {
+            if (newRow?.user_id && newRow.user_id !== activeUid) {
+              return; // bukan milik akun aktif — abaikan
+            }
+            if (oldRow?.user_id && oldRow.user_id !== activeUid) {
+              return;
+            }
+          }
+
           console.log(`⚡ Realtime change received for table '${table}' [${eventType}]`);
 
           try {

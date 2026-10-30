@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { clickTick } from './fx';
+import { prefGet, prefSet } from '@/services/auth/userScopedStorage';
 
 export interface Prefs {
   arcade: boolean;
@@ -11,15 +12,17 @@ export interface Prefs {
 const STORAGE_PREFS_KEY = 'hanzi_quest_prefs';
 
 function loadPrefs(): Prefs {
-  try {
-    const raw = localStorage.getItem(STORAGE_PREFS_KEY);
-    if (raw) return JSON.parse(raw);
-  } catch {}
+  const raw = prefGet(STORAGE_PREFS_KEY);
+  if (raw) {
+    try {
+      return JSON.parse(raw);
+    } catch {}
+  }
   return {
-    arcade: localStorage.getItem('omnilife_arcade_mode') === 'true',
-    sound: localStorage.getItem('omnilife_sound_enabled') !== 'false',
-    target: parseInt(localStorage.getItem('omnilife_session_target') || '10', 10),
-    hidePinyinAudio: localStorage.getItem('hanzi_quest_hide_pinyin_audio') === 'true',
+    arcade: prefGet('omnilife_arcade_mode') === 'true',
+    sound: prefGet('omnilife_sound_enabled', 'true') !== 'false',
+    target: parseInt(prefGet('omnilife_session_target') || '10', 10),
+    hidePinyinAudio: prefGet('hanzi_quest_hide_pinyin_audio') === 'true',
   };
 }
 
@@ -33,12 +36,12 @@ export function getPrefs(): Prefs {
 export function setPrefs(patch: Partial<Prefs>): void {
   currentPrefs = { ...currentPrefs, ...patch };
   try {
-    localStorage.setItem(STORAGE_PREFS_KEY, JSON.stringify(currentPrefs));
-    localStorage.setItem('omnilife_arcade_mode', String(currentPrefs.arcade));
-    localStorage.setItem('omnilife_sound_enabled', String(currentPrefs.sound));
-    localStorage.setItem('omnilife_session_target', String(currentPrefs.target));
+    prefSet(STORAGE_PREFS_KEY, JSON.stringify(currentPrefs));
+    prefSet('omnilife_arcade_mode', String(currentPrefs.arcade));
+    prefSet('omnilife_sound_enabled', String(currentPrefs.sound));
+    prefSet('omnilife_session_target', String(currentPrefs.target));
     if (currentPrefs.hidePinyinAudio !== undefined) {
-      localStorage.setItem('hanzi_quest_hide_pinyin_audio', String(currentPrefs.hidePinyinAudio));
+      prefSet('hanzi_quest_hide_pinyin_audio', String(currentPrefs.hidePinyinAudio));
     }
   } catch {}
 

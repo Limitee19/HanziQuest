@@ -221,24 +221,38 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
       localStorage.setItem(getLeechStorageKey(), JSON.stringify(Array.from(leechMap.values())));
     }
 
-    // Sinkronkan ke SQLite chinese_program_progress
-    try {
-      const { executeSql } = await import('@/db/client');
-      for (const item of Object.values(mergedMap)) {
-        if (item.stage === 'production' || item.stage === 'recognition' || (item.review_count && item.review_count >= 1)) {
-          await executeSql(
-            `INSERT INTO chinese_program_progress (id, stage, due_date, last_interval, review_count, updated_at)
-             VALUES (?, ?, ?, 1, ?, ?)
-             ON CONFLICT(id) DO UPDATE SET
-               stage = excluded.stage,
-               due_date = excluded.due_date,
-               review_count = excluded.review_count,
-               updated_at = excluded.updated_at;`,
-            [item.id || item.word_id, item.stage, item.due_date || '2026-12-31', item.review_count || 1, item.updated_at || now]
-          );
+    // Sinkronkan ke SQLite chinese_program_progress hanya untuk akun tamu
+    // (tamu tidak menyentuh cloud). Akun resmi menyimpan progres di
+    // localStorage scoped + Supabase student_quest_progress — mirror ke tabel
+    // global dibuang agar tidak mencemari Program Harian / mesin SRS lain.
+    if (userId === 'usr_guest') {
+      try {
+        const { executeSql } = await import('@/db/client');
+        for (const item of Object.values(mergedMap)) {
+          if (item.stage === 'production' || item.stage === 'recognition' || (item.review_count && item.review_count >= 1)) {
+            await executeSql(
+              `INSERT OR REPLACE INTO chinese_program_progress (id, user_id, word_id, stage, due_date, last_interval, review_count, source, updated_at)
+               VALUES (?, ?, ?, ?, ?, 1, ?, 'quest', ?)
+               ON CONFLICT(id) DO UPDATE SET
+                 stage = excluded.stage,
+                 due_date = excluded.due_date,
+                 review_count = excluded.review_count,
+                 source = 'quest',
+                 updated_at = excluded.updated_at;`,
+              [
+                `usr_guest::${item.id || item.word_id}`,
+                userId,
+                item.id || item.word_id,
+                item.stage,
+                item.due_date || '2026-12-31',
+                item.review_count || 1,
+                item.updated_at || now,
+              ]
+            );
+          }
         }
-      }
-    } catch {}
+      } catch {}
+    }
 
     if (toUploadList.length > 0 || hasLocalChanges) {
       window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
@@ -288,7 +302,7 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
     if (isGuest) {
       try {
         const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number }>(
-          `SELECT id, stage, due_date, review_count FROM chinese_program_progress;`
+          `SELECT id, stage, due_date, review_count FROM chinese_program_progress WHERE user_id = 'usr_guest';`
         );
         rows.forEach((r) => {
           if (!progressMap.has(r.id)) progressMap.set(r.id, r);
@@ -529,7 +543,7 @@ export async function fetchMasteredWords(): Promise<CourseWord[]> {
   if (isGuest) {
     try {
       const rows = await selectSql<{ id: string; stage: string; review_count?: number }>(
-        `SELECT id, stage, review_count FROM chinese_program_progress WHERE stage IN ('production', 'recognition') OR due_date = '9999-12-31' OR review_count >= 1;`
+        `SELECT id, stage, review_count FROM chinese_program_progress WHERE user_id = 'usr_guest' AND (stage IN ('production', 'recognition') OR due_date = '9999-12-31' OR review_count >= 1);`
       );
       rows.forEach((r) => masteredIds.add(r.id));
     } catch {}
@@ -690,40 +704,53 @@ export async function recordQuestWordReview(
     }
   }
 
-  // 3. Simpan ke SQLite
-  try {
-    const { executeSql } = await import('@/db/client');
-    await executeSql(`
-      CREATE TABLE IF NOT EXISTS chinese_program_progress (
-        id TEXT PRIMARY KEY,
-        stage TEXT NOT NULL DEFAULT 'learning',
-        due_date TEXT NOT NULL,
-        last_interval INTEGER DEFAULT 1,
-        ease_factor REAL DEFAULT 2.5,
-        review_count INTEGER DEFAULT 0,
-        updated_at INTEGER NOT NULL
+  // 3. Simpan ke SQLite — hanya akun tamu (akun resmi: localStorage + Supabase)
+  if (userId === 'usr_guest') {
+    try {
+      const { executeSql } = await import('@/db/client');
+      await executeSql(`
+        CREATE TABLE IF NOT EXISTS chinese_program_progress (
+          id TEXT PRIMARY KEY,
+          user_id TEXT DEFAULT '',
+          word_id TEXT DEFAULT '',
+          source TEXT DEFAULT '',
+          stage TEXT NOT NULL DEFAULT 'learning',
+          due_date TEXT NOT NULL,
+          last_interval INTEGER DEFAULT 1,
+          ease_factor REAL DEFAULT 2.5,
+          review_count INTEGER DEFAULT 0,
+          updated_at INTEGER NOT NULL
+        );
+      `);
+
+      await executeSql(
+        `
+        INSERT OR REPLACE INTO chinese_program_progress (id, user_id, word_id, stage, due_date, last_interval, review_count, source, updated_at)
+        VALUES (?, ?, ?, ?, ?, ?, 1, 'quest', ?)
+        ON CONFLICT(id) DO UPDATE SET
+          stage = excluded.stage,
+          due_date = excluded.due_date,
+          last_interval = ?,
+          review_count = chinese_program_progress.review_count + 1,
+          source = 'quest',
+          updated_at = excluded.updated_at;
+      `,
+        [
+          `usr_guest::${word.id}`,
+          userId,
+          word.id,
+          stage,
+          nextDueStr,
+          nextDays,
+          Date.now(),
+          nextDays
+        ]
       );
-    `);
-
-    await executeSql(
-      `
-      INSERT INTO chinese_program_progress (id, stage, due_date, last_interval, review_count, updated_at)
-      VALUES (?, ?, ?, ?, 1, ?)
-      ON CONFLICT(id) DO UPDATE SET
-        stage = excluded.stage,
-        due_date = excluded.due_date,
-        last_interval = ?,
-        review_count = chinese_program_progress.review_count + 1,
-        updated_at = excluded.updated_at;
-    `,
-      [word.id, stage, nextDueStr, nextDays, Date.now(), nextDays]
-    );
-
-    window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
-    window.dispatchEvent(new CustomEvent('db_mutation'));
-  } catch (err) {
-    console.warn('Failed to record quest word review in SQLite:', err);
-    window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
-    window.dispatchEvent(new CustomEvent('db_mutation'));
+    } catch (err) {
+      console.warn('Failed to record quest word review in SQLite:', err);
+    }
   }
+
+  window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
+  window.dispatchEvent(new CustomEvent('db_mutation'));
 }

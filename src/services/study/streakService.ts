@@ -1,5 +1,6 @@
 import { selectSql, executeSql } from '@/db/client';
 import { autoSyncRecordToSupabase } from '../sync/syncService';
+import { getActiveUserId } from '@/services/auth/classAuthService';
 
 /**
  * Study Streak Engine
@@ -13,14 +14,16 @@ import { autoSyncRecordToSupabase } from '../sync/syncService';
  *  - Continuous: if a full WIB day is missed (yesterday has no activity while
  *    today already started), the streak drops back to 0 and starts fresh.
  *
- * Persistence lives in `app_metadata` (synced to Supabase), so desktop and
- * Android share the same streak through cloud sync.
+ * Persistence lives in `app_metadata` (synced to Supabase), keys scoped per
+ * akun (`<key>__<uid>`) sehingga tiap akun punya streak-nya sendiri, dan
+ * device lain menarik nilai milik akun yang sama dari cloud.
  */
 
 const KEY_LAST_DAY = 'study_streak_last_day';      // YYYY-MM-DD (WIB) of last activity
 const KEY_STREAK = 'study_streak_current';         // current streak length
 const KEY_BEST = 'study_streak_best';              // best streak ever
 const KEY_TOTAL_DAYS = 'study_streak_total_days';  // total active study days
+const ALL_KEYS = [KEY_LAST_DAY, KEY_STREAK, KEY_BEST, KEY_TOTAL_DAYS];
 
 /** Current calendar date in WIB (Asia/Jakarta, UTC+7) as YYYY-MM-DD. */
 export function getWibDateStr(now: Date = new Date()): string {
@@ -28,9 +31,46 @@ export function getWibDateStr(now: Date = new Date()): string {
   return wib.toISOString().slice(0, 10);
 }
 
+function scopedKey(key: string): string {
+  return `${key}__${getActiveUserId()}`;
+}
+
+// Klaim data streak legacy (tanpa suffix akun) ke akun aktif — sekali saja
+// per akun per device, lalu baris legacy dihapus agar akun lain tidak ikut.
+const adoptionDone = new Set<string>();
+async function adoptLegacyStreakKeys(): Promise<void> {
+  const uid = getActiveUserId();
+  if (adoptionDone.has(uid)) return;
+  adoptionDone.add(uid);
+  try {
+    for (const key of ALL_KEYS) {
+      const legacy = await selectSql<{ value: string }>(
+        `SELECT value FROM app_metadata WHERE key = ? LIMIT 1;`,
+        [key]
+      );
+      if (!legacy || legacy.length === 0) continue;
+      const scoped = await selectSql<{ value: string }>(
+        `SELECT value FROM app_metadata WHERE key = ? LIMIT 1;`,
+        [scopedKey(key)]
+      );
+      if (!scoped || scoped.length === 0) {
+        const now = new Date().toISOString();
+        await executeSql(
+          `INSERT OR REPLACE INTO app_metadata (key, value, created_at, updated_at) VALUES (?, ?, ?, ?);`,
+          [scopedKey(key), legacy[0].value, now, now]
+        );
+      }
+      await executeSql(`DELETE FROM app_metadata WHERE key = ?;`, [key]);
+    }
+  } catch {
+    // best-effort; streak lokal tetap jalan
+  }
+}
+
 async function readMeta(key: string, fallback: string): Promise<string> {
   try {
-    const rows = await selectSql<any>(`SELECT value FROM app_metadata WHERE key = ?;`, [key]);
+    await adoptLegacyStreakKeys();
+    const rows = await selectSql<any>(`SELECT value FROM app_metadata WHERE key = ?;`, [scopedKey(key)]);
     return rows && rows.length > 0 ? String(rows[0].value) : fallback;
   } catch {
     return fallback;
@@ -39,14 +79,15 @@ async function readMeta(key: string, fallback: string): Promise<string> {
 
 async function upsertMeta(key: string, value: string): Promise<void> {
   const now = new Date().toISOString();
+  const finalKey = scopedKey(key);
   await executeSql(
     `INSERT INTO app_metadata (key, value, created_at, updated_at)
      VALUES (?, ?, ?, ?)
      ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at;`,
-    [key, value, now, now]
+    [finalKey, value, now, now]
   );
   try {
-    await autoSyncRecordToSupabase('app_metadata', { key, value, updated_at: now }, 'upsert');
+    await autoSyncRecordToSupabase('app_metadata', { key: finalKey, value, updated_at: now }, 'upsert');
   } catch {
     // Sync is best-effort; local streak still works offline.
   }

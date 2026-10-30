@@ -19,13 +19,16 @@ import type { ChineseWord } from '@/services/chinese/chineseDataset';
 import type { GameSentence } from '@/services/chinese/games/gameService';
 import { tokenizeSentence } from '@/services/chinese/games/gameService';
 import { getCurriculumOrder, getCurriculumWord } from './curriculumOrder';
+import { getActiveUserId } from '@/services/auth/classAuthService';
+import { rawIdFromScopedRowId, scopedPrefKey, scopedRowId } from '@/services/auth/accountScope';
+import { supabase } from '@/services/sync/supabaseClient';
 
 // ── Tipe ────────────────────────────────────────────────────────────────
 
 export type ProgramStage = 'new' | 'recognition' | 'recall' | 'mastery' | 'production';
 
 export interface ProgramProgress {
-  id: string; // = wordId
+  id: string; // = wordId mentah (row-id SQLite berprefiks `${uid}::${wordId}`)
   order_index: number;
   stage: ProgramStage;
   interval_days: number;
@@ -119,7 +122,7 @@ function stageDown(stage: ProgramStage): ProgramStage {
   return order[Math.max(0, i - 1)];
 }
 
-// ── Settings ────────────────────────────────────────────────────────────
+// ── Settings (per-akun: localStorage + snapshot cloud student_quest_meta) ──
 
 const DEFAULT_SETTINGS: ProgramSettings = {
   daily_new_target: 10,
@@ -128,55 +131,131 @@ const DEFAULT_SETTINGS: ProgramSettings = {
   last_completed_on: null,
 };
 
+const SETTINGS_LOCAL_BASE = 'omnilife_program_settings';
+const SETTINGS_CLOUD_SNAPSHOT_KEY = '__program_settings';
+
+export async function destroyProgramData(userId: string): Promise<void> {
+  try {
+    localStorage.removeItem(scopedPrefKey(SETTINGS_LOCAL_BASE, userId));
+  } catch {}
+}
+
+async function pushProgramSnapshotToCloud(
+  userId: string,
+  settings: ProgramSettings
+): Promise<void> {
+  if (!supabase || userId === 'usr_guest') return;
+  try {
+    const { data } = await supabase
+      .from('student_quest_meta')
+      .select('mnemonic_notes')
+      .eq('user_id', userId)
+      .maybeSingle();
+    const notes: Record<string, any> = { ...(data?.mnemonic_notes || {}) };
+    notes[SETTINGS_CLOUD_SNAPSHOT_KEY] = { ...settings, snapshot_at: Date.now() };
+    await supabase.from('student_quest_meta').upsert({
+      user_id: userId,
+      mnemonic_notes: notes,
+      updated_at: Date.now(),
+    });
+  } catch {}
+}
+
+async function persistSettings(userId: string, settings: ProgramSettings): Promise<void> {
+  try {
+    localStorage.setItem(scopedPrefKey(SETTINGS_LOCAL_BASE, userId), JSON.stringify(settings));
+  } catch {}
+  void Promise.resolve(pushProgramSnapshotToCloud(userId, settings)).catch(() => {});
+}
+
+/** Muat settings Program Harian milik akun aktif (fallback: cloud → legacy SQLite). */
 export async function loadSettings(): Promise<ProgramSettings> {
-  const rows = await selectSql<any>(
-    'SELECT * FROM chinese_program_settings WHERE id = 1 LIMIT 1;'
-  );
-  if (rows.length === 0) {
-    const now = new Date().toISOString();
-    await executeSql(
-      `INSERT OR REPLACE INTO chinese_program_settings
-       (id, daily_new_target, program_started_on, streak_days, last_completed_on, created_at, updated_at)
-       VALUES (1, 10, NULL, 0, NULL, ?, ?);`,
-      [now, now]
-    );
-    return { ...DEFAULT_SETTINGS };
+  const userId = getActiveUserId();
+  let settings: ProgramSettings | null = null;
+
+  // 1. localStorage scoped-per-akun (sumber utama)
+  try {
+    const raw = localStorage.getItem(scopedPrefKey(SETTINGS_LOCAL_BASE, userId));
+    if (raw) settings = JSON.parse(raw);
+  } catch {}
+
+  // 2. Snapshot cloud milik akun (HP ↔ PC sinkron)
+  if (!settings && supabase && userId !== 'usr_guest') {
+    try {
+      const { data } = await supabase
+        .from('student_quest_meta')
+        .select('mnemonic_notes')
+        .eq('user_id', userId)
+        .maybeSingle();
+      const snap = data?.mnemonic_notes?.[SETTINGS_CLOUD_SNAPSHOT_KEY];
+      if (snap?.program_started_on) {
+        settings = {
+          daily_new_target: snap.daily_new_target ?? 10,
+          program_started_on: snap.program_started_on ?? null,
+          streak_days: snap.streak_days ?? 0,
+          last_completed_on: snap.last_completed_on ?? null,
+        };
+      }
+    } catch {}
   }
-  const r = rows[0];
-  return {
-    daily_new_target: r.daily_new_target ?? 10,
-    program_started_on: r.program_started_on ?? null,
-    streak_days: r.streak_days ?? 0,
-    last_completed_on: r.last_completed_on ?? null,
-  };
+
+  // 3. Legacy global SQLite row id=1 (data lama device — diadopsi ke akun aktif)
+  if (!settings) {
+    try {
+      const rows = await selectSql<any>(
+        'SELECT * FROM chinese_program_settings WHERE id = 1 LIMIT 1;'
+      );
+      if (rows.length > 0) {
+        const r = rows[0];
+        settings = {
+          daily_new_target: r.daily_new_target ?? 10,
+          program_started_on: r.program_started_on ?? null,
+          streak_days: r.streak_days ?? 0,
+          last_completed_on: r.last_completed_on ?? null,
+        };
+      }
+    } catch {}
+  }
+
+  if (!settings) return { ...DEFAULT_SETTINGS };
+
+  // Adopt: simpan sebagai milik akun aktif agar tidak dibaca ulang tiap kali
+  if (settings.program_started_on || settings.streak_days > 0 || settings.last_completed_on) {
+    void persistSettings(userId, settings);
+  }
+  return settings;
 }
 
 /** Mulai program: simpan target harian + tanggal mulai (hari ini). */
 export async function startProgram(dailyNewTarget: number): Promise<void> {
-  const now = new Date().toISOString();
-  await executeSql(
-    `UPDATE chinese_program_settings
-     SET daily_new_target = ?, program_started_on = ?, updated_at = ?
-     WHERE id = 1;`,
-    [dailyNewTarget, todayISO(), now]
-  );
+  const userId = getActiveUserId();
+  const settings = await loadSettings();
+  const next: ProgramSettings = {
+    ...settings,
+    daily_new_target: dailyNewTarget,
+    program_started_on: todayISO(),
+  };
+  await persistSettings(userId, next);
+  void Promise.resolve(pushProgramSnapshotToCloud(userId, next)).catch(() => {});
 }
 
 export async function updateDailyTarget(dailyNewTarget: number): Promise<void> {
-  await executeSql('UPDATE chinese_program_settings SET daily_new_target = ?, updated_at = ? WHERE id = 1;', [
-    dailyNewTarget,
-    new Date().toISOString(),
-  ]);
+  const userId = getActiveUserId();
+  const settings = await loadSettings();
+  const next: ProgramSettings = { ...settings, daily_new_target: dailyNewTarget };
+  await persistSettings(userId, next);
 }
 
-// ── Progress rows ───────────────────────────────────────────────────────
+// ── Progress rows (per-akun: row id `${uid}::${wordId}`) ────────────────
 
 async function loadAllProgress(): Promise<ProgramProgress[]> {
+  const userId = getActiveUserId();
   const rows = await selectSql<any>(
-    'SELECT * FROM chinese_program_progress ORDER BY order_index ASC;'
+    `SELECT * FROM chinese_program_progress WHERE user_id = ? AND (source IS NULL OR source = '' OR source = 'program') ORDER BY order_index ASC;`,
+    [userId]
   );
   return rows.map((r) => ({
-    id: r.id,
+    id: r.word_id || rawIdFromScopedRowId(r.id),
     order_index: r.order_index ?? 0,
     stage: (r.stage || 'new') as ProgramStage,
     interval_days: r.interval_days ?? 1,
@@ -189,14 +268,25 @@ async function loadAllProgress(): Promise<ProgramProgress[]> {
 }
 
 async function insertProgress(wordId: string, orderIndex: number, today: string): Promise<void> {
+  const userId = getActiveUserId();
   const now = new Date().toISOString();
   // due_date = hari pengenalan: bila sesi ditinggal setelah kartu pengenalan,
   // kata tetap muncul lagi (tidak hilang) pada rencana berikutnya.
   await executeSql(
     `INSERT OR REPLACE INTO chinese_program_progress
-     (id, order_index, stage, interval_days, due_date, streak, lapses, introduced_on, last_reviewed_at, created_at, updated_at)
-     VALUES (?, ?, 'new', 1, ?, 0, 0, ?, ?, ?, ?);`,
-    [wordId, orderIndex, today, today, now, now, now]
+     (id, user_id, word_id, order_index, stage, interval_days, due_date, streak, lapses, introduced_on, last_reviewed_at, source, created_at, updated_at)
+     VALUES (?, ?, ?, ?, 'new', 1, ?, 0, 0, ?, ?, 'program', ?, ?);`,
+    [
+      scopedRowId(wordId),
+      userId,
+      wordId,
+      orderIndex,
+      today,
+      today,
+      null,
+      now,
+      now,
+    ]
   );
 }
 
@@ -306,9 +396,11 @@ export async function introduceWord(progressId: string, date?: string): Promise<
  */
 export async function answer(progressId: string, correct: boolean, date?: string): Promise<void> {
   const day = date || todayISO();
+  const userId = getActiveUserId();
+  const rowPk = scopedRowId(progressId);
   const rows = await selectSql<any>(
     'SELECT * FROM chinese_program_progress WHERE id = ? LIMIT 1;',
-    [progressId]
+    [rowPk]
   );
   if (rows.length === 0) return;
   const row = rows[0];
@@ -365,8 +457,8 @@ export async function answer(progressId: string, correct: boolean, date?: string
   await executeSql(
     `UPDATE chinese_program_progress
      SET stage = ?, interval_days = ?, due_date = ?, streak = ?, lapses = ?, last_reviewed_at = ?, updated_at = ?
-     WHERE id = ?;`,
-    [nextStage, nextInterval, nextDue, nextStreak, lapses, now, now, progressId]
+     WHERE id = ? AND user_id = ?;`,
+    [nextStage, nextInterval, nextDue, nextStreak, lapses, now, now, rowPk, userId]
   );
 }
 
@@ -375,13 +467,15 @@ export async function answer(progressId: string, correct: boolean, date?: string
 export async function completeSession(result: SessionResult, date?: string): Promise<void> {
   const day = date || todayISO();
   const now = new Date().toISOString();
+  const userId = getActiveUserId();
 
   await executeSql(
     `INSERT OR REPLACE INTO chinese_program_log
-     (id, log_date, words_introduced, words_reviewed, accuracy, duration_seconds, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?);`,
+     (id, user_id, log_date, words_introduced, words_reviewed, accuracy, duration_seconds, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
     [
-      `plog_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      `plog_${userId}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`,
+      userId,
       day,
       result.introduced,
       result.reviewed,
@@ -396,10 +490,11 @@ export async function completeSession(result: SessionResult, date?: string): Pro
   if (settings.last_completed_on === day) return; // sesi kedua di hari sama — streak tetap
   const yesterday = addDaysISO(day, -1);
   const nextStreak = settings.last_completed_on === yesterday ? settings.streak_days + 1 : 1;
-  await executeSql(
-    'UPDATE chinese_program_settings SET streak_days = ?, last_completed_on = ?, updated_at = ? WHERE id = 1;',
-    [nextStreak, day, now]
-  );
+  await persistSettings(userId, {
+    ...settings,
+    streak_days: nextStreak,
+    last_completed_on: day,
+  });
 }
 
 // ── Ringkasan program ───────────────────────────────────────────────────

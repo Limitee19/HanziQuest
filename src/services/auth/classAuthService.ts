@@ -32,6 +32,20 @@ export interface StudentProgressSummary {
 const STORAGE_ACTIVE_USER_KEY = 'omnilife_active_student_user';
 const STORAGE_ADMIN_AUTH_HASH_KEY = 'omnilife_admin_auth_hash';
 
+// ── Kanonikalisasi akun admin ───────────────────────────────────────────
+// Username '260242649788' dan 'admin' adalah satu orang yang sama, tetapi
+// dulu dipetakan ke ID berbeda (usr_admin_260242649788 vs usr_admin_master)
+// sehingga progres login di PC dengan instance alias bisa "terpisah" dari
+// HP. Semua data kini dirutekan ke satu ID kanonik; data alias lama
+// digabung (merge) satu kali ke ID kanonik saat login.
+const CANONICAL_ADMIN_ID = 'usr_admin_260242649788';
+const ALIAS_ADMIN_ID = 'usr_admin_master';
+const ADMIN_ALIAS_MERGE_FLAG = 'omnilife_admin_alias_merged_v1';
+
+export function canonicalizeUserId(id: string): string {
+  return id === ALIAS_ADMIN_ID ? CANONICAL_ADMIN_ID : id;
+}
+
 function getAdminAuthHash(): string {
   try {
     return sessionStorage.getItem(STORAGE_ADMIN_AUTH_HASH_KEY) || '';
@@ -209,7 +223,10 @@ export function getActiveUser(): StudentUser | null {
  */
 export function getActiveUserId(): string {
   const u = getActiveUser();
-  return u ? u.id : 'usr_guest';
+  if (!u) return 'usr_guest';
+  // Sesi lama bisa menyimpan id alias admin kanonikalisasi agar semua
+  // data (localStorage & DB) memakai satu partisi yang sama.
+  return canonicalizeUserId(u.id);
 }
 
 /**
@@ -243,6 +260,219 @@ function notifyAuthChange(user: StudentUser | null) {
     window.dispatchEvent(new CustomEvent(AUTH_STATE_CHANGE_EVENT, { detail: { user } }));
     window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
   }
+}
+
+// ── Merge data alias admin lama ke ID kanonik (satu kali per device/cloud) ──
+
+function stageRank(s?: string): number {
+  if (s === 'production') return 3;
+  if (s === 'recognition') return 2;
+  if (s === 'learning') return 1;
+  return 0;
+}
+
+type QuestProgressEntry = {
+  id?: string;
+  word_id?: string;
+  hanzi?: string;
+  stage: string;
+  due_date: string;
+  review_count: number;
+  updated_at: number;
+};
+
+function mergeQuestMaps(
+  target: Record<string, QuestProgressEntry>,
+  aliasMap: Record<string, QuestProgressEntry> | null
+): boolean {
+  let changed = false;
+  if (!aliasMap) return changed;
+  for (const [wordId, item] of Object.entries(aliasMap) as [string, QuestProgressEntry][]) {
+    const cur = target[wordId];
+    if (!cur) {
+      target[wordId] = item;
+      changed = true;
+      continue;
+    }
+    const tScore = stageRank(cur.stage);
+    const aScore = stageRank(item.stage);
+    const tTs = cur.updated_at || 0;
+    const aTs = item.updated_at || 0;
+    if (aScore > tScore || (aScore === tScore && aTs > tTs)) {
+      target[wordId] = item;
+      changed = true;
+    }
+  }
+  return changed;
+}
+
+async function mergeAliasAdminDataIntoCanonical(): Promise<void> {
+  if (typeof window === 'undefined') return;
+  try {
+    if (localStorage.getItem(ADMIN_ALIAS_MERGE_FLAG) === '1') return;
+  } catch {}
+
+  // 1. Merge localStorage progres quest alias → kanonik
+  let localMerged = false;
+  try {
+    const aliasRaw = localStorage.getItem(`omnilife_quest_progress_${ALIAS_ADMIN_ID}`);
+    if (aliasRaw) {
+      const canonicalRaw = localStorage.getItem(`omnilife_quest_progress_${CANONICAL_ADMIN_ID}`);
+      const canonicalMap: Record<string, QuestProgressEntry> =
+        canonicalRaw ? JSON.parse(canonicalRaw) : {};
+      const aliasMap: Record<string, QuestProgressEntry> = JSON.parse(aliasRaw);
+      const changed = mergeQuestMaps(canonicalMap, aliasMap);
+      if (changed || !canonicalRaw) {
+        localStorage.setItem(`omnilife_quest_progress_${CANONICAL_ADMIN_ID}`, JSON.stringify(canonicalMap));
+        localMerged = true;
+      }
+      localStorage.removeItem(`omnilife_quest_progress_${ALIAS_ADMIN_ID}`);
+      localMerged = true;
+    }
+  } catch {}
+
+  // 2. Merge cloud (student_quest_progress & student_quest_meta) alias → kanonik
+  let cloudMerged = false;
+  if (supabase) {
+    try {
+      // 2a. Progres per kata
+      const { data: aliasRows } = await supabase
+        .from('student_quest_progress')
+        .select('word_id, hanzi, stage, due_date, review_count, updated_at')
+        .eq('user_id', ALIAS_ADMIN_ID);
+      const { data: canonRows } = await supabase
+        .from('student_quest_progress')
+        .select('word_id, hanzi, stage, due_date, review_count, updated_at')
+        .eq('user_id', CANONICAL_ADMIN_ID);
+
+      if (aliasRows && aliasRows.length > 0) {
+        const canonIds = new Set((canonRows || []).map((r: any) => r.word_id));
+        const aliasMap: Record<string, any> = {};
+        aliasRows.forEach((r: any) => (aliasMap[r.word_id] = r));
+        const toUpload = aliasRows.filter((r: any) => !canonIds.has(r.word_id));
+        for (let i = 0; i < toUpload.length; i += 200) {
+          const batch = toUpload.slice(i, i + 200).map((r: any) => ({ ...r, user_id: CANONICAL_ADMIN_ID }));
+          await supabase.from('student_quest_progress').upsert(batch);
+        }
+        // Jika alias lebih maju dari kanonik untuk kata yang sama, timpa
+        for (const [wordId, aItem] of Object.entries(aliasMap)) {
+          const cItem = (canonRows || []).find((r: any) => r.word_id === wordId);
+          if (
+            cItem &&
+            (stageRank(aItem.stage) > stageRank(cItem.stage) ||
+              (stageRank(aItem.stage) === stageRank(cItem.stage) &&
+                (aItem.updated_at || 0) > (cItem.updated_at || 0)))
+          ) {
+            await supabase.from('student_quest_progress').upsert({
+              ...aItem,
+              user_id: CANONICAL_ADMIN_ID,
+            });
+          }
+        }
+        cloudMerged = true;
+      }
+
+      // 2b. Meta (profile, leech, mnemonik, snapshot progres)
+      const { data: aliasMeta } = await supabase
+        .from('student_quest_meta')
+        .select('*')
+        .eq('user_id', ALIAS_ADMIN_ID)
+        .maybeSingle();
+      const { data: canonMeta } = await supabase
+        .from('student_quest_meta')
+        .select('*')
+        .eq('user_id', CANONICAL_ADMIN_ID)
+        .maybeSingle();
+
+      if (aliasMeta) {
+        const notes: Record<string, any> = { ...(aliasMeta.mnemonic_notes || {}) };
+        const canonNotes: Record<string, any> = canonMeta?.mnemonic_notes || {};
+        for (const [k, v] of Object.entries(canonNotes)) {
+          if (k === '__profile_meta') {
+            const aPm = notes[k] as any;
+            const cPm = v as any;
+            notes[k] = (cPm?.updatedAt || 0) >= (aPm?.updatedAt || 0) ? cPm : aPm;
+            continue;
+          }
+          if (k === '__quest_progress') continue; // di-handle via 2a
+          if (typeof notes[k] === 'object' && notes[k] && typeof v === 'object' && v) {
+            const mergedItem = { ...(notes[k] as object), ...(v as object) };
+            notes[k] = mergedItem;
+          } else {
+            notes[k] = v;
+          }
+        }
+        // leech: merge berdasar wordId terbaru
+        const aliasLeech: any[] = Array.isArray(aliasMeta.leech_words) ? aliasMeta.leech_words : [];
+        const canonLeech: any[] = Array.isArray(canonMeta?.leech_words) ? canonMeta!.leech_words : [];
+        const leechMap = new Map<string, any>();
+        [...canonLeech, ...aliasLeech].forEach((l) => {
+          const k = l?.wordId || l?.word_id;
+          if (!k) return;
+          const prev = leechMap.get(k);
+          if (!prev || (l.updatedAt || 0) >= (prev.updatedAt || 0)) leechMap.set(k, l);
+        });
+        await supabase.from('student_quest_meta').upsert({
+          user_id: CANONICAL_ADMIN_ID,
+          mnemonic_notes: notes,
+          leech_words: Array.from(leechMap.values()),
+          updated_at: Date.now(),
+        });
+        await supabase.from('student_quest_meta').delete().eq('user_id', ALIAS_ADMIN_ID);
+        cloudMerged = true;
+      }
+
+      // 2c. Hapus baris progres alias setelah merge sukses
+      if (cloudMerged) {
+        await supabase.from('student_quest_progress').delete().eq('user_id', ALIAS_ADMIN_ID);
+      }
+    } catch (err) {
+      console.warn('Merge data alias admin gagal (akan dicoba lagi saat berikutnya):', err);
+      return; // Jangan pasang flag agar dicoba ulang
+    }
+  }
+
+  try {
+    if (localMerged || cloudMerged || !supabase) {
+      localStorage.setItem(ADMIN_ALIAS_MERGE_FLAG, '1');
+    }
+  } catch {}
+
+  if (localMerged || cloudMerged) {
+    try {
+      const mod = await import('@/services/chinese/questService');
+      mod.syncStudentQuestProgress(true).catch(() => {});
+    } catch {}
+  }
+}
+
+/**
+ * Rute akhir setiap path login: kanonikalisasi ID, merge data alias,
+ * simpan sesi, dan sinkronkan progres quest dari cloud.
+ */
+async function finalizeLogin(user: StudentUser, authHash?: string): Promise<StudentUser> {
+  const resolved: StudentUser =
+    user.id === ALIAS_ADMIN_ID
+      ? { ...user, id: CANONICAL_ADMIN_ID }
+      : user;
+
+  if (resolved.id === CANONICAL_ADMIN_ID) {
+    try {
+      await mergeAliasAdminDataIntoCanonical();
+    } catch {}
+  }
+
+  try {
+    localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(resolved));
+  } catch {}
+  if (authHash && resolved.role === 'admin') setAdminAuthHash(authHash);
+  notifyAuthChange(resolved);
+  if (resolved.role !== 'guest') {
+    import('@/services/chinese/questService')
+      .then((m) => m.syncStudentQuestProgress(true))
+      .catch(() => {});
+  }
+  return resolved;
 }
 
 /**
@@ -287,11 +517,7 @@ export async function loginUser(
           isActive: rpcRes.user.isActive ?? true,
           createdAt: rpcRes.user.createdAt || Date.now(),
         };
-        localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(loggedUser));
-        if (loggedUser.role === 'admin') setAdminAuthHash(inputHash);
-        notifyAuthChange(loggedUser);
-        import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
-        return { success: true, user: loggedUser };
+        return { success: true, user: await finalizeLogin(loggedUser, inputHash) };
       }
     } catch {}
 
@@ -344,11 +570,7 @@ export async function loginUser(
             isActive: data.is_active,
             createdAt: new Date(data.created_at).getTime(),
           };
-          localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(loggedUser));
-          if (loggedUser.role === 'admin') setAdminAuthHash(inputHash);
-          notifyAuthChange(loggedUser);
-          import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
-          return { success: true, user: loggedUser };
+          return { success: true, user: await finalizeLogin(loggedUser, inputHash) };
         } else {
           return { success: false, error: 'PIN yang Anda masukkan salah.' };
         }
@@ -378,11 +600,7 @@ export async function loginUser(
         avatar: 'avatar_master',
         createdAt: Date.now(),
       };
-      localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(adminUser));
-      setAdminAuthHash(inputHash);
-      notifyAuthChange(adminUser);
-      import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
-      return { success: true, user: adminUser };
+      return { success: true, user: await finalizeLogin(adminUser, inputHash) };
     }
     return {
       success: false,
@@ -412,11 +630,7 @@ export async function loginUser(
     createdAt: found.createdAt,
   };
 
-  localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(sessionUser));
-  if (sessionUser.role === 'admin') setAdminAuthHash(inputHash);
-  notifyAuthChange(sessionUser);
-  import('@/services/chinese/questService').then((m) => m.syncStudentQuestProgress(true)).catch(() => {});
-  return { success: true, user: sessionUser };
+  return { success: true, user: await finalizeLogin(sessionUser, inputHash) };
 }
 
 /**
@@ -880,11 +1094,16 @@ export async function deleteStudentAccount(userId: string): Promise<{ success: b
   const filtered = localUsers.filter((u) => u.id !== userId);
   saveStoredLocalUsers(filtered);
 
-  // Hapus data progres lokal siswa tersebut
+  // Hapus data progres lokal siswa tersebut (key lama sempat salah tulis:
+  // omnilife_leech_words_/omnilife_mnemonic_notes_ — kini semua key asli)
   try {
     localStorage.removeItem(`omnilife_quest_progress_${userId}`);
-    localStorage.removeItem(`omnilife_leech_words_${userId}`);
-    localStorage.removeItem(`omnilife_mnemonic_notes_${userId}`);
+    localStorage.removeItem(`omnilife_leeches_${userId}`);
+    localStorage.removeItem(`omnilife_mnemonics_${userId}`);
+    localStorage.removeItem(`omnilife_word_fails_${userId}`);
+    localStorage.removeItem(`omnilife_user_nickname_${userId}`);
+    localStorage.removeItem(`omnilife_program_settings__${userId}`);
+    localStorage.removeItem(`hanzi_quest_prefs__${userId}`);
   } catch {}
 
   // Hapus di Supabase (Gunakan RPC aman atau fallback direct delete)
