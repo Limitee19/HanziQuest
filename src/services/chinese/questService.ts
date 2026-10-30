@@ -59,48 +59,14 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
   try {
     const scopedKey = getQuestStorageKey();
 
-    // 1. Ambil data lokal
+    // 1. Ambil data lokal dari localStorage terisolasi per user
     const localMap: Record<string, { id: string; word_id?: string; hanzi?: string; stage: string; due_date: string; review_count: number; updated_at: number }> = {};
-
-    // a) LocalStorage per user
     try {
       const raw = localStorage.getItem(scopedKey);
       if (raw) {
         const parsed = JSON.parse(raw);
         Object.assign(localMap, parsed);
       }
-    } catch {}
-
-    // b) Legacy localStorage fallback
-    try {
-      const legacyRaw = localStorage.getItem('omnilife_quest_progress');
-      if (legacyRaw) {
-        const legacyParsed = JSON.parse(legacyRaw);
-        for (const [id, item] of Object.entries(legacyParsed)) {
-          if (!localMap[id]) {
-            localMap[id] = item as any;
-          }
-        }
-      }
-    } catch {}
-
-    // c) SQLite lokal
-    try {
-      const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number; updated_at?: number }>(
-        `SELECT id, stage, due_date, review_count, updated_at FROM chinese_program_progress;`
-      );
-      rows.forEach((r) => {
-        if (!localMap[r.id]) {
-          localMap[r.id] = {
-            id: r.id,
-            word_id: r.id,
-            stage: r.stage,
-            due_date: r.due_date,
-            review_count: r.review_count || 1,
-            updated_at: r.updated_at || now,
-          };
-        }
-      });
     } catch {}
 
     // 2. Ambil data cloud (student_quest_progress & student_quest_meta)
@@ -168,7 +134,7 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
       console.warn('Fetch student_quest_meta error:', e);
     }
 
-    // 3. Bidirectional Merge
+    // 3. Bidirectional Merge yang Akurat Berbasis Akun
     const stageRank = (s?: string) => {
       if (s === 'production') return 3;
       if (s === 'recognition') return 2;
@@ -176,73 +142,43 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
       return 0;
     };
 
-    const mergedMap: Record<string, any> = { ...localMap };
+    const cloudHasData = Object.keys(cloudProgressMap).length > 0;
+    const mergedMap: Record<string, any> = cloudHasData ? { ...cloudProgressMap } : { ...localMap };
     const toUploadList: any[] = [];
     let hasLocalChanges = false;
 
-    // Gabungkan semua ID kata yang ada di cloud dan lokal
-    const allWordIds = new Set([...Object.keys(localMap), ...Object.keys(cloudProgressMap)]);
+    if (!cloudHasData && Object.keys(localMap).length > 0) {
+      // Cloud akun masih 0 kata (baru pertama kali): upload data lokal sebagai seed awal
+      for (const item of Object.values(localMap)) {
+        toUploadList.push(item);
+      }
+    } else if (cloudHasData) {
+      // Cloud sudah memiliki data progres: Cloud adalah Single Source of Truth akun!
+      // Sinkronkan ke lokal dan cek jika ada kata lokal yang lebih baru
+      for (const [wordId, cloudItem] of Object.entries(cloudProgressMap)) {
+        const localItem = localMap[wordId];
+        if (localItem) {
+          const localScore = stageRank(localItem.stage);
+          const cloudScore = stageRank(cloudItem.stage);
+          const localTs = localItem.updated_at || 0;
+          const cloudTs = cloudItem.updated_at || 0;
 
-    for (const wordId of allWordIds) {
-      const localItem = localMap[wordId];
-      const cloudItem = cloudProgressMap[wordId];
-
-      if (localItem && !cloudItem) {
-        // Ada di lokal tapi belum di cloud -> jadwalkan upload ke cloud
-        toUploadList.push(localItem);
-      } else if (!localItem && cloudItem) {
-        // Ada di cloud tapi belum di lokal -> update ke lokal
-        mergedMap[wordId] = {
-          id: cloudItem.word_id,
-          word_id: cloudItem.word_id,
-          hanzi: cloudItem.hanzi,
-          stage: cloudItem.stage,
-          due_date: cloudItem.due_date,
-          review_count: cloudItem.review_count,
-          updated_at: cloudItem.updated_at,
-        };
-        hasLocalChanges = true;
-      } else if (localItem && cloudItem) {
-        // Ada di kedua sisi -> pilih yang progresnya paling maju / terbaru
-        const localScore = stageRank(localItem.stage);
-        const cloudScore = stageRank(cloudItem.stage);
-        const localCount = localItem.review_count || 1;
-        const cloudCount = cloudItem.review_count || 1;
-        const localTs = localItem.updated_at || 0;
-        const cloudTs = cloudItem.updated_at || 0;
-
-        let localIsBetter = false;
-        let cloudIsBetter = false;
-
-        if (localScore > cloudScore) {
-          localIsBetter = true;
-        } else if (cloudScore > localScore) {
-          cloudIsBetter = true;
-        } else if (localCount > cloudCount) {
-          localIsBetter = true;
-        } else if (cloudCount > localCount) {
-          cloudIsBetter = true;
-        } else if (localTs > cloudTs) {
-          localIsBetter = true;
-        } else if (cloudTs > localTs) {
-          cloudIsBetter = true;
-        }
-
-        if (cloudIsBetter) {
-          mergedMap[wordId] = {
-            id: cloudItem.word_id,
-            word_id: cloudItem.word_id,
-            hanzi: cloudItem.hanzi || localItem.hanzi,
-            stage: cloudItem.stage,
-            due_date: cloudItem.due_date,
-            review_count: cloudItem.review_count,
-            updated_at: cloudItem.updated_at,
-          };
+          if (localScore > cloudScore || (localScore === cloudScore && localTs > cloudTs + 1000)) {
+            mergedMap[wordId] = localItem;
+            toUploadList.push(localItem);
+          } else {
+            mergedMap[wordId] = cloudItem;
+            hasLocalChanges = true;
+          }
+        } else {
+          mergedMap[wordId] = cloudItem;
           hasLocalChanges = true;
-        } else if (localIsBetter) {
-          toUploadList.push(localItem);
         }
       }
+      // Hapus cache legacy unpartitioned agar tidak mencemari akun
+      try {
+        localStorage.removeItem('omnilife_quest_progress');
+      } catch {}
     }
 
     // 4. Upload ke Cloud jika ada data baru / lebih maju dari lokal
@@ -333,9 +269,11 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
   try {
     const todayStr = new Date().toISOString().slice(0, 10);
     const progressMap = new Map<string, { id: string; stage: string; due_date: string; review_count?: number }>();
+    const userId = getActiveUserId();
+    const isGuest = userId === 'usr_guest';
     const scopedKey = getQuestStorageKey();
 
-    // 1) Ambil dari localStorage per-user (sudah disinkronkan & dimerge)
+    // 1) Ambil dari localStorage per-user (sudah disinkronkan & dimerge dengan Cloud)
     try {
       const rawLocal = localStorage.getItem(scopedKey);
       if (rawLocal) {
@@ -346,28 +284,29 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
       }
     } catch {}
 
-    // 2) Ambil dari SQLite jika ada kata tambahan
-    try {
-      const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number }>(
-        `SELECT id, stage, due_date, review_count FROM chinese_program_progress;`
-      );
-      rows.forEach((r) => {
-        if (!progressMap.has(r.id)) progressMap.set(r.id, r);
-      });
-    } catch {}
+    // Fallback SQLite & legacy HANYA jika akun tamu (agar tidak mengotori akun terdaftar)
+    if (isGuest) {
+      try {
+        const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number }>(
+          `SELECT id, stage, due_date, review_count FROM chinese_program_progress;`
+        );
+        rows.forEach((r) => {
+          if (!progressMap.has(r.id)) progressMap.set(r.id, r);
+        });
+      } catch {}
 
-    // 3) Fallback legacy jika ada
-    try {
-      const legacyRaw = localStorage.getItem('omnilife_quest_progress');
-      if (legacyRaw) {
-        const legacyMap = JSON.parse(legacyRaw);
-        for (const [id, item] of Object.entries(legacyMap)) {
-          if (!progressMap.has(id)) {
-            progressMap.set(id, item as any);
+      try {
+        const legacyRaw = localStorage.getItem('omnilife_quest_progress');
+        if (legacyRaw) {
+          const legacyMap = JSON.parse(legacyRaw);
+          for (const [id, item] of Object.entries(legacyMap)) {
+            if (!progressMap.has(id)) {
+              progressMap.set(id, item as any);
+            }
           }
         }
-      }
-    } catch {}
+      } catch {}
+    }
 
     for (const w of course.words) {
       const lv = parseInt(w.level, 10);
@@ -564,6 +503,8 @@ export async function fetchMasteredWords(): Promise<CourseWord[]> {
   } catch {}
 
   const masteredIds = new Set<string>();
+  const userId = getActiveUserId();
+  const isGuest = userId === 'usr_guest';
   const scopedKey = getQuestStorageKey();
 
   // 1. Ambil dari localStorage terisolasi per siswa (sudah disinkronkan)
@@ -584,31 +525,32 @@ export async function fetchMasteredWords(): Promise<CourseWord[]> {
     }
   } catch {}
 
-  // 2. Ambil dari SQLite jika ada
-  try {
-    const rows = await selectSql<{ id: string; stage: string; review_count?: number }>(
-      `SELECT id, stage, review_count FROM chinese_program_progress WHERE stage IN ('production', 'recognition') OR due_date = '9999-12-31' OR review_count >= 1;`
-    );
-    rows.forEach((r) => masteredIds.add(r.id));
-  } catch {}
+  // Fallback ke SQLite & legacy HANYA jika akun tamu
+  if (isGuest) {
+    try {
+      const rows = await selectSql<{ id: string; stage: string; review_count?: number }>(
+        `SELECT id, stage, review_count FROM chinese_program_progress WHERE stage IN ('production', 'recognition') OR due_date = '9999-12-31' OR review_count >= 1;`
+      );
+      rows.forEach((r) => masteredIds.add(r.id));
+    } catch {}
 
-  // 3. Fallback legacy jika ada
-  try {
-    const legacyRaw = localStorage.getItem('omnilife_quest_progress');
-    if (legacyRaw) {
-      const legacyMap = JSON.parse(legacyRaw);
-      for (const [id, item] of Object.entries(legacyMap) as any) {
-        if (
-          item.stage === 'production' ||
-          item.stage === 'recognition' ||
-          item.due_date === '9999-12-31' ||
-          (item.review_count && item.review_count >= 1)
-        ) {
-          masteredIds.add(id);
+    try {
+      const legacyRaw = localStorage.getItem('omnilife_quest_progress');
+      if (legacyRaw) {
+        const legacyMap = JSON.parse(legacyRaw);
+        for (const [id, item] of Object.entries(legacyMap) as any) {
+          if (
+            item.stage === 'production' ||
+            item.stage === 'recognition' ||
+            item.due_date === '9999-12-31' ||
+            (item.review_count && item.review_count >= 1)
+          ) {
+            masteredIds.add(id);
+          }
         }
       }
-    }
-  } catch {}
+    } catch {}
+  }
 
   return course.words.filter((w) => masteredIds.has(w.id) || masteredIds.has(w.hanzi));
 }
