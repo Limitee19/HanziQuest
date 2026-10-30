@@ -142,60 +142,100 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
       return 0;
     };
 
-    const cloudHasData = Object.keys(cloudProgressMap).length > 0;
-    const mergedMap: Record<string, any> = cloudHasData ? { ...cloudProgressMap } : { ...localMap };
-    const toUploadList: any[] = [];
-    let hasLocalChanges = false;
+     const cloudHasData = Object.keys(cloudProgressMap).length > 0;
+     const mergedMap: Record<string, any> = cloudHasData ? { ...cloudProgressMap } : { ...localMap };
+     const toUploadList: any[] = [];
+     let hasLocalChanges = false;
 
-    if (!cloudHasData && Object.keys(localMap).length > 0) {
-      // Cloud akun masih 0 kata (baru pertama kali): upload data lokal sebagai seed awal
-      for (const item of Object.values(localMap)) {
-        toUploadList.push(item);
-      }
-    } else if (cloudHasData) {
-      // Cloud sudah memiliki data progres: Cloud adalah Single Source of Truth akun!
-      // Sinkronkan ke lokal dan cek jika ada kata lokal yang lebih baru
-      for (const [wordId, cloudItem] of Object.entries(cloudProgressMap)) {
-        const localItem = localMap[wordId];
-        if (localItem) {
-          const localScore = stageRank(localItem.stage);
-          const cloudScore = stageRank(cloudItem.stage);
-          const localTs = localItem.updated_at || 0;
-          const cloudTs = cloudItem.updated_at || 0;
+     if (!cloudHasData && Object.keys(localMap).length > 0) {
+       // Cloud akun masih 0 kata (baru pertama kali): upload data lokal sebagai seed awal
+       for (const item of Object.values(localMap)) {
+         toUploadList.push(item);
+       }
+     } else if (cloudHasData) {
+       // Cloud sudah memiliki data progres: Cloud adalah Single Source of Truth akun!
+       // Sinkronkan ke lokal dan cek jika ada kata lokal yang lebih baru
+       for (const [wordId, cloudItem] of Object.entries(cloudProgressMap)) {
+         const localItem = localMap[wordId];
+         if (localItem) {
+           const localScore = stageRank(localItem.stage);
+           const cloudScore = stageRank(cloudItem.stage);
+           const localTs = localItem.updated_at || 0;
+           const cloudTs = cloudItem.updated_at || 0;
 
-          if (localScore > cloudScore || (localScore === cloudScore && localTs > cloudTs + 1000)) {
-            mergedMap[wordId] = localItem;
-            toUploadList.push(localItem);
-          } else {
-            mergedMap[wordId] = cloudItem;
-            hasLocalChanges = true;
-          }
-        } else {
-          mergedMap[wordId] = cloudItem;
-          hasLocalChanges = true;
-        }
-      }
-      // Hapus cache legacy unpartitioned agar tidak mencemari akun
-      try {
-        localStorage.removeItem('omnilife_quest_progress');
-      } catch {}
-    }
+           if (localScore > cloudScore || (localScore === cloudScore && localTs > cloudTs + 1000)) {
+             mergedMap[wordId] = localItem;
+             toUploadList.push(localItem);
+           } else {
+             mergedMap[wordId] = cloudItem;
+             hasLocalChanges = true;
+           }
+         } else {
+           mergedMap[wordId] = cloudItem;
+           hasLocalChanges = true;
+         }
+       }
+       
+       // CRITICAL FIX: Capture words existing ONLY in localStorage (not in cloud yet)
+       // This prevents orphaned local words from never being uploaded
+       for (const [wordId, localItem] of Object.entries(localMap)) {
+         if (!cloudProgressMap[wordId]) {
+           mergedMap[wordId] = localItem;
+           toUploadList.push(localItem);
+         }
+       }
+       
+       // Hapus cache legacy unpartitioned agar tidak mencemari akun
+       try {
+         localStorage.removeItem('omnilife_quest_progress');
+       } catch {}
+     }
 
-    // 4. Upload ke Cloud jika ada data baru / lebih maju dari lokal
-    if (toUploadList.length > 0) {
-      for (let i = 0; i < toUploadList.length; i += 200) {
-        const batch = toUploadList.slice(i, i + 200).map((item) => ({
-          user_id: userId,
-          word_id: item.word_id || item.id,
-          hanzi: item.hanzi || '',
-          stage: item.stage || 'learning',
-          due_date: item.due_date || new Date().toISOString().slice(0, 10),
-          review_count: item.review_count || 1,
-          updated_at: item.updated_at || Date.now(),
-        }));
-        await supabase.from('student_quest_progress').upsert(batch);
-      }
-    }
+     // Count validation: log sync stats for debugging
+     const localCount = Object.keys(localMap).length;
+     const cloudCount = Object.keys(cloudProgressMap).length;
+     const uploadCount = toUploadList.length;
+     if (uploadCount > 0 || localCount !== cloudCount) {
+       console.debug(`[Quest Sync] Local: ${localCount}, Cloud: ${cloudCount}, Uploading: ${uploadCount}`);
+     }
+
+     // 4. Upload ke Cloud jika ada data baru / lebih maju dari lokal
+     if (toUploadList.length > 0) {
+       for (let i = 0; i < toUploadList.length; i += 200) {
+         const batch = toUploadList.slice(i, i + 200).map((item) => {
+           const wordId = item.word_id || item.id;
+           if (!wordId) {
+             console.warn('Upload item missing word_id:', item);
+           }
+           return {
+             user_id: userId,
+             word_id: wordId,
+             hanzi: item.hanzi || '',
+             stage: item.stage || 'learning',
+             due_date: item.due_date || new Date().toISOString().slice(0, 10),
+             review_count: item.review_count || 1,
+             updated_at: item.updated_at || Date.now(),
+           };
+         });
+         const { error } = await supabase.from('student_quest_progress').upsert(batch);
+         if (error) {
+           console.error('Upsert batch error:', error, 'batch size:', batch.length);
+         }
+       }
+       
+       // Post-upload validation: verify cloud count matches expected
+       try {
+         const { count: cloudCountAfter } = await supabase
+           .from('student_quest_progress')
+           .select('word_id', { count: 'exact', head: true })
+           .eq('user_id', userId);
+         if (cloudCountAfter != null && cloudCountAfter < Object.keys(mergedMap).length) {
+           console.warn(`Post-sync mismatch: merged=${Object.keys(mergedMap).length}, cloud=${cloudCountAfter}`);
+         }
+       } catch (e) {
+         console.warn('Post-upload validation failed:', e);
+       }
+     }
 
     // Selalu simpan snapshot cadangan ke student_quest_meta agar 100% aman
     const updatedNotes = { ...existingNotes, __quest_progress: mergedMap };
