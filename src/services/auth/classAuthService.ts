@@ -468,6 +468,11 @@ async function finalizeLogin(user: StudentUser, authHash?: string): Promise<Stud
   if (authHash && resolved.role === 'admin') setAdminAuthHash(authHash);
   notifyAuthChange(resolved);
   if (resolved.role !== 'guest') {
+    // Tarik profil (nama panggilan, nama lengkap, avatar) & gap-fill profil
+    // dari cloud + adopt profil lokal bila cloud kosong.
+    void syncActiveUserProfileFromCloud()
+      .then((fresh) => fresh && notifyAuthChange(fresh))
+      .catch(() => {});
     import('@/services/chinese/questService')
       .then((m) => m.syncStudentQuestProgress(true))
       .catch(() => {});
@@ -753,28 +758,38 @@ export async function updateUserProfile(updates: {
   // Sync update profil ke Supabase app_users dan student_quest_meta jika online
   if (supabase) {
     try {
-      // 1. Coba update app_users dengan semua kolom
-      const dbUpdates: Record<string, any> = {
-        username: newUsername,
+      // 1. Update kolom profil yang pasti di-GRANT ke anon:
+      //    display_name, nickname, avatar, updated_at.
+      //    (username/pin_hash TIDAK di-grant → update berisi kolom itu
+      //     menggelembongkan error dan membuat seluruh update profil gagal)
+      const profileUpdates: Record<string, any> = {
         display_name: updatedDisplayName,
         nickname: updatedNickname,
         avatar: updatedAvatar,
         updated_at: new Date().toISOString(),
       };
-      if (newPinHash) {
-        dbUpdates.pin_hash = newPinHash;
+      const { error: profileErr } = await supabase
+        .from('app_users')
+        .update(profileUpdates)
+        .eq('id', currentUser.id);
+
+      // 2. Username & PIN diupdate terpisah (dengan toleransi bila kolom
+      //    tidak di-grant — tetap tersinkroni via RPC admin atau meta).
+      if (newUsername !== currentUser.username || newPinHash) {
+        const credUpdates: Record<string, any> = { updated_at: new Date().toISOString() };
+        if (newUsername !== currentUser.username) credUpdates.username = newUsername;
+        if (newPinHash) credUpdates.pin_hash = newPinHash;
+        const { error: credErr } = await supabase
+          .from('app_users')
+          .update(credUpdates)
+          .eq('id', currentUser.id);
+        if (credErr) {
+          console.warn('Update username/PIN ke app_users ditolak kolom GRANT (dicoba via meta):', credErr.message);
+        }
       }
 
-      const { error: primaryErr } = await supabase.from('app_users').update(dbUpdates).eq('id', currentUser.id);
-      if (primaryErr) {
-        // Fallback jika kolom nickname/avatar belum ada di app_users
-        const safeUpdates: Record<string, any> = {
-          username: newUsername,
-          display_name: updatedDisplayName,
-          updated_at: new Date().toISOString(),
-        };
-        if (newPinHash) safeUpdates.pin_hash = newPinHash;
-        await supabase.from('app_users').update(safeUpdates).eq('id', currentUser.id);
+      if (profileErr) {
+        console.warn('Update profil app_users gagal (tetap lanjut ke mirror meta):', profileErr.message);
       }
 
       // 2. Simpan juga ke student_quest_meta agar selalu 100% tersinkronkan antar device (HP & PC)
@@ -827,11 +842,12 @@ export async function syncActiveUserProfileFromCloud(): Promise<StudentUser | nu
       return currentUser;
     }
 
-    let updatedDisplayName = data.display_name || currentUser.displayName;
-    let updatedNickname = (data as any).nickname || currentUser.nickname || '';
-    let updatedAvatar = (data as any).avatar || currentUser.avatar || (data.role === 'admin' ? 'avatar_master' : 'avatar_panda');
+    let updatedDisplayName = data.display_name || '';
+    let updatedNickname = (data as any).nickname || '';
+    let updatedAvatar = (data as any).avatar || '';
+    let cloudEmpty = !updatedNickname && !updatedAvatar;
 
-    // 2. Cek juga di student_quest_meta untuk sinkronisasi cadangan
+    // 2. Mirror cadangan di student_quest_meta (__profile_meta)
     try {
       const { data: meta } = await supabase
         .from('student_quest_meta')
@@ -844,14 +860,82 @@ export async function syncActiveUserProfileFromCloud(): Promise<StudentUser | nu
         if (pm.nickname) updatedNickname = pm.nickname;
         if (pm.displayName) updatedDisplayName = pm.displayName;
         if (pm.avatar) updatedAvatar = pm.avatar;
+        if (updatedNickname || updatedAvatar) cloudEmpty = false;
       }
     } catch {}
 
-    if (!updatedNickname) {
-      updatedNickname = getStoredUserNickname(currentUser.id);
-    } else {
-      setStoredUserNickname(currentUser.id, updatedNickname);
+    // 3. Profile default-role bila memang tidak pernah diset di manapun
+    const roleDefaultAvatar = data.role === 'admin' ? 'avatar_master' : 'avatar_panda';
+
+    // 4. ADOPT: profil lokal device dipush ke cloud bila cloud masih kosong
+    //    (profil diset saat masa sync error / belum pernah upload)
+    if (cloudEmpty) {
+      const localNickname = currentUser.nickname || getStoredUserNickname(currentUser.id) || '';
+      const localDisplayName = currentUser.displayName || '';
+      const localAvatar = currentUser.avatar || '';
+      const hasLocalProfile = !!localNickname || !!localAvatar || (localDisplayName && localDisplayName !== data.display_name);
+
+      if (hasLocalProfile) {
+        updatedDisplayName = localDisplayName || data.display_name;
+        updatedNickname = localNickname;
+        updatedAvatar = localAvatar || roleDefaultAvatar;
+
+        try {
+          await supabase
+            .from('app_users')
+            .update({
+              display_name: updatedDisplayName,
+              nickname: updatedNickname,
+              avatar: updatedAvatar,
+              updated_at: new Date().toISOString(),
+            })
+            .eq('id', currentUser.id);
+        } catch {}
+        cloudEmpty = false;
+      }
     }
+
+    if (!updatedNickname) {
+      updatedNickname = getStoredUserNickname(currentUser.id) || '';
+    }
+    if (!updatedAvatar) {
+      updatedAvatar = currentUser.avatar || roleDefaultAvatar;
+    }
+    if (!updatedDisplayName) {
+      updatedDisplayName = currentUser.displayName || data.display_name;
+    }
+
+    setStoredUserNickname(currentUser.id, updatedNickname);
+
+    // 5. Tulis mirror __profile_meta agar profil tetap tersinkron antar device
+    //    meski kolom app_users bermasalah (kolom ini jauh lebih bebas).
+    try {
+      const { data: existingMeta } = await supabase
+        .from('student_quest_meta')
+        .select('mnemonic_notes')
+        .eq('user_id', currentUser.id)
+        .maybeSingle();
+      const curNotesRoot = (existingMeta?.mnemonic_notes as Record<string, any>) || {};
+      const prevPm = curNotesRoot.__profile_meta || {};
+      const newPm = {
+        nickname: updatedNickname,
+        displayName: updatedDisplayName,
+        avatar: updatedAvatar,
+        updatedAt: Math.max(Date.now(), prevPm.updatedAt || 0),
+      };
+      const changed =
+        newPm.nickname !== prevPm.nickname ||
+        newPm.displayName !== prevPm.displayName ||
+        newPm.avatar !== prevPm.avatar;
+      if (changed) {
+        curNotesRoot.__profile_meta = newPm;
+        await supabase.from('student_quest_meta').upsert({
+          user_id: currentUser.id,
+          mnemonic_notes: curNotesRoot,
+          updated_at: Date.now(),
+        });
+      }
+    } catch {}
 
     const freshUser: StudentUser = {
       ...currentUser,
