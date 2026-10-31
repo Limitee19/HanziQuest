@@ -3,7 +3,7 @@
 //
 // Tiga mode: Kartu Kilat (flashcard frasa Indonesia → Mandarin),
 // Kuis (pilihan ganda hanzi), dan SmartTranslate (AI, panel terpisah).
-// Status hafalan & koleksi tersimpan lokal via expressionService.
+// Status hafalan Dan koleksi tersimpan lokal via expressionService.
 // ====================================================================
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ArrowLeft, RotateCcw, Sparkles, Volume2, Zap } from 'lucide-react';

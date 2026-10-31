@@ -174,7 +174,7 @@ export function VocabularyDetailModal({
               className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 cursor-pointer flex items-center justify-center gap-1.5 text-xs"
             >
               <Play className="w-3.5 h-3.5" />
-              Latihan Pinyin & Quiz
+              Latihan Pinyin Dan Quiz
             </Button>
           )}
 

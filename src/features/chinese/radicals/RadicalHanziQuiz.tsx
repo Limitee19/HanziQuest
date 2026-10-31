@@ -20,7 +20,7 @@ import { playCorrectSfx, playWrongSfx, playFinishSfx, speakChinese } from '@/ser
 /**
  * RadicalHanziQuiz — Latihan menghafal hanzi dari SATU radikal.
  * ─────────────────────────────────────────────────────────────
- * Semua soal & opsi diambil dari daftar hanzi radikal itu sendiri
+ * Semua soal Dan opsi diambil dari daftar hanzi radikal itu sendiri
  * (mis. radikal 口 → 喝, 叫, 吃, 号, …). Dua tipe soal bergantian:
  *   1. hanzi  → arti       2. arti → hanzi
  * Setiap jawaban menampilkan contoh kalimat dari dataset untuk penguatan.
@@ -112,7 +112,7 @@ export function RadicalHanziQuiz({
     loadQuizScoreHistory().then(setHistory);
   }, []);
 
-  // Ronde baru saat mount & saat radikal berganti; reset semua state jawaban
+  // Ronde baru saat mount Dan saat radikal berganti; reset semua state jawaban
   useEffect(() => {
     setIndex(0);
     setSelected(null);

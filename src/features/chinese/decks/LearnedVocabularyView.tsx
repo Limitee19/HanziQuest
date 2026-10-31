@@ -301,13 +301,13 @@ export function LearnedVocabularyView() {
   const [decks, setDecks] = useState<DeckItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Filters & View Mode
+  // Filters Dan View Mode
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDeckId, setSelectedDeckId] = useState<string>('all');
   const [selectedStatus, setSelectedStatus] = useState<string>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'pinyin_tones'>('grid');
 
-  // Detail Modal & Writing Practice
+  // Detail Modal Dan Writing Practice
   const [selectedCard, setSelectedCard] = useState<LearnedCardItem | null>(null);
   const [selectedWord, setSelectedWord] = useState<ChineseWord | null>(null);
   const [activeWritingCharacter, setActiveWritingCharacter] = useState<{
@@ -397,7 +397,7 @@ export function LearnedVocabularyView() {
 
   const playDatasetAudio = (word: ChineseWord) => {
     try {
-      // MP3 offline untuk kata & kalimat sudah dibundle lewat build script;
+      // MP3 offline untuk kata Dan kalimat sudah dibundle lewat build script;
       // chineseAudioPlayer otomatis fallback ke TTS bila file belum ada.
       chineseAudioPlayer.playText(word.hanzi, chineseAudioPlayer.getSpeed());
     } catch (_) {}
@@ -455,12 +455,12 @@ export function LearnedVocabularyView() {
 
   return (
     <div className="space-y-4 sm:space-y-6">
-      {/* 1. Header & Summary Stats */}
+      {/* 1. Header Dan Summary Stats */}
       <Card className="bg-white dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-800 rounded-2xl sm:rounded-3xl">
         <CardContent className="p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4">
           <div className="space-y-1">
             <h3 className="font-display text-sm sm:text-base font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 shrink-0" /> Kosakata & Hanzi dari Anki Decks
+              <BookOpen className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 shrink-0" /> Kosakata Dan Hanzi dari Anki Decks
             </h3>
             <p className="text-[11px] sm:text-xs text-zinc-500 dark:text-zinc-400">
               Daftar seluruh kartu dan karakter Hanzi yang telah diimpor dan dipelajari melalui Anki SRS.
@@ -531,7 +531,7 @@ export function LearnedVocabularyView() {
         </CardContent>
       </Card>
 
-      {/* 2. Filters, Search Bar & View Mode Switcher */}
+      {/* 2. Filters, Search Bar Dan View Mode Switcher */}
       <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2.5 sm:gap-3">
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1">
           {/* Search Bar */}
@@ -615,7 +615,7 @@ export function LearnedVocabularyView() {
       ) : viewMode === 'pinyin_tones' ? (
         /* ══ MATRIKS 4 NADA — DATASET HSK 1–3 + KARTU ANKI ═══════════════════ */
         <div className="space-y-4">
-          {/* Header Info, Statistik & Sakelar Cakupan */}
+          {/* Header Info, Statistik Dan Sakelar Cakupan */}
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-blue-50/70 dark:bg-blue-950/30 border border-blue-200/70 dark:border-blue-900/40">
             <div className="space-y-1">
               <h4 className="text-xs sm:text-sm font-bold text-blue-950 dark:text-blue-200 flex items-center gap-1.5">
@@ -704,7 +704,7 @@ export function LearnedVocabularyView() {
                 className="bg-white dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-800 hover:border-blue-500/50 transition-all p-4 space-y-3 flex flex-col justify-between shadow-xs group"
               >
                 <div className="space-y-2">
-                  {/* Top Bar: Deck Name & Status */}
+                  {/* Top Bar: Deck Name Dan Status */}
                   <div className="flex items-center justify-between gap-2">
                     <span className="px-2 py-0.5 rounded-md text-[11px] font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 truncate max-w-[140px]">
                       {card.deckName}
@@ -766,7 +766,7 @@ export function LearnedVocabularyView() {
                   })()}
                 </div>
 
-                {/* Bottom Actions & SRS Info */}
+                {/* Bottom Actions Dan SRS Info */}
                 <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 flex items-center justify-between gap-2">
                   <div className="flex items-center gap-1.5 text-[11px] text-zinc-400 font-mono">
                     <Clock className="w-3 h-3" />
@@ -811,7 +811,7 @@ export function LearnedVocabularyView() {
         </div>
       )}
 
-      {/* 4. Responsive Card Detail Modal (Fixed for Mobile & Desktop) */}
+      {/* 4. Responsive Card Detail Modal (Fixed for Mobile Dan Desktop) */}
       {selectedCard && (
         <div
           className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
@@ -820,7 +820,7 @@ export function LearnedVocabularyView() {
           }}
         >
           <div className="w-full max-w-lg bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 shadow-2xl rounded-2xl sm:rounded-3xl max-h-[90vh] sm:max-h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 my-auto">
-            {/* Modal Header - Sticky & Always Visible on Mobile */}
+            {/* Modal Header - Sticky Dan Always Visible on Mobile */}
             <div className="sticky top-0 z-10 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md px-4 sm:px-5 py-3.5 border-b border-zinc-100 dark:border-zinc-800 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2 min-w-0 pr-2">
                 <span className="px-2 py-0.5 rounded text-xs font-semibold bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 truncate max-w-[160px]">

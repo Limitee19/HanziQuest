@@ -443,7 +443,7 @@ export function calculateIntervalPreviews(card: FlashcardItem): ReviewSchedulePr
 }
 
 /**
- * 1. Fetch All Decks with SRS Counts & Hierarchical Subdeck Tree
+ * 1. Fetch All Decks with SRS Counts Dan Hierarchical Subdeck Tree
  */
 export async function fetchDecks(): Promise<DeckItem[]> {
   try {

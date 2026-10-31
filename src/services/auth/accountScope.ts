@@ -1,7 +1,7 @@
 /**
  * accountScope.ts
  * ────────────────
- * Sumber tunggal aturan partisi data per-akun (multi-akun & multi-device).
+ * Sumber tunggal aturan partisi data per-akun (multi-akun Dan multi-device).
  *
  * Semua data pembelajaran (progres, streak, runtutan hari / Program Harian,
  * flashcard SRS, preferensi belajar) WAJIB terikat pada akun yang sedang

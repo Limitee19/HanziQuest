@@ -142,7 +142,7 @@ export function AnkiImportModal({ isOpen, onClose, onImportSuccess }: AnkiImport
                 </span>
               </h3>
               <p className="text-[11px] sm:text-xs text-zinc-500">
-                Impor deck flashcard Anki lengkap dengan audio & gambar.
+                Impor deck flashcard Anki lengkap dengan audio Dan gambar.
               </p>
             </div>
           </div>
@@ -163,7 +163,7 @@ export function AnkiImportModal({ isOpen, onClose, onImportSuccess }: AnkiImport
             </div>
           )}
 
-          {/* STEP 1: UPLOAD ZONE (if no preview & no result) */}
+          {/* STEP 1: UPLOAD ZONE (if no preview Dan no result) */}
           {!preview && !importResult && !analyzing && (
             <div className="space-y-4">
               {/* Opsi terjemahan Inggris → Indonesia */}
@@ -253,7 +253,7 @@ export function AnkiImportModal({ isOpen, onClose, onImportSuccess }: AnkiImport
           {/* STEP 3: PREVIEW SCREEN */}
           {preview && !importResult && !importing && (
             <div className="space-y-5">
-              {/* File & Meta Banner */}
+              {/* File Dan Meta Banner */}
               <div className="flex items-center justify-between p-3.5 rounded-xl bg-zinc-100 dark:bg-zinc-800">
                 <div className="flex items-center gap-3">
                   <FileArchive className="w-6 h-6 text-blue-600 shrink-0" />
@@ -353,10 +353,10 @@ export function AnkiImportModal({ isOpen, onClose, onImportSuccess }: AnkiImport
                 </div>
               </div>
 
-              {/* Detected Fields & Card Types */}
+              {/* Detected Fields Dan Card Types */}
               <div className="space-y-2">
                 <label className="text-xs font-bold uppercase tracking-wider text-zinc-500">
-                  Field & Format Terdeteksi
+                  Field Dan Format Terdeteksi
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {preview.fieldsDetected.map((f) => (
@@ -470,7 +470,7 @@ export function AnkiImportModal({ isOpen, onClose, onImportSuccess }: AnkiImport
             </>
           ) : (
             <Button size="sm" onClick={onClose} className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs cursor-pointer">
-              Selesai & Buka Koleksi
+              Selesai Dan Buka Koleksi
             </Button>
           )}
         </div>

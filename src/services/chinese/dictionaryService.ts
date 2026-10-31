@@ -7,7 +7,7 @@
 
 /** Peta terjemahan kurasi langsung Hanzi → Bahasa Indonesia akurat */
 export const HANZI_INDO_DICT: Record<string, string> = {
-  // Pronomina & Kata Bantu Kunci
+  // Pronomina Dan Kata Bantu Kunci
   '它们': 'mereka (khusus benda mati / hewan / bukan manusia)',
   '它': 'dia / itu (khusus hewan atau benda mati)',
   '他': 'dia (laki-laki / umum untuk manusia)',
@@ -40,7 +40,7 @@ export const HANZI_INDO_DICT: Record<string, string> = {
   '多': 'banyak / seberapa (dalam ukuran)',
   '少': 'sedikit / kurang',
   '的': '(partikel kepemilikan / penjelas kata sifat)',
-  '得': '(partikel penghubung kata kerja & derajat/hasil)',
+  '得': '(partikel penghubung kata kerja Dan derajat/hasil)',
   '地': '(partikel pembentuk adverbia / dengan cara)',
   '了': '(partikel perubahan situasi / aksi telah terjadi)',
   '着': '(partikel aksi sedang berlangsung / berkelanjutan)',

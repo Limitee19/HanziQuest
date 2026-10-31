@@ -254,7 +254,7 @@ export async function createChineseNote(
   return note;
 }
 
-// --- 0. SYSTEM DATASET & USER LEARNING RECORD ---
+// --- 0. SYSTEM DATASET Dan USER LEARNING RECORD ---
 let memoryRecords: Map<string, UserLearningRecord> = new Map();
 
 export async function fetchSystemWords(): Promise<ChineseWord[]> {
@@ -278,7 +278,7 @@ export async function fetchUserLearningRecord(wordId: string): Promise<UserLearn
   return newRec;
 }
 
-// --- 5. REVIEW STATE & SRS PERSISTENCE ---
+// --- 5. REVIEW STATE Dan SRS PERSISTENCE ---
 let memoryReviewStates: Map<string, ReviewState> = new Map();
 
 export async function fetchReviewState(itemId: string, itemType: ReviewItemType = 'vocabulary'): Promise<ReviewState> {
@@ -332,7 +332,7 @@ export async function recordPracticeResult(wordId: string, isCorrect: boolean): 
   return rec;
 }
 
-// --- 4. LEARNING PROGRESS & SUMMARY ---
+// --- 4. LEARNING PROGRESS Dan SUMMARY ---
 export async function fetchLearningProgress(): Promise<LearningProgress> {
   const vocabs = await fetchVocabularies();
   const hanzi = await fetchHanziCharacters();

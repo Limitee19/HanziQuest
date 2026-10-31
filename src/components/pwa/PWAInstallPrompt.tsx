@@ -39,7 +39,7 @@ export function PWAInstallPrompt() {
         </div>
         <div>
           <h5 className="font-semibold text-xs text-zinc-900 dark:text-zinc-100">Install OmniLife di HP</h5>
-          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Akses cepat offline & jadwal kelas</p>
+          <p className="text-[11px] text-zinc-500 dark:text-zinc-400">Akses cepat offline Dan jadwal kelas</p>
         </div>
       </div>
 

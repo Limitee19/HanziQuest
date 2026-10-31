@@ -18,7 +18,7 @@ const INTERVAL_TIERS = [1, 3, 7, 14, 30, 60, 120, 180, 365];
 
 /**
  * Deterministic Spaced Repetition Scheduler
- * Calculates next review interval & nextReviewAt date based on local timezone
+ * Calculates next review interval Dan nextReviewAt date based on local timezone
  */
 export function calculateNextReview(currentState: ReviewState, isCorrect: boolean): ReviewState {
   const now = new Date();

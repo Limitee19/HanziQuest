@@ -1,5 +1,5 @@
 /**
- * Audio FX & Tactile Feedback for Hanzi Quest style
+ * Audio FX Dan Tactile Feedback for Hanzi Quest style
  */
 
 let activeAudioPlayer: HTMLAudioElement | null = null;

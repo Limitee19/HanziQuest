@@ -49,7 +49,7 @@ export function RadicalExplorerView() {
   const [hanziQuiz, setHanziQuiz] = useState(false);
   const [scoreHistory, setScoreHistory] = useState<QuizScoreRecord[]>([]);
 
-  // Muat preferensi & progres tersimpan: mode indeks, tier kuis, hanzi mastered
+  // Muat preferensi Dan progres tersimpan: mode indeks, tier kuis, hanzi mastered
   useEffect(() => {
     let alive = true;
     (async () => {

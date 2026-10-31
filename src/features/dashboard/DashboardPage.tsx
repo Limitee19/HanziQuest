@@ -37,7 +37,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
   const [activeInfo, setActiveInfo] = useState<'arcade' | 'sound' | null>(null);
   const [isWritingModalOpen, setIsWritingModalOpen] = useState(false);
 
-  // Settings & Preferences (persisted & synced with navbar)
+  // Settings Dan Preferences (persisted Dan synced with navbar)
   const { sound, arcade, target: sessionTarget, toggleSound, toggleArcade, setTarget: setSessionTarget } = usePrefs();
 
   // Data states
@@ -208,7 +208,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
 
       {/* ── 1. CORE HANZI QUEST ADVENTURE LAYOUT ── */}
       <div className="layout" style={{ margin: '0 0 32px 0', padding: 0 }}>
-        {/* Kolom Kiri: Kemah Petualang & Tas Bekal */}
+        {/* Kolom Kiri: Kemah Petualang Dan Tas Bekal */}
         <div className="col-side" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Hero Card */}
           <section className={cn('hero card', arcade && 'hero--arcade')}>
@@ -313,7 +313,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                   <div className="toggle-info-box">
                     <div className="toggle-info-box__title">
                       <i className="ph-bold ph-speaker-high" style={{ color: 'var(--ochre)' }} />
-                      <span>Suara Sintesis & Ketukan</span>
+                      <span>Suara Sintesis Dan Ketukan</span>
                     </div>
                     <p>
                       Menyuarakan pelafalan aksara Hanzi asli (Putonghua TTS) dan lonceng audio setiap kartu dijawab benar.
@@ -381,7 +381,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               </span>
             </button>
 
-            {/* 2. Kebun & Statistik (Garden) */}
+            {/* 2. Kebun Dan Statistik (Garden) */}
             <button
               type="button"
               className="action-card action-card--ochre"
@@ -394,7 +394,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
                 <i className="ph-duotone ph-plant" />
               </div>
               <span>
-                <b>Kebun & statistik</b>
+                <b>Kebun Dan statistik</b>
                 <small>petak bunga mekar</small>
               </span>
             </button>
@@ -417,7 +417,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               </span>
             </button>
 
-            {/* 4. Kurikulum Harian & Menulis */}
+            {/* 4. Kurikulum Harian Dan Menulis */}
             <button
               type="button"
               className="action-card action-card--jade"
@@ -431,7 +431,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               </div>
               <span>
                 <b>Program belajar</b>
-                <small>menulis & latihan SRS</small>
+                <small>menulis Dan latihan SRS</small>
               </span>
             </button>
           </div>
@@ -462,9 +462,9 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
         </div>
       </div>
 
-      {/* ── 2. METRIK & KATA HARI INI ── */}
+      {/* ── 2. METRIK Dan KATA HARI INI ── */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Kolom Kiri (2 cols): Program Harian & Statistik Ingatan */}
+        {/* Kolom Kiri (2 cols): Program Harian Dan Statistik Ingatan */}
         <div
           className="lg:col-span-2 card"
           style={{
@@ -481,7 +481,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               </div>
               <div>
                 <h3 style={{ margin: 0, fontSize: '1.18rem', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
-                  Statistik Belajar & Spaced Repetition (SRS)
+                  Statistik Belajar Dan Spaced Repetition (SRS)
                 </h3>
                 <p style={{ margin: 0, fontSize: '0.84rem', color: 'var(--ink-soft)' }}>
                   Pantau daya ingat kata dan perkembangan kurikulum harianmu.
@@ -718,7 +718,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
             </div>
             <span>
               <b>Mode Belajar Pasif</b>
-              <small>Dengarkan audio kata & arti Indonesia saat santai</small>
+              <small>Dengarkan audio kata Dan arti Indonesia saat santai</small>
             </span>
           </div>
 
@@ -754,7 +754,7 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
             </div>
             <span>
               <b>Tutor AI Mandarin</b>
-              <small>Tanya tata bahasa, koreksi kalimat & penjelasan hanzi</small>
+              <small>Tanya tata bahasa, koreksi kalimat Dan penjelasan hanzi</small>
             </span>
           </div>
         </div>

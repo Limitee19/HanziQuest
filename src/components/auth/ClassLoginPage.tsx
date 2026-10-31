@@ -65,7 +65,7 @@ export const ClassLoginPage: React.FC<ClassLoginPageProps> = ({ onLoginSuccess }
       </div>
 
       <div className="relative w-full max-w-md bg-[#FFFDF9] dark:bg-[#151E32] border-2 border-zinc-200 dark:border-[#24324E] rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-300">
-        {/* Header Seal & Title */}
+        {/* Header Seal Dan Title */}
         <div className="text-center space-y-3">
           <div className="inline-flex items-center justify-center">
             <div
@@ -182,7 +182,7 @@ export const ClassLoginPage: React.FC<ClassLoginPageProps> = ({ onLoginSuccess }
             <span>Masuk sebagai Tamu (Mode Bebas)</span>
           </button>
           <p className="text-[10.5px] text-zinc-400 dark:text-zinc-500 text-center mt-1.5 leading-tight">
-            Mode Tamu tidak menyimpan data ke cloud server &amp; tidak memakan database.
+            Mode Tamu tidak menyimpan data ke cloud server Dan tidak memakan database.
           </p>
         </div>
 
@@ -190,7 +190,7 @@ export const ClassLoginPage: React.FC<ClassLoginPageProps> = ({ onLoginSuccess }
         <div className="pt-2 border-t border-zinc-200 dark:border-[#24324E]/80 text-center space-y-2">
           <div className="inline-flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-medium">
             <BookOpen className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-            <span>Akun &amp; PIN resmi dibagikan oleh guru kelas.</span>
+            <span>Akun Dan PIN resmi dibagikan oleh guru kelas.</span>
           </div>
           <p className="text-[11px] text-zinc-400 dark:text-zinc-500 leading-relaxed">
             Tidak ada pendaftaran publik mandiri. Hubungi guru jika Anda belum menerima akun atau lupa PIN.

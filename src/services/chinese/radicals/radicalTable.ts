@@ -394,7 +394,7 @@ export function groupRadicalsByLearningOrder(
     {
       tier: 3,
       title: 'Lengkapi',
-      subtitle: 'Radikal minor & arsip Kangxi — kenali seperlunya saja',
+      subtitle: 'Radikal minor Dan arsip Kangxi — kenali seperlunya saja',
       radicals: rest,
     },
   ];

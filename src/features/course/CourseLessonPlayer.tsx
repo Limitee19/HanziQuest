@@ -435,7 +435,7 @@ export const CourseLessonPlayer: React.FC<CourseLessonPlayerProps> = ({
           })}
         </div>
 
-        {/* Feedback Bar & Next Button */}
+        {/* Feedback Bar Dan Next Button */}
         {answered && (
           <div
             style={{

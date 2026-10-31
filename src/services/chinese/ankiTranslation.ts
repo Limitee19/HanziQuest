@@ -5,7 +5,7 @@
 
 /** Kamus frasa (dicek duluan, longest-first) */
 const PHRASE_DICTIONARY: Record<string, string> = {
-  // Frasa & ungkapan umum di deck HSK
+  // Frasa Dan ungkapan umum di deck HSK
   'how are you': 'apa kabar',
   'nice to meet you': 'senang berkenalan',
   'thank you': 'terima kasih',
@@ -112,9 +112,9 @@ const PHRASE_DICTIONARY: Record<string, string> = {
   'as well as': 'serta',
 };
 
-/** Kamus kata tunggal & kata kerja umum */
+/** Kamus kata tunggal Dan kata kerja umum */
 const WORD_DICTIONARY: Record<string, string> = {
-  // Kata ganti & dasar
+  // Kata ganti Dan dasar
   i: 'saya', me: 'saya', my: 'saya', mine: 'milik saya',
   you: 'kamu', your: 'kamu', yours: 'milikmu',
   he: 'dia (laki-laki)', him: 'dia (laki-laki)', his: 'miliknya (lk)',
@@ -249,7 +249,7 @@ const WORD_DICTIONARY: Record<string, string> = {
   past: 'masa lalu', present: 'hadiah/kini', gift: 'hadiah', present_: 'hadiah',
   sound: 'suara', voice: 'suara', noise: 'kebisingan', color: 'warna', light: 'cahaya', dark: 'gelap',
   night_: 'malam', dream_: 'mimpi',
-  // Kontraksi & kata kerja bantu (paling sering menyisakan Inggris di kartu impor)
+  // Kontraksi Dan kata kerja bantu (paling sering menyisakan Inggris di kartu impor)
   "don't": 'tidak', "doesn't": 'tidak', "didn't": 'tidak', "won't": 'tidak akan',
   "can't": 'tidak bisa', cannot: 'tidak bisa', "isn't": 'bukan', "aren't": 'bukan',
   "wasn't": 'tidak', "weren't": 'tidak', "hasn't": 'belum', "haven't": 'belum',
@@ -260,7 +260,7 @@ const WORD_DICTIONARY: Record<string, string> = {
   "they're": 'mereka', "i've": 'saya telah', "we've": 'kami telah', "they've": 'mereka telah',
   "i'll": 'saya akan', "you'll": 'kamu akan', "he'll": 'dia akan', "she'll": 'dia akan',
   "we'll": 'kami akan', "they'll": 'mereka akan',
-  // Adverbia & kata fungsi yang sering muncul di glosarium HSK
+  // Adverbia Dan kata fungsi yang sering muncul di glosarium HSK
   once: 'sekali', twice: 'dua kali', age: 'usia', even: 'bahkan', ever: 'pernah',
   perhaps: 'mungkin', together: 'bersama', toward: 'ke arah', towards: 'ke arah',
   upon: 'di atas', within: 'di dalam', whether: 'apakah', though: 'meskipun',
@@ -340,7 +340,7 @@ function translateTextSegment(segment: string): string {
 /**
  * Menerjemahkan konten kartu (boleh berisi HTML).
  * Tag HTML, atribut, dan konten di dalam tag TIDAK disentuh.
- * Hanzi & pinyin tidak pernah diubah.
+ * Hanzi Dan pinyin tidak pernah diubah.
  */
 export function translateCardContentToIndonesian(html: string): string {
   if (!html) return html;

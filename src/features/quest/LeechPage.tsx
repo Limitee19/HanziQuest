@@ -142,7 +142,7 @@ export const LeechPage: React.FC<LeechPageProps> = ({ onBackToMap, onStartSessio
             <Sparkles className="w-8 h-8" />
           </div>
           <h3 className="font-serif text-2xl font-bold text-zinc-900 dark:text-zinc-100 text-center">
-            {items.length === 0 ? 'Ruang Karantina Kosong & Bersih!' : 'Tidak Ada Kata Bandel di Pos Ini!'}
+            {items.length === 0 ? 'Ruang Karantina Kosong Dan Bersih!' : 'Tidak Ada Kata Bandel di Pos Ini!'}
           </h3>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 max-w-lg mx-auto text-center leading-relaxed">
             {items.length === 0 

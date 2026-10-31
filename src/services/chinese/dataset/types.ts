@@ -26,7 +26,7 @@ export interface ChineseWord {
 export type ExampleSeed = [hanzi: string, pinyin: string, meaning: string];
 
 /**
- * Factory ringkas satu kata HSK: menghitung pinyinNormalized & tone otomatis.
+ * Factory ringkas satu kata HSK: menghitung pinyinNormalized Dan tone otomatis.
  * Contoh: w('hsk1_001', 1, '你', 'nǐ', ['kamu'], [['你好！','Nǐ hǎo!','Halo!']], { pos:'pron', emoji:'👋' })
  */
 export function w(

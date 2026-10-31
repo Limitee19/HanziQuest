@@ -82,7 +82,7 @@ export interface PassiveSnapshot {
 const SETTINGS_KEY = 'omnilife.passiveLearning.settings';
 const STATS_KEY = 'omnilife.passiveLearning.stats';
 
-// ── Settings & statistik (localStorage) ─────────────────────────────────────
+// ── Settings Dan statistik (localStorage) ─────────────────────────────────────
 
 export function loadPassiveSettings(): PassiveSettings {
   try {
@@ -229,10 +229,10 @@ function findIndonesianVoice(): SpeechSynthesisVoice | null {
 // Audio yang berhasil diambil di-cache berlapis (hemat kuota: tiap arti hanya
 // disintesis SEKALI):
 //   1. Memori (Map)   — nol biaya antar item dalam satu sesi.
-//   2. IndexedDB      — persisten di WebView (bertahan antar sesi & offline).
+//   2. IndexedDB      — persisten di WebView (bertahan antar sesi Dan offline).
 //   3. Disk Tauri     — di desktop, byte MP3 diunduh lewat core Rust (bebas
 //                       CORS) lalu disimpan di app_data/tts_cache — sumber
-//                       tertua & paling tahan lama.
+//                       tertua Dan paling tahan lama.
 // Di browser (non-Tauri) MP3 hanya bisa di-STREAM dari CDN-nya (byte-nya
 // tidak terbaca JS karena CORS files.soundoftext.com tertutup).
 
@@ -366,7 +366,7 @@ async function pollSoundOfText(id: string): Promise<string | null> {
   return null;
 }
 
-// ── Jembatan Tauri (unduh & cache MP3 di disk app, bebas CORS) ──────────────
+// ── Jembatan Tauri (unduh Dan cache MP3 di disk app, bebas CORS) ──────────────
 
 function tauriInvoke<T>(cmd: string, args?: Record<string, unknown>): Promise<T> | null {
   try {

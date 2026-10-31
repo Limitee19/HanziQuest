@@ -15,7 +15,7 @@ export type PlaybackStatus = 'idle' | 'loading' | 'playing' | 'paused' | 'error'
 /**
  * ChineseAudioPlayerService — memutar audio Mandarin dengan strategi:
  *  1) Audio MP3 ASLI yang dibundle offline (public/hanzi, hasil build script).
- *     Tidak butuh internet & tidak bergantung voice Mandarin perangkat.
+ *     Tidak butuh internet Dan tidak bergantung voice Mandarin perangkat.
  *  2) Fallback: TTS bawaan (speechSynthesis zh-CN) bila MP3 belum tersedia.
  */
 class ChineseAudioPlayerService {

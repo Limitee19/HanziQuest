@@ -751,10 +751,10 @@ export function initAutoSyncEngine(): void {
   }, 1000);
 
   if (typeof window !== 'undefined') {
-    // 2. Network Online: flush outbox & reconnect Realtime WebSocket ONLY
+    // 2. Network Online: flush outbox Dan reconnect Realtime WebSocket ONLY
     //    — Never pulls all data when coming back online
     window.addEventListener('online', () => {
-      console.log('🌐 Network online: flushing outbox & reconnecting Realtime WebSocket...');
+      console.log('🌐 Network online: flushing outbox Dan reconnecting Realtime WebSocket...');
       pushPendingChanges();
       initRealtimeSubscription();
       lightIncrementalPull();

@@ -17,11 +17,11 @@ interface SessionPageProps {
 
 const OUTPOST_INFO: Record<number, { name: string; icon: string; subtitle: string; desc: string }> = {
   1: { name: 'Pos 1: Gerbang Desa', icon: '⛩️', subtitle: 'HSK 1 (500 kata)', desc: 'Lembah Permulaan · Kosakata dasar sehari-hari' },
-  2: { name: 'Pos 2: Jembatan Bambu', icon: '🎋', subtitle: 'HSK 2 (772 kata)', desc: 'Hutan Bambu & Sungai · Percakapan dasar dan hubungan sosial' },
-  3: { name: 'Pos 3: Paviliun Teh', icon: '🍵', subtitle: 'HSK 3 (973 kata)', desc: 'Air Terjun & Sakura · Tata bahasa menengah dan kerja rutin' },
-  4: { name: 'Pos 4: Menara Lentera', icon: '🏮', subtitle: 'HSK 4 (1.000 kata)', desc: 'Ngarai Lentera Senja · Diskusi topik umum & opini' },
-  5: { name: 'Pos 5: Gunung Berkabut', icon: '⛰️', subtitle: 'HSK 5 (1.071 kata)', desc: 'Tebing Awan & Salju · Artikel, koran, dan film Mandarin' },
-  6: { name: 'Pos 6: Pagoda Puncak', icon: '🏯', subtitle: 'HSK 6 (1.140 kata)', desc: 'Istana Awan Emas · Kemahiran tingkat lanjut & sastra' },
+  2: { name: 'Pos 2: Jembatan Bambu', icon: '🎋', subtitle: 'HSK 2 (772 kata)', desc: 'Hutan Bambu Dan Sungai · Percakapan dasar dan hubungan sosial' },
+  3: { name: 'Pos 3: Paviliun Teh', icon: '🍵', subtitle: 'HSK 3 (973 kata)', desc: 'Air Terjun Dan Sakura · Tata bahasa menengah dan kerja rutin' },
+  4: { name: 'Pos 4: Menara Lentera', icon: '🏮', subtitle: 'HSK 4 (1.000 kata)', desc: 'Ngarai Lentera Senja · Diskusi topik umum Dan opini' },
+  5: { name: 'Pos 5: Gunung Berkabut', icon: '⛰️', subtitle: 'HSK 5 (1.071 kata)', desc: 'Tebing Awan Dan Salju · Artikel, koran, dan film Mandarin' },
+  6: { name: 'Pos 6: Pagoda Puncak', icon: '🏯', subtitle: 'HSK 6 (1.140 kata)', desc: 'Istana Awan Emas · Kemahiran tingkat lanjut Dan sastra' },
 };
 
 export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBackToMap }) => {
@@ -45,7 +45,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
   const [selectedQuizIdx, setSelectedQuizIdx] = useState<number | null>(null);
   const [quizAnswered, setQuizAnswered] = useState(false);
 
-  // Session stats & Arcade
+  // Session stats Dan Arcade
   const [streak, setStreak] = useState(0);
   const [xpEarned, setXpEarned] = useState(0);
   const [reviewedWordsCount, setReviewedWordsCount] = useState(0);
@@ -259,7 +259,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
         </div>
       </div>
 
-      {/* ── Session Progress & Mode Bar ── */}
+      {/* ── Session Progress Dan Mode Bar ── */}
       <div 
         className="bg-white dark:bg-[#151E32] border border-zinc-200 dark:border-[#24324E] rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4"
         style={{ boxShadow: '0 4px 12px -2px rgba(15, 23, 42, 0.05)' }}
@@ -385,7 +385,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
           className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-6 sm:p-10 space-y-8 relative overflow-hidden"
           style={{ boxShadow: '0 12px 32px -4px rgba(35, 31, 32, 0.08), 0 2px 6px -1px rgba(35, 31, 32, 0.04)' }}
         >
-          {/* Top Word Level Badge & Memory Mode Toggle */}
+          {/* Top Word Level Badge Dan Memory Mode Toggle */}
           <div className="flex items-center justify-between flex-wrap gap-2">
             <div className="flex items-center gap-2">
               <span className="px-3 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-700/60 text-amber-900 dark:text-amber-200 text-xs font-bold">
@@ -407,12 +407,12 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                 {hidePinyinAudio ? (
                   <>
                     <VolumeX className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
-                    <span>Mode Ingatan: Pinyin & Suara Nonaktif</span>
+                    <span>Mode Ingatan: Pinyin Dan Suara Nonaktif</span>
                   </>
                 ) : (
                   <>
                     <Volume2 className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
-                    <span>Pinyin & Suara: Aktif</span>
+                    <span>Pinyin Dan Suara: Aktif</span>
                   </>
                 )}
               </button>
@@ -455,7 +455,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
               <div className="flex items-center justify-center gap-2 py-1">
                 <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-zinc-100 dark:bg-[#0B111E] border border-dashed border-zinc-300 dark:border-[#24324E] text-zinc-500 dark:text-zinc-400 text-xs font-medium select-none">
                   <EyeOff className="w-3.5 h-3.5 text-zinc-400" />
-                  <span>Pinyin & Suara disembunyikan (fokus ingat aksara)</span>
+                  <span>Pinyin Dan Suara disembunyikan (fokus ingat aksara)</span>
                 </div>
               </div>
             )}
@@ -472,12 +472,12 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                 }}
                 className="w-full py-4 px-6 rounded-2xl bg-[#C0392B] hover:bg-[#a93226] text-white font-extrabold text-base cursor-pointer transition-all active:scale-98 shadow-xs"
               >
-                Buka Makna & Jawaban (Spasi / Klik)
+                Buka Makna Dan Jawaban (Spasi / Klik)
               </button>
             </div>
           ) : (
             <div className="space-y-6 animate-in fade-in duration-200">
-              {/* Meaning & Details Card */}
+              {/* Meaning Dan Details Card */}
               <div className="p-5 bg-amber-50/70 dark:bg-amber-950/40 border-2 border-amber-200 dark:border-amber-800/60 rounded-2xl space-y-2">
                 <span className="text-[11px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider block">
                   Arti Bahasa Indonesia:
@@ -651,7 +651,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
             ) : (
               <div className="flex items-center justify-center py-1">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 dark:bg-[#0B111E] text-zinc-400 text-xs font-medium">
-                  <VolumeX className="w-3.5 h-3.5" /> Pinyin & Suara tersembunyi
+                  <VolumeX className="w-3.5 h-3.5" /> Pinyin Dan Suara tersembunyi
                 </span>
               </div>
             )}

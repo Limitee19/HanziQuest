@@ -67,7 +67,7 @@ export class ChineseLearningSearchProvider implements SearchProvider {
           id: 'cl_overview',
           category: 'document',
           title: '[CHINESE LEARNING] 中文学习 Hub',
-          subtitle: 'Mandarin Education, Vocabulary, Hanzi & Practice Hub',
+          subtitle: 'Mandarin Education, Vocabulary, Hanzi Dan Practice Hub',
           targetTab: 'chinese_learning',
           relevanceScore: 100,
         });

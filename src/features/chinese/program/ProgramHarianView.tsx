@@ -92,7 +92,7 @@ export function ProgramHarianView({ onOpenArena }: Props) {
     refresh();
   }, [refresh]);
 
-  /** Ubah target kata baru/hari tanpa mengganggu progres & streak yang ada. */
+  /** Ubah target kata baru/hari tanpa mengganggu progres Dan streak yang ada. */
   const handleTargetChange = useCallback(
     async (newTarget: number) => {
       setTargetSaving(true);
@@ -194,7 +194,7 @@ export function ProgramHarianView({ onOpenArena }: Props) {
         </p>
       </div>
 
-      {/* Kartu streak & progres */}
+      {/* Kartu streak Dan progres */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5">
         <StatTile icon={<Flame className="w-4 h-4" />} tone="amber" label="Streak" value={`${summary.streakDays} hari`} />
         <StatTile icon={<Target className="w-4 h-4" />} tone="blue" label="Dipelajari" value={`${summary.newDoneTotal} kata`} />

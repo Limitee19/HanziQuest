@@ -1,9 +1,9 @@
 /**
  * classAuthService.ts
- * Sistem Autentikasi Kelas & Manajemen Siswa (Closed / Invite-Only)
+ * Sistem Autentikasi Kelas Dan Manajemen Siswa (Closed / Invite-Only)
  * 
  * - Tanpa registrasi publik: hanya Guru (Admin) yang bisa membuat/menghapus akun siswa.
- * - Siswa login menggunakan Username / No. Absen & PIN.
+ * - Siswa login menggunakan Username / No. Absen Dan PIN.
  * - Data tersinkron ke Supabase jika tersedia, dengan fallback lokal offline yang kuat.
  */
 
@@ -200,7 +200,7 @@ export async function ensureDefaultAdminExists(): Promise<void> {
   }
 }
 
-// Inisialisasi otomatis akun default & sinkronisasi profil dari cloud saat browser pertama kali memuat modul
+// Inisialisasi otomatis akun default Dan sinkronisasi profil dari cloud saat browser pertama kali memuat modul
 if (typeof window !== 'undefined') {
   ensureDefaultAdminExists().then(() => {
     syncActiveUserProfileFromCloud().catch(() => {});
@@ -225,7 +225,7 @@ export function getActiveUserId(): string {
   const u = getActiveUser();
   if (!u) return 'usr_guest';
   // Sesi lama bisa menyimpan id alias admin kanonikalisasi agar semua
-  // data (localStorage & DB) memakai satu partisi yang sama.
+  // data (localStorage Dan DB) memakai satu partisi yang sama.
   return canonicalizeUserId(u.id);
 }
 
@@ -331,7 +331,7 @@ async function mergeAliasAdminDataIntoCanonical(): Promise<void> {
     }
   } catch {}
 
-  // 2. Merge cloud (student_quest_progress & student_quest_meta) alias → kanonik
+  // 2. Merge cloud (student_quest_progress Dan student_quest_meta) alias → kanonik
   let cloudMerged = false;
   if (supabase) {
     try {
@@ -468,7 +468,7 @@ async function finalizeLogin(user: StudentUser, authHash?: string): Promise<Stud
   if (authHash && resolved.role === 'admin') setAdminAuthHash(authHash);
   notifyAuthChange(resolved);
   if (resolved.role !== 'guest') {
-    // Tarik profil (nama panggilan, nama lengkap, avatar) & gap-fill profil
+    // Tarik profil (nama panggilan, nama lengkap, avatar) Dan gap-fill profil
     // dari cloud + adopt profil lokal bila cloud kosong.
     void syncActiveUserProfileFromCloud()
       .then((fresh) => fresh && notifyAuthChange(fresh))
@@ -650,7 +650,7 @@ export function logoutUser(): void {
 }
 
 /**
- * Login sebagai Tamu (Mode Bebas Tanpa Akun & Tanpa Konsumsi Database Cloud)
+ * Login sebagai Tamu (Mode Bebas Tanpa Akun Dan Tanpa Konsumsi Database Cloud)
  */
 export function loginGuestUser(): StudentUser {
   const guestUser: StudentUser = {
@@ -773,7 +773,7 @@ export async function updateUserProfile(updates: {
         .update(profileUpdates)
         .eq('id', currentUser.id);
 
-      // 2. Username & PIN diupdate terpisah (dengan toleransi bila kolom
+      // 2. Username Dan PIN diupdate terpisah (dengan toleransi bila kolom
       //    tidak di-grant — tetap tersinkroni via RPC admin atau meta).
       if (newUsername !== currentUser.username || newPinHash) {
         const credUpdates: Record<string, any> = { updated_at: new Date().toISOString() };
@@ -792,7 +792,7 @@ export async function updateUserProfile(updates: {
         console.warn('Update profil app_users gagal (tetap lanjut ke mirror meta):', profileErr.message);
       }
 
-      // 2. Simpan juga ke student_quest_meta agar selalu 100% tersinkronkan antar device (HP & PC)
+      // 2. Simpan juga ke student_quest_meta agar selalu 100% tersinkronkan antar device (HP Dan PC)
       const { data: existingMeta } = await supabase
         .from('student_quest_meta')
         .select('mnemonic_notes')
@@ -957,7 +957,7 @@ export async function syncActiveUserProfileFromCloud(): Promise<StudentUser | nu
 }
 
 // ══════════════════════════════════════════════════════════════════════════
-// FITUR KHUSUS GURU / ADMIN (MANAJEMEN KELAS & SISWA)
+// FITUR KHUSUS GURU / ADMIN (MANAJEMEN KELAS Dan SISWA)
 // ══════════════════════════════════════════════════════════════════════════
 
 /**

@@ -67,7 +67,7 @@ export function ChineseLearningPage() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
 
-  // Modals & Active Study
+  // Modals Dan Active Study
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [activeDeckForStudy, setActiveDeckForStudy] = useState<DeckItem | null>(null);
 
@@ -97,7 +97,7 @@ export function ChineseLearningPage() {
     return subscribeLanguageChange(() => setLangTick((prev) => prev + 1));
   }, []);
 
-  // Manual Cloud Sync Trigger (Push & Pull)
+  // Manual Cloud Sync Trigger (Push Dan Pull)
   const handleCloudSync = async () => {
     if (isSyncing) return;
     setIsSyncing(true);
@@ -154,7 +154,7 @@ export function ChineseLearningPage() {
             disabled={isSyncing}
             variant="outline"
             className="text-xs cursor-pointer"
-            title="Sinkronkan kartu & deck dengan Supabase Cloud (Desktop & Mobile)"
+            title="Sinkronkan kartu Dan deck dengan Supabase Cloud (Desktop Dan Mobile)"
           >
             <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isSyncing ? 'animate-spin' : ''}`} />
             {isSyncing ? 'Sinkron…' : 'Sinkron Cloud'}
@@ -440,7 +440,7 @@ export function ChineseLearningPage() {
               </Card>
             </div>
 
-            {/* Right: Quick Actions & SRS Progress */}
+            {/* Right: Quick Actions Dan SRS Progress */}
             <div className="space-y-6">
               {/* Quick Actions */}
               <Card className="bg-white dark:bg-zinc-900 border-zinc-200/80 dark:border-zinc-800 shadow-xs">
@@ -478,7 +478,7 @@ export function ChineseLearningPage() {
                   >
                     <span className="flex items-center gap-2">
                       <BookOpen className="w-4 h-4 text-emerald-600" />
-                      Kosakata & Karakter Hanzi
+                      Kosakata Dan Karakter Hanzi
                     </span>
                     <ArrowRight className="w-3.5 h-3.5 text-zinc-400 group-hover:text-emerald-600" />
                   </button>
@@ -552,7 +552,7 @@ export function ChineseLearningPage() {
       {/* 2. ANKI DECKS TAB */}
       {activeTab === 'decks' && <DeckLibraryView />}
 
-      {/* 3. LEARNED VOCABULARY & HANZI TAB */}
+      {/* 3. LEARNED VOCABULARY Dan HANZI TAB */}
       {activeTab === 'learned' && <LearnedVocabularyView />}
 
       {/* 4. RADICAL EXPLORER TAB */}

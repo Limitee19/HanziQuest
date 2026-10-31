@@ -153,7 +153,7 @@ export const ClassManagementModal: React.FC<ClassManagementModalProps> = ({ isOp
             </div>
             <div>
               <h2 className="font-serif text-lg sm:text-xl font-extrabold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
-                <span>Manajemen Siswa &amp; Kelas</span>
+                <span>Manajemen Siswa Dan Kelas</span>
                 <span className="px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold uppercase">
                   Panel Guru
                 </span>
@@ -211,7 +211,7 @@ export const ClassManagementModal: React.FC<ClassManagementModalProps> = ({ isOp
         <div className="p-6 overflow-y-auto flex-1 space-y-6">
           {activeTab === 'roster' && (
             <div className="space-y-4">
-              {/* Search & Refresh */}
+              {/* Search Dan Refresh */}
               <div className="flex items-center gap-2">
                 <div className="relative flex-1">
                   <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />

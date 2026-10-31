@@ -1,7 +1,7 @@
 import { executeSql, selectSql } from '@/db/client';
 
 /**
- * Preferensi & progres fitur Radikal.
+ * Preferensi Dan progres fitur Radikal.
  * ─────────────────────────────────────────────
  * Disimpan di tabel `app_metadata` (ikut tersinkron ke Supabase), sehingga
  * pilihan mode dan progres kuis tidak reset antar sesi maupun antar device.

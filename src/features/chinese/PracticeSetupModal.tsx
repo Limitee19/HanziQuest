@@ -100,7 +100,7 @@ export function PracticeSetupModal({ isOpen, onClose, onStartSession }: Practice
           <div className="p-3 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-950 flex items-center justify-between">
             <div className="space-y-0.5">
               <p className="text-xs font-bold text-zinc-900 dark:text-zinc-100">Tone-Aware Pinyin Mode</p>
-              <p className="text-[11px] text-zinc-500">Require exact tone selection (1–4 & neutral)</p>
+              <p className="text-[11px] text-zinc-500">Require exact tone selection (1–4 Dan neutral)</p>
             </div>
             <input
               type="checkbox"

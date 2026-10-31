@@ -119,7 +119,7 @@ export function DrillModal({ isOpen, onClose, initialLevel = 1, initialKind = 't
           </button>
         </div>
 
-        {/* Level & Kind Selector */}
+        {/* Level Dan Kind Selector */}
         <div className="flex flex-col sm:flex-row gap-2 justify-between items-stretch sm:items-center">
           <div className="flex gap-1 bg-[#F1F5F9] dark:bg-[#0B111E] p-1 rounded-2xl overflow-x-auto no-scrollbar">
             {DRILL_TABS.map((tab) => (

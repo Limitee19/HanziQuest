@@ -127,7 +127,7 @@ const CURATED_SENTENCES: Record<string, ExampleSentence> = {
   '没': { hanzi: '他没来。', pinyin: 'Tā méi lái.', meaning: 'Dia tidak datang.' },
   '没事': { hanzi: '没事，不用担心。', pinyin: 'Méi shì, bú yòng dānxīn.', meaning: 'Tidak apa-apa, tidak perlu khawatir.' },
 
-  // ── TEMPAT & LOKASI ────────────────────────────────────
+  // ── TEMPAT Dan LOKASI ────────────────────────────────────
   '家': { hanzi: '我家在学校旁边。', pinyin: 'Wǒ jiā zài xuéxiào pángbiān.', meaning: 'Rumahku ada di sebelah sekolah.' },
   '学校': { hanzi: '学校很大。', pinyin: 'Xuéxiào hěn dà.', meaning: 'Sekolahnya sangat besar.' },
   '医院': { hanzi: '医院在哪里？', pinyin: 'Yīyuàn zài nǎlǐ?', meaning: 'Di mana rumah sakit?' },
@@ -144,7 +144,7 @@ const CURATED_SENTENCES: Record<string, ExampleSentence> = {
   '前': { hanzi: '请走到前面来。', pinyin: 'Qǐng zǒu dào qiánmiàn lái.', meaning: 'Silakan maju ke depan.' },
   '边': { hanzi: '学校旁边有公园。', pinyin: 'Xuéxiào pángbiān yǒu gōngyuán.', meaning: 'Di sebelah sekolah ada taman.' },
 
-  // ── MAKANAN & MINUMAN ──────────────────────────────────
+  // ── MAKANAN Dan MINUMAN ──────────────────────────────────
   '茶': { hanzi: '我每天喝茶。', pinyin: 'Wǒ měitiān hē chá.', meaning: 'Saya minum teh setiap hari.' },
   '米饭': { hanzi: '我想吃米饭。', pinyin: 'Wǒ xiǎng chī mǐfàn.', meaning: 'Saya ingin makan nasi.' },
   '面包': { hanzi: '早上我吃面包。', pinyin: 'Zǎoshang wǒ chī miànbāo.', meaning: 'Pagi-pagi saya makan roti.' },
@@ -178,7 +178,7 @@ const CURATED_SENTENCES: Record<string, ExampleSentence> = {
   '飞机': { hanzi: '飞机要起飞了。', pinyin: 'Fēijī yào qǐfēi le.', meaning: 'Pesawat akan segera lepas landas.' },
   '钱': { hanzi: '这个多少钱？', pinyin: 'Zhège duōshao qián?', meaning: 'Ini berapa harganya?' },
 
-  // ── BILANGAN & WAKTU ───────────────────────────────────
+  // ── BILANGAN Dan WAKTU ───────────────────────────────────
   '一': { hanzi: '我有一只猫。', pinyin: 'Wǒ yǒu yī zhī māo.', meaning: 'Saya punya satu ekor kucing.' },
   '二': { hanzi: '这里有二个人。', pinyin: 'Zhèlǐ yǒu èr gè rén.', meaning: 'Di sini ada dua orang.' },
   '三': { hanzi: '我有三本书。', pinyin: 'Wǒ yǒu sān běn shū.', meaning: 'Saya punya tiga buku.' },
@@ -246,7 +246,7 @@ const CURATED_SENTENCES: Record<string, ExampleSentence> = {
   '男': { hanzi: '他是男学生。', pinyin: 'Tā shì nán xuésheng.', meaning: 'Dia adalah pelajar laki-laki.' },
   '女': { hanzi: '她是女老师。', pinyin: 'Tā shì nǚ lǎoshī.', meaning: 'Dia adalah guru perempuan.' },
 
-  // ── KATA KETERANGAN & PARTIKEL ─────────────────────────
+  // ── KATA KETERANGAN Dan PARTIKEL ─────────────────────────
   '不': { hanzi: '我不喝咖啡。', pinyin: 'Wǒ bù hē kāfēi.', meaning: 'Saya tidak minum kopi.' },
   '都': { hanzi: '我们都是学生。', pinyin: 'Wǒmen dōu shì xuésheng.', meaning: 'Kami semua adalah pelajar.' },
   '也': { hanzi: '他也是老师。', pinyin: 'Tā yě shì lǎoshī.', meaning: 'Dia juga adalah guru.' },
@@ -271,7 +271,7 @@ const CURATED_SENTENCES: Record<string, ExampleSentence> = {
   '号': { hanzi: '今天几号？', pinyin: 'Jīntiān jǐ hào?', meaning: 'Sekarang tanggal berapa?' },
   '请问': { hanzi: '请问洗手间在哪里？', pinyin: 'Qǐngwèn xǐshǒujiān zài nǎlǐ?', meaning: 'Permisi, di mana toilet?' },
 
-  // ── UCAPAN & SALAM ─────────────────────────────────────
+  // ── UCAPAN Dan SALAM ─────────────────────────────────────
   '你好': { hanzi: '你好，我叫小明。', pinyin: 'Nǐ hǎo, wǒ jiào Xiǎomíng.', meaning: 'Halo, nama saya Xiaoming.' },
   '谢谢': { hanzi: '谢谢你的帮忙。', pinyin: 'Xièxie nǐ de bāngmáng.', meaning: 'Terima kasih atas bantuanmu.' },
   '不客气': { hanzi: '谢谢！不客气，这是应该的。', pinyin: 'Xièxie! Bú kèqi, zhè shì yīnggāi de.', meaning: 'Terima kasih! Jangan sungkan, ini sudah seharusnya.' },
@@ -280,7 +280,7 @@ const CURATED_SENTENCES: Record<string, ExampleSentence> = {
   '再见': { hanzi: '明天见，再见！', pinyin: 'Míngtiān jiàn, zàijiàn!', meaning: 'Sampai jumpa besok, selamat tinggal!' },
   '喂': { hanzi: '喂，你好，是小明吗？', pinyin: 'Wèi, nǐ hǎo, shì Xiǎomíng ma?', meaning: 'Halo, apakah ini Xiaoming?' },
 
-  // ── PROFESI & MANUSIA ──────────────────────────────────
+  // ── PROFESI Dan MANUSIA ──────────────────────────────────
   '老师': { hanzi: '老师讲课很好。', pinyin: 'Lǎoshī jiǎngkè hěn hǎo.', meaning: 'Cara mengajar gurunya sangat bagus.' },
   '学生': { hanzi: '我是学生。', pinyin: 'Wǒ shì xuésheng.', meaning: 'Saya adalah pelajar.' },
   '医生': { hanzi: '他是医生。', pinyin: 'Tā shì yīshēng.', meaning: 'Dia adalah dokter.' },
@@ -308,25 +308,25 @@ const CURATED_SENTENCES: Record<string, ExampleSentence> = {
   '猫': { hanzi: '我家有一只猫。', pinyin: 'Wǒ jiā yǒu yī zhī māo.', meaning: 'Di rumahku ada seekor kucing.' },
   '狗': { hanzi: '那只狗很可爱。', pinyin: 'Nà zhī gǒu hěn kě\'ài.', meaning: 'Anjing itu sangat lucu.' },
 
-  // ── CUACA & ALAM ───────────────────────────────────────
+  // ── CUACA Dan ALAM ───────────────────────────────────────
   '天气': { hanzi: '今天天气怎么样？', pinyin: 'Jīntiān tiānqì zěnmeyàng?', meaning: 'Bagaimana cuaca hari ini?' },
   '雨': { hanzi: '外面在下雨。', pinyin: 'Wàimiàn zài xià yǔ.', meaning: 'Di luar sedang hujan.' },
   '雪': { hanzi: '今天下雪了。', pinyin: 'Jīntiān xià xuě le.', meaning: 'Hari ini turun salju.' },
 
-  // ── ARAH & POSISI ──────────────────────────────────────
+  // ── ARAH Dan POSISI ──────────────────────────────────────
   '外': { hanzi: '外面很冷，快进来吧。', pinyin: 'Wàimiàn hěn lěng, kuài jìn lái ba.', meaning: 'Di luar sangat dingin, cepat masuk ya.' },
   '外边': { hanzi: '外边有人在等你。', pinyin: 'Wàibiān yǒu rén zài děng nǐ.', meaning: 'Di luar ada orang yang menunggumu.' },
   '上': { hanzi: '书在桌子上。', pinyin: 'Shū zài zhuōzi shàng.', meaning: 'Buku ada di atas meja.' },
   '里': { hanzi: '猫在屋子里。', pinyin: 'Māo zài wūzi lǐ.', meaning: 'Kucing ada di dalam rumah.' },
 
-  // ── MODAL & KEMAMPUAN ──────────────────────────────────
+  // ── MODAL Dan KEMAMPUAN ──────────────────────────────────
   '会': { hanzi: '我会说汉语。', pinyin: 'Wǒ huì shuō Hànyǔ.', meaning: 'Saya bisa berbicara Mandarin.' },
   '能': { hanzi: '我能帮你吗？', pinyin: 'Wǒ néng bāng nǐ ma?', meaning: 'Bolehkah saya membantumu?' },
   '可以': { hanzi: '我可以进来吗？', pinyin: 'Wǒ kěyǐ jìnlái ma?', meaning: 'Bolehkah saya masuk?' },
   '要': { hanzi: '我要一杯茶。', pinyin: 'Wǒ yào yī bēi chá.', meaning: 'Saya mau secangkir teh.' },
   '不要': { hanzi: '不要说话。', pinyin: 'Bú yào shuōhuà.', meaning: 'Jangan berbicara.' },
 
-  // ── KONJUNGSI & LAINNYA ────────────────────────────────
+  // ── KONJUNGSI Dan LAINNYA ────────────────────────────────
   '和': { hanzi: '我和妈妈去超市。', pinyin: 'Wǒ hé māma qù chāoshì.', meaning: 'Saya dan ibu pergi ke supermarket.' },
   '还是': { hanzi: '你喝茶还是喝水？', pinyin: 'Nǐ hē chá háishì hē shuǐ?', meaning: 'Kamu minum teh atau air?' },
   '或者': { hanzi: '你去，或者他去都可以。', pinyin: 'Nǐ qù, huòzhě tā qù dōu kěyǐ.', meaning: 'Kamu pergi atau dia pergi, keduanya bisa.' },

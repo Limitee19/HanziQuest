@@ -172,7 +172,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
     };
   }, []);
 
-  // Toggle mode senyap: hentikan audio yang sedang berbunyi & simpan preferensi
+  // Toggle mode senyap: hentikan audio yang sedang berbunyi Dan simpan preferensi
   const toggleMute = () => {
     const next = !mutedRef.current;
     mutedRef.current = next;
@@ -448,7 +448,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
               <RotateCcw className="w-4 h-4 mr-1.5" /> Belajar Ulang Deck Ini
             </Button>
             <Button onClick={onExit} variant="outline" className="w-full py-3 cursor-pointer">
-              Selesai & Kembali ke Koleksi Deck
+              Selesai Dan Kembali ke Koleksi Deck
             </Button>
           </div>
         </Card>
@@ -461,7 +461,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
 
   return (
     <div className="fixed inset-0 z-[100] bg-slate-950 text-white flex flex-col justify-between select-none overflow-hidden">
-      {/* 1. TOP HEADER & PROGRESS */}
+      {/* 1. TOP HEADER Dan PROGRESS */}
       <div className="pt-safe px-3 sm:px-6 py-2.5 sm:py-4 border-b border-zinc-800/80 bg-zinc-950/80 backdrop-blur-md flex items-center justify-between gap-2 sm:gap-4 shrink-0">
         <div className="flex items-center gap-1.5 sm:gap-3 min-w-0">
           <button
@@ -553,7 +553,7 @@ export function FlashcardStudySession({ deckId, deckName, onExit, initialRelearn
               </span>
             </button>
 
-            {/* Extra button if both Word Audio & Sentence Audio exist */}
+            {/* Extra button if both Word Audio Dan Sentence Audio exist */}
             {isRevealed && currentCard.audioUrls && currentCard.audioUrls.length > 1 && (
               <button
                 type="button"

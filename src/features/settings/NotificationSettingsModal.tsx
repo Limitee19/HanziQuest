@@ -100,7 +100,7 @@ export function NotificationSettingsModal({ isOpen, onClose }: NotificationSetti
     }
 
     saveStudyReminderConfig(reminderConfig);
-    success('Pengaturan notifikasi & keamanan berhasil disimpan.');
+    success('Pengaturan notifikasi Dan keamanan berhasil disimpan.');
     onClose();
   };
 
@@ -112,7 +112,7 @@ export function NotificationSettingsModal({ isOpen, onClose }: NotificationSetti
           <div className="flex items-center gap-2">
             <Bell className="w-5 h-5 text-indigo-500 shrink-0" />
             <h3 className="font-bold text-sm sm:text-base text-zinc-900 dark:text-zinc-100 truncate">
-              Notifikasi Belajar & App Lock PIN
+              Notifikasi Belajar Dan App Lock PIN
             </h3>
           </div>
           <button
@@ -237,7 +237,7 @@ export function NotificationSettingsModal({ isOpen, onClose }: NotificationSetti
                 ) : (
                   <p className="mt-1 text-[11px] text-zinc-400">
                     {pinExists
-                      ? 'PIN sudah terpasang & aktif. Isi kolom hanya bila ingin mengubah PIN.'
+                      ? 'PIN sudah terpasang Dan aktif. Isi kolom hanya bila ingin mengubah PIN.'
                       : 'Wajib diisi — App Lock membutuhkan PIN minimal 4 digit.'}
                   </p>
                 )}

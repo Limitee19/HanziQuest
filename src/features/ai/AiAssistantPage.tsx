@@ -288,7 +288,7 @@ export function AiAssistantPage() {
               </Badge>
             </div>
             <p className="text-xs text-zinc-600 dark:text-zinc-400 mt-1 max-w-xl leading-relaxed">
-              Konsultasi tata bahasa, tanya pinyin & hanzi, latihan membuat kalimat percakapan, dan bedah soal HSK bersama asisten cerdasmu.
+              Konsultasi tata bahasa, tanya pinyin Dan hanzi, latihan membuat kalimat percakapan, dan bedah soal HSK bersama asisten cerdasmu.
             </p>
           </div>
         </div>
@@ -510,8 +510,8 @@ export function AiAssistantPage() {
               onChange={(e) => setActiveProviderInput(e.target.value as any)}
               className="w-full px-3 py-2.5 rounded-xl border-2 border-zinc-300 dark:border-[#24324E] bg-white dark:bg-[#101726] text-zinc-900 dark:text-zinc-100 font-medium focus:outline-hidden cursor-pointer"
             >
-              <option value="groq">Groq Cloud AI (Cepat & Direkomendasikan)</option>
-              <option value="gemini">Google Gemini AI (Akurat & Konteks Luas)</option>
+              <option value="groq">Groq Cloud AI (Cepat Dan Direkomendasikan)</option>
+              <option value="gemini">Google Gemini AI (Akurat Dan Konteks Luas)</option>
               <option value="local">Local AI (Ollama Endpoint)</option>
             </select>
           </div>

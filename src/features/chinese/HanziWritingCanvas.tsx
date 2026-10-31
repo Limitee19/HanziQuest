@@ -107,7 +107,7 @@ export function HanziWritingCanvas({
   const tutorialActive = mode === 'guided' && totalStrokes > 0;
   const tutorialDone = tutorialActive && tutorialIdx >= totalStrokes;
 
-  // Deteksi tema untuk warna tinta & panduan (ikut class dark + preferensi OS)
+  // Deteksi tema untuk warna tinta Dan panduan (ikut class dark + preferensi OS)
   useEffect(() => {
     const mq = window.matchMedia('(prefers-color-scheme: dark)');
     const compute = () =>
@@ -366,7 +366,7 @@ export function HanziWritingCanvas({
           {tutorialDone ? (
             <>
               <CheckCircle2 className="w-4 h-4 shrink-0" />
-              Semua {totalStrokes} goresan benar urutan & arahnya! Uji lagi di Latihan Bebas.
+              Semua {totalStrokes} goresan benar urutan Dan arahnya! Uji lagi di Latihan Bebas.
             </>
           ) : strokeFeedback === 'wrong' ? (
             <>

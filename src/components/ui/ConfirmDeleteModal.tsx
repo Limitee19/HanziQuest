@@ -26,7 +26,7 @@ export function ConfirmDeleteModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <div className="space-y-4 text-xs select-none">
-        {/* Warning Icon & Message */}
+        {/* Warning Icon Dan Message */}
         <div className="flex items-start gap-3 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-700 dark:text-rose-300">
           <AlertTriangle className="w-5 h-5 text-rose-600 dark:text-rose-400 shrink-0 mt-0.5" />
           <div className="space-y-1">

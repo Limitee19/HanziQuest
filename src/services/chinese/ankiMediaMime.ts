@@ -1,4 +1,4 @@
-// Shared MIME helpers for Anki media files & data URLs.
+// Shared MIME helpers for Anki media files Dan data URLs.
 
 const AUDIO_EXT_MIME: Record<string, string> = {
   mp3: 'audio/mpeg',

@@ -35,14 +35,14 @@ const HSK1_PEDAGOGICAL_ORDER: string[] = [
   '一', '二', '三', '四', '五', '六', '七', '八', '九', '十',
   // 4) Kata tanya inti
   '什么', '谁', '哪', '那儿', '多少', '几', '怎么', '怎么样',
-  // 5) Waktu & tanggal
+  // 5) Waktu Dan tanggal
   '点', '分', '分钟', '号', '日', '月', '年', '岁', '星期',
   '今天', '明天', '昨天', '现在', '时候', '上午', '下午', '中午',
   // 6) Verba inti
   '有', '吃', '喝', '去', '来', '回', '会', '能', '想', '喜欢',
   '叫', '住', '在', '学习', '看', '看见', '听', '说话', '写', '做',
   '打电话', '睡觉', '工作', '买', '骑', '踢', '坐', '开', '认', '上课',
-  // 7) Orang & keluarga
+  // 7) Orang Dan keluarga
   '人', '名字', '爸爸', '妈妈', '老师', '学生', '同学', '朋友',
   '儿子', '女儿', '先生', '小姐', '医生',
   // 8) Nomina sehari-hari
@@ -52,9 +52,9 @@ const HSK1_PEDAGOGICAL_ORDER: string[] = [
   '块', '天气', '飞机', '出租车', '前面', '后面', '里面', '下面', '上', '下',
   // 9) Adjektiva
   '大', '小', '多', '漂亮', '高兴', '冷', '热',
-  // 10) Adverbia & konjungsi
+  // 10) Adverbia Dan konjungsi
   '很', '都', '太', '和',
-  // 11) Partikel & kata bantu — paling akhir (abstrak)
+  // 11) Partikel Dan kata bantu — paling akhir (abstrak)
   '的', '了', '个', '本', '一点儿',
 ];
 

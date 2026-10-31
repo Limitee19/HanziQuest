@@ -193,7 +193,7 @@ function persistWeakMap(map: Record<string, WeakEntry>): void {
   }
 }
 
-/** Catat hasil jawaban satu kata (dipanggil Time Attack & kuis ungkapan). */
+/** Catat hasil jawaban satu kata (dipanggil Time Attack Dan kuis ungkapan). */
 export function recordWordResult(wordId: string, correct: boolean): void {
   const map = loadWeakMap();
   const entry = map[wordId] || { wrong: 0, right: 0 };

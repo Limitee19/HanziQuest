@@ -45,7 +45,7 @@ export function validatePinyinAnswer(
     userAnswer: toneApplied,
     expectedAnswer: targetCanonicalPinyin,
     feedbackMessage: isValid
-      ? 'Correct Pinyin & Tone!'
+      ? 'Correct Pinyin Dan Tone!'
       : `Incorrect tone or spelling. Expected: ${targetCanonicalPinyin}, got: ${toneApplied}`,
   };
 }

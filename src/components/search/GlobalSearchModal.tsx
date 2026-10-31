@@ -48,7 +48,7 @@ export function GlobalSearchModal({ isOpen, onClose, onNavigate }: GlobalSearchM
     return () => clearTimeout(timer);
   }, [query]);
 
-  // Keyboard navigation & Esc listener
+  // Keyboard navigation Dan Esc listener
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;

@@ -1,8 +1,8 @@
 /**
- * quizSfx — efek suara & audio Mandarin untuk kuis (offine-first).
+ * quizSfx — efek suara Dan audio Mandarin untuk kuis (offine-first).
  *
  *  - SFX benar/salah: dibangkitkan lokal via Web Audio API (oscillator)
- *    → tidak butuh file & tidak butuh internet, selalu tersedia.
+ *    → tidak butuh file Dan tidak butuh internet, selalu tersedia.
  *  - Suara hanzi: memutar MP3 offline lewat chineseAudioPlayer (data set
  *    build script), fallback otomatis ke TTS bila file belum ada.
  */

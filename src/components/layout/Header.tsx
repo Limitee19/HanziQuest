@@ -18,15 +18,15 @@ interface HeaderProps {
 }
 
 const tabTitles: Record<NavTab, { title: string; subtitle: string; domain: string }> = {
-  dashboard: { title: 'Beranda Mandarin', subtitle: 'Peta Petualangan HSK & statistik belajar.', domain: 'Utama' },
-  drill: { title: 'Drill Aksara & Nada', subtitle: 'Latih diskriminasi nada, radikal, dan bentuk visual mirip.', domain: 'Latihan' },
+  dashboard: { title: 'Beranda Mandarin', subtitle: 'Peta Petualangan HSK Dan statistik belajar.', domain: 'Utama' },
+  drill: { title: 'Drill Aksara Dan Nada', subtitle: 'Latih diskriminasi nada, radikal, dan bentuk visual mirip.', domain: 'Latihan' },
   leech: { title: 'Karantina Kata Bandel', subtitle: 'Jebak kata yang sering salah dan tambahkan mnemonik.', domain: 'Evaluasi' },
   garden: { title: 'Kebun Aksara', subtitle: 'Setiap aksara yang dikuasai mekar menjadi bunga Meihua.', domain: 'Progres' },
-  vocab: { title: 'Gudang Kosakata', subtitle: 'Pencarian & urutan goresan resmi 11.073 kata HSK.', domain: 'Kamus' },
+  vocab: { title: 'Gudang Kosakata', subtitle: 'Pencarian Dan urutan goresan resmi 11.073 kata HSK.', domain: 'Kamus' },
   session: { title: 'Sesi Belajar HSK', subtitle: 'Petualangan pos belajar bertingkat dengan spaced repetition.', domain: 'Belajar' },
-  chinese_learning: { title: 'Belajar Mandarin · 中文', subtitle: 'HSK, Hanzi, Listening & Program Harian.', domain: 'Bahasa' },
+  chinese_learning: { title: 'Belajar Mandarin · 中文', subtitle: 'HSK, Hanzi, Listening Dan Program Harian.', domain: 'Bahasa' },
   ai_assistant: { title: 'Asisten AI', subtitle: 'Tanya apa saja — belajar, 语法, 翻译.', domain: 'Kecerdasan' },
-  settings: { title: 'Pengaturan', subtitle: 'Tampilan, TTS, backup & sinkronisasi cloud.', domain: 'Sistem' },
+  settings: { title: 'Pengaturan', subtitle: 'Tampilan, TTS, backup Dan sinkronisasi cloud.', domain: 'Sistem' },
 };
 
 export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOpenMobileMenu }: HeaderProps) {
@@ -93,7 +93,7 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
               title="Open Global Search (Ctrl + K)"
             >
               <Search className="w-3.5 h-3.5 group-hover:text-blue-500 transition-colors" />
-              <span>Cari modul &amp; data…</span>
+              <span>Cari modul Dan data…</span>
               <kbd className="px-1.5 py-0.5 text-[10px] rounded-md bg-zinc-100 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-500 font-mono border border-zinc-200 dark:border-zinc-700">
                 Ctrl K
               </kbd>
@@ -147,14 +147,14 @@ export function Header({ activeTab, theme, toggleTheme, onOpenGlobalSearch, onOp
               setIsClassModalOpen(true);
             }}
             className="flex items-center justify-center gap-1.5 px-2 md:px-2.5 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/50 border border-amber-200 dark:border-amber-800 text-amber-900 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/60 active:scale-95 transition-all cursor-pointer text-xs font-bold shadow-2xs shrink-0"
-            title="Buka Panel Manajemen Siswa & Kelas"
+            title="Buka Panel Manajemen Siswa Dan Kelas"
           >
             <Users className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
             <span className="hidden md:inline">Kelola Siswa</span>
           </button>
         )}
 
-        {/* User Profile Chip & Logout */}
+        {/* User Profile Chip Dan Logout */}
         {currentUser && (
           <div className="flex items-center gap-1 pl-0.5 sm:pl-1 shrink-0">
             <div

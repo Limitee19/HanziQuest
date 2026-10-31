@@ -66,9 +66,9 @@ export const GardenModal: React.FC<GardenModalProps> = ({ isOpen, onClose, sound
             </div>
             <div style={{ minWidth: 0, flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-                <h2 style={{ fontFamily: 'var(--font-display)', margin: 0, fontSize: '1.35rem', color: 'var(--ink)', wordBreak: 'break-word' }}>
-                  Kebun Aksara & Statistik
-                </h2>
+              <h2 style={{ fontFamily: 'var(--font-display)', margin: 0, fontSize: 'clamp(1.05rem, 4.5vw, 1.35rem)', color: 'var(--ink)', wordBreak: 'break-word', lineHeight: 1.25 }}>
+                Kebun Aksara Dan Statistik
+              </h2>
                 <span className="pack-badge" style={{ background: '#ECFDF5', borderColor: '#A7F3D0', color: '#065F46', flexShrink: 0 }}>
                   🌸 Tumbuh Subur
                 </span>
@@ -237,7 +237,7 @@ export const GardenModal: React.FC<GardenModalProps> = ({ isOpen, onClose, sound
               Petak Bunga Aksara ({masteredWords.length} Mekar)
             </h3>
             <span style={{ fontSize: '0.8rem', color: 'var(--ink-subtle)' }}>
-              Klik bunga untuk mendengarkan lafal & melihat arti
+              Klik bunga untuk mendengarkan lafal Dan melihat arti
             </span>
           </div>
 
@@ -301,7 +301,7 @@ export const GardenModal: React.FC<GardenModalProps> = ({ isOpen, onClose, sound
           </div>
         </div>
 
-        {/* Akurasi & Penguasaan Berdasarkan Pos HSK 1 - 6 */}
+        {/* Akurasi Dan Penguasaan Berdasarkan Pos HSK 1 - 6 */}
         <div style={{ marginTop: 24 }}>
           <h3 style={{ margin: '0 0 12px', fontSize: '1.1rem', fontFamily: 'var(--font-display)', color: 'var(--ink)' }}>
             Penguasaan Pos Petualangan HSK 1 — 6

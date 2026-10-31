@@ -92,7 +92,7 @@ export function GamesHubView({ initialGame, poolWordIds }: GamesHubProps) {
       icon: <MessageSquare className="w-6 h-6 text-indigo-600" />,
       iconBg: 'bg-indigo-50 border-indigo-200/80',
       name: 'Ucap! — Ungkapan Sehari-hari',
-      desc: 'Bahasa gaul & frasa nyata + SmartTranslate AI untuk frasa bebas.',
+      desc: 'Bahasa gaul Dan frasa nyata + SmartTranslate AI untuk frasa bebas.',
       tag: 'AI + Online',
       tagTone: 'bg-blue-50 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300',
       stat: () =>

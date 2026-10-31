@@ -17,7 +17,7 @@ interface HanziPracticeViewProps {
   wordId?: string;
   onClose: () => void;
   /**
-   * Karakter aktif untuk pratinjau judul & evaluasi bebas — Word Multi-
+   * Karakter aktif untuk pratinjau judul Dan evaluasi bebas — Word Multi-
    * karakter dari VocabularyDetailModal memakai karakter kedua dst.
    */
   focusCharacter?: string;

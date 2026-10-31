@@ -60,7 +60,7 @@ export function PinyinToneInput({ targetCanonicalPinyin = 'nǐ', onValidate }: P
         </div>
       </div>
 
-      {/* Syllable Input & Live Preview */}
+      {/* Syllable Input Dan Live Preview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="text-xs font-medium text-zinc-600 dark:text-zinc-400">Latin Pinyin Syllable:</label>

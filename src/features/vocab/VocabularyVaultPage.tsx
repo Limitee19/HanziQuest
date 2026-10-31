@@ -247,7 +247,7 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
         <div className="relative z-10 max-w-2xl space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 text-xs font-bold text-rose-100 backdrop-blur-xs border border-white/20">
             <BookOpen className="w-3.5 h-3.5" />
-            <span>Perpustakaan Aksara & Kosakata Mandarin</span>
+            <span>Perpustakaan Aksara Dan Kosakata Mandarin</span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
             Gudang Kosakata Lengkap
@@ -263,7 +263,7 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
         </div>
       </div>
 
-      {/* ── SEARCH & FILTER CONTROLS ── */}
+      {/* ── SEARCH Dan FILTER CONTROLS ── */}
       <div className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-200 dark:border-[#24324E] rounded-3xl p-4 sm:p-6 space-y-4 shadow-xs">
         <div className="flex flex-col md:flex-row gap-3">
           {/* Search Input */}
@@ -348,7 +348,7 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
         </div>
       </div>
 
-      {/* ── STATUS BAR & RESULTS COUNT ── */}
+      {/* ── STATUS BAR Dan RESULTS COUNT ── */}
       <div className="flex items-center justify-between px-2 text-xs font-bold text-zinc-500 dark:text-zinc-400">
         <div>
           Menampilkan <span className="text-zinc-900 dark:text-zinc-100 font-extrabold">{totalItems.toLocaleString()}</span> kosakata ditemukan
@@ -387,7 +387,7 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
                 key={w.id}
                 className="group relative bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-200 dark:border-[#24324E] rounded-3xl p-4 sm:p-5 flex flex-col justify-between space-y-3 transition-all hover:-translate-y-1 hover:border-[#C0392B]/50 dark:hover:border-[#FB7185]/50 shadow-xs"
               >
-                {/* Card Top: Badges & Audio */}
+                {/* Card Top: Badges Dan Audio */}
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-1.5 flex-wrap">
                     <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-50 dark:bg-rose-950/60 text-[#C0392B] dark:text-[#FB7185] border border-rose-200 dark:border-rose-900">
@@ -413,7 +413,7 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
                   </button>
                 </div>
 
-                {/* Card Middle: Hanzi & Pinyin */}
+                {/* Card Middle: Hanzi Dan Pinyin */}
                 <div className="text-center py-1 space-y-1">
                   <div className="font-serif text-3xl sm:text-4xl font-black text-zinc-900 dark:text-zinc-100 tracking-wide group-hover:text-[#C0392B] dark:group-hover:text-[#FB7185] transition-colors">
                     {w.hanzi}
@@ -616,7 +616,7 @@ export function VocabularyVaultPage({ initialQuery = '', initialWordId }: Vocabu
               )}
             </div>
 
-            {/* Meaning & Details Footer */}
+            {/* Meaning Dan Details Footer */}
             <div className="space-y-1 text-center">
               <div className="text-xs text-zinc-500 dark:text-zinc-400">
                 <b>Arti:</b> {meaningOf(strokeModalWord)}

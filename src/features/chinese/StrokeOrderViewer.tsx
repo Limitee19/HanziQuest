@@ -38,7 +38,7 @@ function medianLength(median: [number, number][] | undefined): number {
   return Math.max(len, 1);
 }
 
-/** Posisi & sudut panah arah di ujung median. */
+/** Posisi Dan sudut panah arah di ujung median. */
 function arrowTip(median: [number, number][] | undefined): { x: number; y: number; angle: number } | null {
   if (!median || median.length < 2) return null;
   const [x1, y1] = median[median.length - 2];
@@ -149,7 +149,7 @@ export function StrokeOrderViewer({ character, pinyin, meaning }: StrokeOrderVie
   }
 
   return (
-    <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm space-y-4 max-w-sm mx-auto">
+    <div className="p-4 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-sm space-y-4 max-w-sm mx-auto w-full min-w-0">
       {/* Header Info */}
       <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-2">
         <div className="flex items-center gap-2">
@@ -164,7 +164,10 @@ export function StrokeOrderViewer({ character, pinyin, meaning }: StrokeOrderVie
       </div>
 
       {/* Tianzige SVG Grid Canvas */}
-      <div className="relative w-64 h-64 mx-auto border-2 border-red-500/40 rounded-xl bg-red-50/20 dark:bg-zinc-950/80 overflow-hidden shadow-inner flex items-center justify-center">
+      <div
+        className="relative mx-auto border-2 border-red-500/40 rounded-xl bg-red-50/20 dark:bg-zinc-950/80 overflow-hidden shadow-inner flex items-center justify-center"
+        style={{ width: '100%', maxWidth: '16rem', aspectRatio: '1 / 1' }}
+      >
         {/* Grid 田字格 */}
         <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-40" viewBox="0 0 1024 1024">
           <line x1="512" y1="0" x2="512" y2="1024" stroke="#ef4444" strokeWidth="2" strokeDasharray="8,8" />
@@ -256,10 +259,10 @@ export function StrokeOrderViewer({ character, pinyin, meaning }: StrokeOrderVie
       {/* Keterangan legenda */}
       <p className="text-center text-[11px] text-zinc-500 dark:text-zinc-400 -mt-1">
         <span className="inline-block w-2 h-2 rounded-full bg-red-500 mr-1 align-middle" />
-        Merah = jalur &amp; arah penarikan goresan resmi
+        Merah = jalur Dan arah penarikan goresan resmi
       </p>
 
-      {/* Animation & Step Control Buttons */}
+      {/* Animation Dan Step Control Buttons */}
       <div className="flex items-center justify-between gap-2 pt-1">
         <Button
           size="sm"

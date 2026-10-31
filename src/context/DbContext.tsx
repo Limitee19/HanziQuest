@@ -52,7 +52,7 @@ export const DbProvider: React.FC<{ children: React.ReactNode }> = ({ children }
           setIsInitialized(true);
         }
 
-        // One-time legacy repair: tokenize Anki card content & rebuild audio_urls
+        // One-time legacy repair: tokenize Anki card content Dan rebuild audio_urls
         // (runs in background AFTER the UI is ready; idempotent via app_metadata marker)
         repairAnkiCardMedia().catch((e) => console.warn('Anki card media repair failed:', e));
 

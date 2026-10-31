@@ -746,7 +746,7 @@ export async function initializeDatabase(): Promise<{ appStartDate: string }> {
     );
   `);
 
-  // 46. ACA-03A Addition: Create grade_scales & items tables
+  // 46. ACA-03A Addition: Create grade_scales Dan items tables
   await executeSql(`
     CREATE TABLE IF NOT EXISTS grade_scales (
       id TEXT PRIMARY KEY,
@@ -1020,7 +1020,7 @@ export async function initializeDatabase(): Promise<{ appStartDate: string }> {
   // Initialize or fetch permanent appStartDate
   let appStartDate = await getOrInitAppStartDate();
 
-  // Seed default financial categories & accounts if empty
+  // Seed default financial categories Dan accounts if empty
   await seedDefaultData();
 
   console.log('Database initialization complete. appStartDate:', appStartDate);
@@ -1077,13 +1077,13 @@ async function seedDefaultData() {
   if (catCount === 0) {
     await executeSql(`
       INSERT INTO financial_categories (id, name, type, icon, color) VALUES
-      ('cat_food', 'Food & Dining', 'expense', 'Utensils', '#f59e0b'),
+      ('cat_food', 'Food Dan Dining', 'expense', 'Utensils', '#f59e0b'),
       ('cat_transport', 'Transportation', 'expense', 'Car', '#3b82f6'),
       ('cat_shopping', 'Shopping', 'expense', 'ShoppingBag', '#ec4899'),
-      ('cat_entertainment', 'Entertainment & Gaming', 'expense', 'Gamepad2', '#8b5cf6'),
-      ('cat_bills', 'Bills & Utilities', 'expense', 'Receipt', '#ef4444'),
+      ('cat_entertainment', 'Entertainment Dan Gaming', 'expense', 'Gamepad2', '#8b5cf6'),
+      ('cat_bills', 'Bills Dan Utilities', 'expense', 'Receipt', '#ef4444'),
       ('cat_salary', 'Salary', 'income', 'Briefcase', '#10b981'),
-      ('cat_freelance', 'Freelance & Business', 'income', 'Laptop', '#06b6d4'),
+      ('cat_freelance', 'Freelance Dan Business', 'income', 'Laptop', '#06b6d4'),
       ('cat_game_income', 'Game Income', 'income', 'Trophy', '#eab308');
     `);
   }
@@ -1095,10 +1095,10 @@ async function seedDefaultData() {
   if (knowCatCount === 0) {
     await executeSql(`
       INSERT INTO knowledge_categories (id, name, icon, color) VALUES
-      ('cat_prog', 'Programming & Tech', 'Code', '#3b82f6'),
-      ('cat_roblox', 'Roblox & Game Dev', 'Gamepad2', '#8b5cf6'),
+      ('cat_prog', 'Programming Dan Tech', 'Code', '#3b82f6'),
+      ('cat_roblox', 'Roblox Dan Game Dev', 'Gamepad2', '#8b5cf6'),
       ('cat_personal_kb', 'Personal Workflows', 'BookOpen', '#10b981'),
-      ('cat_references', 'Guides & References', 'Bookmark', '#f59e0b');
+      ('cat_references', 'Guides Dan References', 'Bookmark', '#f59e0b');
     `);
   }
 
@@ -1145,10 +1145,10 @@ async function seedDefaultData() {
     await executeSql(
       `INSERT INTO curriculum_requirements (id, curriculum_id, category_name, requirement_type, title, minimum_credits, is_required, sort_order, created_at, updated_at) VALUES
       ('cr_mku', ?, 'Mata Kuliah Universitas (MKU)', 'credit_minimum', 'Pendidikan Agama, Pancasila, Kewarganegaraan, Bhs Indonesia', 14, 1, 1, ?, ?),
-      ('cr_mkdk', ?, 'Mata Kuliah Dasar Kependidikan (MKDK)', 'credit_minimum', 'Landasan Pendidikan, Perkembangan Peserta Didik, Belajar & Pembelajaran', 8, 1, 2, ?, ?),
+      ('cr_mkdk', ?, 'Mata Kuliah Dasar Kependidikan (MKDK)', 'credit_minimum', 'Landasan Pendidikan, Perkembangan Peserta Didik, Belajar Dan Pembelajaran', 8, 1, 2, ?, ?),
       ('cr_mkk', ?, 'Mata Kuliah Keahlian (MKK)', 'credit_minimum', 'Kemampuan Bahasa Mandarin, Tata Bahasa, Menyimak, Berbicara, Membaca, Menulis', 96, 1, 3, ?, ?),
       ('cr_mkp', ?, 'Mata Kuliah Pilihan (MKP)', 'elective_group', 'Pilihan Peminatan Bisnis, Penerjemahan, Pariwisata, atau Budaya', 16, 0, 4, ?, ?),
-      ('cr_ta', ?, 'Tugas Akhir / Skripsi & KKN', 'credit_minimum', 'KKN/Asistensi Mengajar, Seminar Proposal, dan Skripsi', 10, 1, 5, ?, ?);`,
+      ('cr_ta', ?, 'Tugas Akhir / Skripsi Dan KKN', 'credit_minimum', 'KKN/Asistensi Mengajar, Seminar Proposal, dan Skripsi', 10, 1, 5, ?, ?);`,
       [currId, now, now, currId, now, now, currId, now, now, currId, now, now, currId, now, now]
     );
   }

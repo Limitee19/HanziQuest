@@ -3,7 +3,7 @@ export interface StrokeInfo {
   strokeType?: string;
   /**
    * Garis tengah (median) resmi goresan ini — [[x,y], …] dalam koordinat
-   * viewBox. Digunakan untuk animasi arah penarikan & evaluasi penulisan.
+   * viewBox. Digunakan untuk animasi arah penarikan Dan evaluasi penulisan.
    */
   median?: [number, number][];
 }

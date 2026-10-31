@@ -1,7 +1,7 @@
 // ====================================================================
 // OmniLife Chinese — Program Harian: Mesin Kurikulum + SRS Bertangga
 //
-// Mesin TERPISAH dari Anki (opsi B): punya penjadwal & tabel sendiri.
+// Mesin TERPISAH dari Anki (opsi B): punya penjadwal Dan tabel sendiri.
 // Alur satu kata: kenalan (kartu pengenalan) → kenali (recognition)
 // → ingat (recall) → kuasai (game Arena) → produksi (susun kalimat).
 //
@@ -302,7 +302,7 @@ function makeReviewItem(progressId: string, word: ChineseWord, stage: ProgramSta
     return { kind: 'quiz', mode: 'reverse', progressId, word };
   }
   if (stage === 'recall') return { kind: 'quiz', mode: 'reverse', progressId, word };
-  // recognition & new: campur kenali arti & kuis dengar.
+  // recognition Dan new: campur kenali arti Dan kuis dengar.
   return Math.random() < 0.3
     ? { kind: 'quiz', mode: 'listen', progressId, word }
     : { kind: 'quiz', mode: 'meaning', progressId, word };
@@ -386,10 +386,10 @@ export async function introduceWord(progressId: string, date?: string): Promise<
   await insertProgress(progressId, entry?.orderIndex ?? 0, date || todayISO());
 }
 
-// ── Jawaban & penjadwalan ───────────────────────────────────────────────
+// ── Jawaban Dan penjadwalan ───────────────────────────────────────────────
 
 /**
- * Catat jawaban satu kata & majukan/reset tangga SRS-nya.
+ * Catat jawaban satu kata Dan majukan/reset tangga SRS-nya.
  * Benar  → naik stage, due = D + interval tangga.
  * Salah  → reset D+1, stage turun 1, lapses++, streak kata = 0.
  * Lulus  → production benar saat interval sudah 30 → graduated.

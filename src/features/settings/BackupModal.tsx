@@ -63,7 +63,7 @@ export function BackupModal({ isOpen, onClose }: BackupModalProps) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Backup & Data Safety Manager">
+    <Modal isOpen={isOpen} onClose={onClose} title="Backup Dan Data Safety Manager">
       <div className="space-y-6 text-xs">
         {/* Status Alert Message */}
         {statusMessage && (

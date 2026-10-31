@@ -28,11 +28,11 @@ interface PosCoord {
 
 const POS_COORDS: PosCoord[] = [
   { level: 1, x: 190, y: 640, name: 'Pos 1: Gerbang Desa', subtitle: 'HSK 1 · Lembah Permulaan', biome: 'village', color: '#E11D48', desc: 'Kosakata dasar sehari-hari' },
-  { level: 2, x: 500, y: 550, name: 'Pos 2: Jembatan Bambu', subtitle: 'HSK 2 · Hutan Bambu & Sungai', biome: 'river', color: '#10B981', desc: 'Percakapan dasar & aktivitas harian' },
-  { level: 3, x: 250, y: 400, name: 'Pos 3: Paviliun Teh', subtitle: 'HSK 3 · Air Terjun & Sakura', biome: 'falls', color: '#059669', desc: 'Topik menengah & kerja rutin' },
-  { level: 4, x: 670, y: 330, name: 'Pos 4: Menara Lentera', subtitle: 'HSK 4 · Ngarai Lentera Senja', biome: 'canyon', color: '#F59E0B', desc: 'Diskusi umum & opini' },
-  { level: 5, x: 380, y: 200, name: 'Pos 5: Gunung Berkabut', subtitle: 'HSK 5 · Tebing Awan & Salju', biome: 'mountain', color: '#6366F1', desc: 'Artikel, koran & percakapan bebas' },
-  { level: 6, x: 770, y: 110, name: 'Pos 6: Pagoda Puncak', subtitle: 'HSK 6 · Istana Awan Emas', biome: 'summit', color: '#D97706', desc: 'Sastra & kefasihan tingkat lanjut' },
+  { level: 2, x: 500, y: 550, name: 'Pos 2: Jembatan Bambu', subtitle: 'HSK 2 · Hutan Bambu Dan Sungai', biome: 'river', color: '#10B981', desc: 'Percakapan dasar Dan aktivitas harian' },
+  { level: 3, x: 250, y: 400, name: 'Pos 3: Paviliun Teh', subtitle: 'HSK 3 · Air Terjun Dan Sakura', biome: 'falls', color: '#059669', desc: 'Topik menengah Dan kerja rutin' },
+  { level: 4, x: 670, y: 330, name: 'Pos 4: Menara Lentera', subtitle: 'HSK 4 · Ngarai Lentera Senja', biome: 'canyon', color: '#F59E0B', desc: 'Diskusi umum Dan opini' },
+  { level: 5, x: 380, y: 200, name: 'Pos 5: Gunung Berkabut', subtitle: 'HSK 5 · Tebing Awan Dan Salju', biome: 'mountain', color: '#6366F1', desc: 'Artikel, koran Dan percakapan bebas' },
+  { level: 6, x: 770, y: 110, name: 'Pos 6: Pagoda Puncak', subtitle: 'HSK 6 · Istana Awan Emas', biome: 'summit', color: '#D97706', desc: 'Sastra Dan kefasihan tingkat lanjut' },
 ];
 
 export function GameWorldMap({
@@ -129,7 +129,7 @@ export function GameWorldMap({
             onClick={handleManualSync}
             disabled={isSyncing}
             className="px-2.5 py-1 rounded-xl border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:border-zinc-300 dark:hover:border-zinc-600 active:scale-95 transition-all cursor-pointer shadow-2xs flex items-center gap-1.5 text-xs font-semibold"
-            title="Sinkronkan Progres dengan Cloud (HP & PC)"
+            title="Sinkronkan Progres dengan Cloud (HP Dan PC)"
           >
             <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-rose-500' : 'text-zinc-400'}`} />
             <span className="text-[11px] font-mono">{isSyncing ? 'Menyinkronkan…' : 'Sinkron Cloud'}</span>
@@ -277,7 +277,7 @@ export function GameWorldMap({
               />
             </g>
 
-            {/* 3. Winding River & Cascading Waterfall */}
+            {/* 3. Winding River Dan Cascading Waterfall */}
             <g>
               <path
                 d="M 150 360 Q 170 390, 180 430 Q 190 470, 210 500"
@@ -533,7 +533,7 @@ export function GameWorldMap({
 
       {/* ── MODE 2: BENTO GRID VIEW ── */}
       {viewMode === 'grid' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 animate-in fade-in duration-200">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 animate-in fade-in duration-200">
           {POS_COORDS.map((pos) => {
             const posLevelCount = course.words.filter((w) => w.level === String(pos.level)).length;
             const rawS = effectiveCounts[pos.level];
@@ -548,7 +548,7 @@ export function GameWorldMap({
             return (
               <div
                 key={pos.level}
-                className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-5 space-y-4 transition-transform hover:-translate-y-1 shadow-xs dark:shadow-none"
+                className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-5 sm:p-6 space-y-4 transition-transform hover:-translate-y-1 shadow-xs dark:shadow-none min-w-0"
                 style={{ boxShadow: '0 4px 16px -2px rgba(35, 31, 32, 0.08), 0 2px 6px -1px rgba(35, 31, 32, 0.04)' }}
               >
                 {/* Header */}
@@ -561,13 +561,13 @@ export function GameWorldMap({
                       <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-100 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-900">
                         HSK {pos.level}
                       </span>
-                      <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 truncate">
-                        {pos.subtitle.split('·')[1] || pos.subtitle}
-                      </span>
-                    </div>
-                    <h3 className="font-serif text-base font-bold text-zinc-900 dark:text-zinc-100 truncate mt-0.5">
-                      {OUTPOST_NAME[pos.level]}
-                    </h3>
+                    <span className="text-[11px] sm:text-xs font-bold text-zinc-500 dark:text-zinc-400 min-w-0 break-words leading-snug">
+                      {pos.subtitle.split('·')[1] || pos.subtitle}
+                    </span>
+                  </div>
+                  <h3 className="font-serif text-[15px] sm:text-base font-bold text-zinc-900 dark:text-zinc-100 break-words leading-snug mt-0.5">
+                    {OUTPOST_NAME[pos.level]}
+                  </h3>
                   </div>
                 </div>
 
@@ -682,7 +682,7 @@ export function GameWorldMap({
               "{FLAVOR[selPos.level]}"
             </p>
 
-            {/* Progress & Blossoms */}
+            {/* Progress Dan Blossoms */}
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-bold text-zinc-700 dark:text-zinc-300">
                 <span>Progres Bunga Mekar Pos Ini:</span>
@@ -714,7 +714,7 @@ export function GameWorldMap({
                   onSelectStage?.(selPos.level);
                 }}
               >
-                <span>{isPlayable ? `Mulai Sesi Belajar Pos ${selPos.level}` : `Buka & Pelajari Pos ${selPos.level}`}</span>
+                <span>{isPlayable ? `Mulai Sesi Belajar Pos ${selPos.level}` : `Buka Dan Pelajari Pos ${selPos.level}`}</span>
               </button>
 
               <button
@@ -725,7 +725,7 @@ export function GameWorldMap({
                   onDrill?.(selPos.level);
                 }}
               >
-                <span>Drill Nada & Mirip</span>
+                <span>Drill Nada Dan Mirip</span>
               </button>
 
               <button

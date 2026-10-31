@@ -216,7 +216,7 @@ export function SmartTranslatePanel() {
           </div>
           {saved && (
             <p className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold">
-              ✓ Frasa ini sekarang ikut muncul di mode Kartu & Kuis.
+              ✓ Frasa ini sekarang ikut muncul di mode Kartu Dan Kuis.
             </p>
           )}
           {audioFailed && (

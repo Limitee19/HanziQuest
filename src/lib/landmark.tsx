@@ -78,7 +78,7 @@ function BambooBridge() {
       {/* Arched Bamboo Bridge */}
       <path d="M12 54C24 38 56 38 68 54" stroke="#78350F" strokeWidth="5" strokeLinecap="round" fill="none" />
       <path d="M14 54C24 40 56 40 66 54" stroke="#D97706" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-      {/* Bridge Posts & Railing */}
+      {/* Bridge Posts Dan Railing */}
       <path d="M12 47C24 32 56 32 68 47" stroke="#92400E" strokeWidth="2" strokeDasharray="4 6" strokeLinecap="round" fill="none" />
       <line x1="28" y1="44" x2="28" y2="58" stroke="#78350F" strokeWidth="2.5" strokeLinecap="round" />
       <line x1="52" y1="44" x2="52" y2="58" stroke="#78350F" strokeWidth="2.5" strokeLinecap="round" />
@@ -137,7 +137,7 @@ function LanternTower() {
       <line x1="40" y1="32" x2="40" y2="46" stroke="#92400E" strokeWidth="1.5" />
       {/* Roof Tier 1 */}
       <path d="M22 34C30 32 34 26 40 26C46 26 50 32 58 34C52 29 46 23 40 23C34 23 28 29 22 34Z" fill="#E11D48" />
-      {/* Top Roof & Finial */}
+      {/* Top Roof Dan Finial */}
       <path d="M26 24C32 23 35 18 40 18C45 18 48 23 54 24C49 20 45 15 40 15C35 15 31 20 26 24Z" fill="#BE123C" />
       <circle cx="40" cy="12" r="3" fill="#F59E0B" />
       {/* Stars/Fireflies */}
@@ -166,7 +166,7 @@ function MistyMountain() {
       {/* Snowcaps */}
       <path d="M54 22L46 34L54 36L62 34L54 22Z" fill="#FFFFFF" fillOpacity="0.9" />
       <path d="M28 32L21 42L28 44L35 42L28 32Z" fill="#FFFFFF" fillOpacity="0.85" />
-      {/* Cloud & Mist swirl */}
+      {/* Cloud Dan Mist swirl */}
       <path d="M12 56C20 52 30 52 42 56C54 60 66 56 74 54" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round" strokeOpacity="0.85" />
       <path d="M4 64C16 60 28 62 44 64C56 66 68 62 76 62" stroke="#E0E7FF" strokeWidth="3" strokeLinecap="round" strokeOpacity="0.8" />
     </svg>
@@ -193,7 +193,7 @@ function SummitPagoda() {
       {/* Mid tier */}
       <rect x="32" y="32" width="16" height="8" rx="1" fill="#92400E" />
       <path d="M18 34C26 31 32 26 40 26C48 26 54 31 62 34C55 29 48 23 40 23C32 23 25 29 18 34Z" fill="#BE123C" />
-      {/* Top tier & Golden Needle */}
+      {/* Top tier Dan Golden Needle */}
       <path d="M22 24C30 21 34 16 40 16C46 16 50 21 58 24C52 20 46 14 40 14C34 14 28 20 22 24Z" fill="url(#pagodaGold)" />
       <line x1="40" y1="6" x2="40" y2="14" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" />
       <circle cx="40" cy="6" r="2.5" fill="#E11D48" />

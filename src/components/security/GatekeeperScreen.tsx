@@ -109,7 +109,7 @@ export const GatekeeperScreen: React.FC<GatekeeperScreenProps> = ({ onUnlocked }
         {/* Top Accent Bar */}
         <div className="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-transparent via-[#E11D48] to-transparent" />
 
-        {/* Seal Icon & Branding */}
+        {/* Seal Icon Dan Branding */}
         <div className="flex flex-col items-center space-y-3 pt-2">
           <div
             className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#E11D48] to-[#9F1239] border border-rose-400/40 flex items-center justify-center text-3xl font-serif font-black text-white shadow-lg shadow-rose-900/40 transition-transform hover:scale-105"
@@ -210,7 +210,7 @@ export const GatekeeperScreen: React.FC<GatekeeperScreenProps> = ({ onUnlocked }
         {/* Security watermark footer */}
         <div className="pt-1 border-t border-slate-800/60 flex items-center justify-center gap-1.5 text-[11px] text-slate-400">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Database & Sinkronisasi Cloud Terproteksi</span>
+          <span>Database Dan Sinkronisasi Cloud Terproteksi</span>
         </div>
       </Card>
     </div>

@@ -25,7 +25,7 @@ export function DeckLibraryView() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Modals & Study Mode
+  // Modals Dan Study Mode
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isCreateDeckModalOpen, setIsCreateDeckModalOpen] = useState(false);
   const [isAddCardModalOpen, setIsAddCardModalOpen] = useState(false);
@@ -116,7 +116,7 @@ export function DeckLibraryView() {
     setActiveDeckForStudy(deck);
   };
 
-  /** Deck "tuntas": punya kartu tapi tidak ada kartu baru & tidak ada yang jatuh tempo. */
+  /** Deck "tuntas": punya kartu tapi tidak ada kartu baru Dan tidak ada yang jatuh tempo. */
   const isDeckFinished = (d: DeckItem) => d.cardCount > 0 && d.newCount === 0 && d.dueCount === 0;
 
   // Filtered Decks
@@ -147,11 +147,11 @@ export function DeckLibraryView() {
 
   return (
     <div className="space-y-4 sm:space-y-6 select-none">
-      {/* 1. HEADER — tipografi & statistik, tanpa banner gradien (§02.4) */}
+      {/* 1. HEADER — tipografi Dan statistik, tanpa banner gradien (§02.4) */}
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
         <div className="space-y-1.5 min-w-0">
           <h3 className="font-display text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            Koleksi Flashcard & Anki Decks
+            Koleksi Flashcard Dan Anki Decks
           </h3>
           <p className="text-xs text-zinc-500 dark:text-zinc-400 max-w-xl leading-relaxed">
             Sistem belajar berbasis Spaced Repetition (SRS). Impor deck dari Anki (.apkg) atau buat deck kustom.
@@ -195,7 +195,7 @@ export function DeckLibraryView() {
         </div>
       </div>
 
-      {/* 2. SEARCH BAR & ACTIONS */}
+      {/* 2. SEARCH BAR Dan ACTIONS */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="relative w-full sm:w-80">
           <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2" />
@@ -212,7 +212,7 @@ export function DeckLibraryView() {
         </p>
       </div>
 
-      {/* 3. DECKS LIST & SUBDECKS */}
+      {/* 3. DECKS LIST Dan SUBDECKS */}
       {loading ? (
         <div className="py-12 text-center text-zinc-500 space-y-2">
           <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto" />
@@ -257,7 +257,7 @@ export function DeckLibraryView() {
                 className="p-4 sm:p-5 border-zinc-200 dark:border-zinc-800 flex flex-col justify-between space-y-3 sm:space-y-4 hover:border-blue-300 dark:hover:border-blue-700 transition-all shadow-sm rounded-2xl group"
               >
                 <div className="space-y-2.5">
-                  {/* Top Badges & Actions */}
+                  {/* Top Badges Dan Actions */}
                   <div className="flex items-start justify-between gap-2">
                     <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                       <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-950 text-blue-700 dark:text-blue-300 flex items-center gap-1">

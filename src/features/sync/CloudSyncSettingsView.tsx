@@ -175,7 +175,7 @@ export function CloudSyncSettingsView() {
           )}
         </Card>
 
-        {/* Sync Controls & Outbox */}
+        {/* Sync Controls Dan Outbox */}
         <Card className="p-5 space-y-4 border-zinc-200 dark:border-zinc-800">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
@@ -243,7 +243,7 @@ export function CloudSyncSettingsView() {
           <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 rounded-xl text-xs space-y-1.5">
             <p className="font-bold text-emerald-900 dark:text-emerald-200">✅ Terhubung Aman via Public Anon Key</p>
             <p className="text-emerald-800 dark:text-emerald-300 text-[11.5px]">
-              Klien menggunakan Supabase Anon Key yang aman untuk build web & Vercel. Pastikan seluruh skrip di <code className="font-mono bg-emerald-100 dark:bg-emerald-900/60 px-1 py-0.5 rounded">supabase_schema.sql</code> sudah dieksekusi di Supabase SQL Editor agar izin sinkronisasi terbuka.
+              Klien menggunakan Supabase Anon Key yang aman untuk build web Dan Vercel. Pastikan seluruh skrip di <code className="font-mono bg-emerald-100 dark:bg-emerald-900/60 px-1 py-0.5 rounded">supabase_schema.sql</code> sudah dieksekusi di Supabase SQL Editor agar izin sinkronisasi terbuka.
             </p>
           </div>
         )}
@@ -255,11 +255,11 @@ export function CloudSyncSettingsView() {
             <span>Sinkronisasi Lengkap Seluruh Modul OmniLife (52 Tabel + PIN)</span>
           </div>
           <p className="text-[11px] text-blue-800 dark:text-blue-300">
-            Mencakup: <strong>Akademik, Transaksi & Keuangan, Kalender, Tugas & Rutinitas, Catatan, Pengingat, Goals, Proyek, Vault, hingga PIN Keamanan Aplikasi</strong>. Data otomatis dicadangkan ke Supabase saat online dan tersimpan di antrean saat offline.
+            Mencakup: <strong>Akademik, Transaksi Dan Keuangan, Kalender, Tugas Dan Rutinitas, Catatan, Pengingat, Goals, Proyek, Vault, hingga PIN Keamanan Aplikasi</strong>. Data otomatis dicadangkan ke Supabase saat online dan tersimpan di antrean saat offline.
           </p>
         </div>
 
-        {/* Cloud Sync Actions: Push & Pull */}
+        {/* Cloud Sync Actions: Push Dan Pull */}
         <div className="pt-2 border-t border-zinc-100 dark:border-zinc-800 space-y-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div>
@@ -320,7 +320,7 @@ export function CloudSyncSettingsView() {
       <Card className="p-5 space-y-3 border-zinc-200 dark:border-zinc-800">
         <h4 className="text-sm font-bold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
           <HardDriveDownload className="w-4 h-4 text-indigo-600" />
-          Data Safety & Offline Backup
+          Data Safety Dan Offline Backup
         </h4>
         <p className="text-xs text-zinc-500">
           OmniLife uses a local-first SQLite engine. Your data is always saved locally on your computer regardless of internet connectivity.

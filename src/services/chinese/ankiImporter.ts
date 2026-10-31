@@ -309,10 +309,10 @@ async function computeSha256(buffer: ArrayBuffer): Promise<string> {
 }
 
 /**
- * 1. Safe Read-Only Analysis & Package Preview Generator
+ * 1. Safe Read-Only Analysis Dan Package Preview Generator
  */
 export interface ParseAnkiOptions {
-  /** Terjemahkan teks Inggris ke Bahasa Indonesia (Hanzi & pinyin tetap) */
+  /** Terjemahkan teks Inggris ke Bahasa Indonesia (Hanzi Dan pinyin tetap) */
   translateToIndonesian?: boolean;
 }
 
@@ -342,7 +342,7 @@ export async function parseAnkiPackage(file: File | ArrayBuffer, fileName: strin
 
   const warnings: string[] = [];
 
-  // 1. Read 'col' table: models (note types) & decks
+  // 1. Read 'col' table: models (note types) Dan decks
   const colRows = db.exec(`SELECT models, decks FROM col LIMIT 1;`);
   if (!colRows.length || !colRows[0].values.length) {
     throw new Error('Database Anki tidak memiliki tabel col yang valid.');
@@ -354,7 +354,7 @@ export async function parseAnkiPackage(file: File | ArrayBuffer, fileName: strin
   const rawModels: Record<string, any> = JSON.parse(rawModelsStr || '{}');
   const rawDecks: Record<string, any> = JSON.parse(rawDecksStr || '{}');
 
-  // Build deck hierarchy & mapping
+  // Build deck hierarchy Dan mapping
   const deckMap: Map<string, ExtractedDeck> = new Map();
   const deckNameToId: Map<string, string> = new Map();
 
@@ -671,7 +671,7 @@ function mapMediaListToNames(entries: string[], dataUrlToFileName: Map<string, s
 }
 
 /**
- * 2. Commit Importer: Writes preview content transactionally into SQLite & Syncs to Supabase
+ * 2. Commit Importer: Writes preview content transactionally into SQLite Dan Syncs to Supabase
  */
 export async function commitAnkiImport(
   preview: AnkiPackagePreview,
@@ -779,7 +779,7 @@ export async function commitAnkiImport(
   // 3. Insert / Update Cards
   for (const c of cardsToImport) {
     try {
-      // Tokenize content & audio for persistence (base64 media stays local-only)
+      // Tokenize content Dan audio for persistence (base64 media stays local-only)
       const frontTokenized = tokenizeCardHtml(c.frontContent, dataUrlToFileName);
       const backTokenized = tokenizeCardHtml(c.backContent, dataUrlToFileName);
       const audioFileNames = collectAudioFileNames(c.audioUrls || [], frontTokenized, backTokenized, dataUrlToFileName);

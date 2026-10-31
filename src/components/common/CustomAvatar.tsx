@@ -61,7 +61,7 @@ export const AVATAR_COLLECTION: AvatarMeta[] = [
   {
     id: 'avatar_cat',
     name: 'Kucing Rezeki',
-    title: 'Pembawa Hoki & Ketekunan',
+    title: 'Pembawa Hoki Dan Ketekunan',
     bgGradient: 'from-yellow-900/40 via-amber-900/30 to-zinc-900',
     borderColor: 'border-yellow-500/50',
   },
@@ -111,7 +111,7 @@ export const CustomAvatar: React.FC<CustomAvatarProps> = ({
             {/* Binar Mata Berkilau */}
             <circle cx="41" cy="59" r="2.5" fill="#FFFFFF" />
             <circle cx="59" cy="59" r="2.5" fill="#FFFFFF" />
-            {/* Hidung & Senyum Panda */}
+            {/* Hidung Dan Senyum Panda */}
             <ellipse cx="50" cy="68" rx="4" ry="2.5" fill="#0F172A" />
             <path d="M46 72 Q50 76 54 72" stroke="#0F172A" strokeWidth="2" strokeLinecap="round" />
             {/* Daun Bambu Hijau di Mulut */}
@@ -137,7 +137,7 @@ export const CustomAvatar: React.FC<CustomAvatarProps> = ({
             {/* Mata Tersenyum Teduh */}
             <path d="M38 54 Q42 58 46 54" stroke="#451A03" strokeWidth="2.5" strokeLinecap="round" fill="none" />
             <path d="M54 54 Q58 58 62 54" stroke="#451A03" strokeWidth="2.5" strokeLinecap="round" fill="none" />
-            {/* Kumis & Janggut Putih Panjang Anggun */}
+            {/* Kumis Dan Janggut Putih Panjang Anggun */}
             <path d="M42 66 Q50 70 58 66 Q50 94 42 66 Z" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="1" />
             {/* Jubah Hanfu Kerah Merah Emas */}
             <path d="M26 80 L50 68 L74 80 L78 98 L22 98 Z" fill="#991B1B" />
@@ -181,7 +181,7 @@ export const CustomAvatar: React.FC<CustomAvatarProps> = ({
             <circle cx="50" cy="54" r="22" fill="#FFEDD5" />
             {/* Rambut Berikat Rapi */}
             <ellipse cx="50" cy="40" rx="22" ry="10" fill="#0F172A" />
-            {/* Alis Rapi & Mata Semangat */}
+            {/* Alis Rapi Dan Mata Semangat */}
             <path d="M38 48 Q44 46 48 49" stroke="#1E293B" strokeWidth="2" strokeLinecap="round" />
             <path d="M62 48 Q56 46 52 49" stroke="#1E293B" strokeWidth="2" strokeLinecap="round" />
             <circle cx="43" cy="54" r="3" fill="#0F172A" />
@@ -213,7 +213,7 @@ export const CustomAvatar: React.FC<CustomAvatarProps> = ({
             <circle cx="40" cy="52" r="3" fill="#713F12" />
             <ellipse cx="60" cy="52" rx="6" ry="7" fill="#FEF08A" stroke="#CA8A04" strokeWidth="1.5" />
             <circle cx="60" cy="52" r="3" fill="#713F12" />
-            {/* Moncong & Sungut Panjang */}
+            {/* Moncong Dan Sungut Panjang */}
             <ellipse cx="50" cy="68" rx="14" ry="10" fill="#14B8A6" />
             <path d="M44 68 Q24 76 18 88" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" fill="none" />
             <path d="M56 68 Q76 76 82 88" stroke="#F59E0B" strokeWidth="2.5" strokeLinecap="round" fill="none" />
@@ -289,14 +289,14 @@ export const CustomAvatar: React.FC<CustomAvatarProps> = ({
             {/* Pipi Merona Merah Muda */}
             <ellipse cx="34" cy="58" rx="4" ry="2.5" fill="#FDA4AF" />
             <ellipse cx="66" cy="58" rx="4" ry="2.5" fill="#FDA4AF" />
-            {/* Hidung & Kumis Kucing */}
+            {/* Hidung Dan Kumis Kucing */}
             <polygon points="48,58 52,58 50,61" fill="#F43F5E" />
             <path d="M46 62 Q50 66 54 62" stroke="#18181B" strokeWidth="2" strokeLinecap="round" />
             <line x1="28" y1="58" x2="16" y2="56" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
             <line x1="28" y1="62" x2="16" y2="64" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
             <line x1="72" y1="58" x2="84" y2="56" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
             <line x1="72" y1="62" x2="84" y2="64" stroke="#94A3B8" strokeWidth="1.5" strokeLinecap="round" />
-            {/* Kalung Merah & Lonceng Emas */}
+            {/* Kalung Merah Dan Lonceng Emas */}
             <rect x="36" y="78" width="28" height="6" rx="3" fill="#DC2626" />
             <circle cx="50" cy="84" r="5" fill="#FBBF24" stroke="#D97706" strokeWidth="1" />
           </svg>

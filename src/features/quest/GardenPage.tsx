@@ -63,14 +63,14 @@ export const GardenPage: React.FC<GardenPageProps> = ({ onBackToMap, onStartSess
           </div>
           <div className="min-w-0 flex-1">
             <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-              <h1 className="font-serif text-xl sm:text-2xl md:text-3xl font-extrabold text-[#231F20] dark:text-zinc-100 tracking-tight break-words">
-                Kebun Aksara & Statistik Petualangan
+              <h1 className="font-serif text-lg sm:text-2xl md:text-3xl font-extrabold text-[#231F20] dark:text-zinc-100 tracking-tight break-words [overflow-wrap:anywhere] leading-tight">
+                Kebun Aksara Dan Statistik Petualangan
               </h1>
               <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold shrink-0">
                 Tumbuh Subur
               </span>
             </div>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1 max-w-2xl leading-relaxed break-words [overflow-wrap:anywhere]">
               Setiap aksara Mandarin yang berhasil kamu kuasai (mastered) mekar menjadi bunga Meihua di kebun ini. Siram dan tinjau setiap hari agar tidak layu!
             </p>
           </div>

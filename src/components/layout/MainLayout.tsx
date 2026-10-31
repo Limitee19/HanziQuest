@@ -65,7 +65,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
       {/* ── TOPBAR NAV Khas Hanzi Quest ── */}
       <div style={{ maxWidth: 1400, width: '100%', margin: '0 auto', padding: '0 16px' }}>
         <header className="topbar">
-          {/* Brand Seal & Title */}
+          {/* Brand Seal Dan Title */}
           <div
             className="brand min-w-0 shrink"
             style={{ cursor: 'pointer' }}
@@ -168,7 +168,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
             </button>
           </nav>
 
-          {/* Right Controls: Hanya tersisa Search dan Settings agar bersih & tidak boros tempat */}
+          {/* Right Controls: Hanya tersisa Search dan Settings agar bersih Dan tidak boros tempat */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* Search */}
             <button
@@ -179,7 +179,7 @@ export function MainLayout({ activeTab, setActiveTab, onNavigateTarget, children
                 clickTick(sound);
                 setIsSearchOpen(true);
               }}
-              title="Cari Kosakata & Modul (Ctrl+K)"
+              title="Cari Kosakata Dan Modul (Ctrl+K)"
             >
               <i className="ph-duotone ph-magnifying-glass" style={{ color: 'var(--ink-soft)' }} />
             </button>

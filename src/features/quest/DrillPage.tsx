@@ -16,8 +16,8 @@ interface DrillPageProps {
 
 const DRILL_TABS: { id: DrillKind; name: string; hint: string; icon: string }[] = [
   { id: 'tone', name: 'Jebakan Nada', hint: 'Bunyi serupa, beda nada intonasi', icon: 'ph-music-notes' },
-  { id: 'visual', name: 'Kembaran Mirip', hint: 'Bentuk aksara & goresan mirip', icon: 'ph-eye' },
-  { id: 'radical', name: 'Satu Atap', hint: 'Golongan & rumpun kelas kata sama', icon: 'ph-puzzle-piece' },
+  { id: 'visual', name: 'Kembaran Mirip', hint: 'Bentuk aksara Dan goresan mirip', icon: 'ph-eye' },
+  { id: 'radical', name: 'Satu Atap', hint: 'Golongan Dan rumpun kelas kata sama', icon: 'ph-puzzle-piece' },
 ];
 
 export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKind = 'tone' }: DrillPageProps) {
@@ -122,7 +122,7 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
           </button>
         </div>
 
-        {/* Level Pills & Kind Selector */}
+        {/* Level Pills Dan Kind Selector */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, marginTop: 22, paddingTop: 16, borderTop: '1px dashed var(--border)' }}>
           {/* Level Switcher (1-6) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
@@ -211,7 +211,7 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
           </div>
         </div>
       ) : curRound ? (
-        <div className="card" style={{ padding: '32px 28px' }}>
+        <div className="card" style={{ padding: '28px clamp(12px, 3.5vw, 28px)' }}>
           {/* Progress Indicator */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
             <span style={{ fontSize: '0.84rem', fontWeight: 800, color: 'var(--ink-soft)' }}>
@@ -332,13 +332,15 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
             })}
           </div>
 
-          {/* Feedback & Lanjut Button */}
+          {/* Feedback Dan Lanjut Button */}
           {isAnswered && (
             <div
               style={{
                 display: 'flex',
+                flexWrap: 'wrap',
                 alignItems: 'center',
                 justifyContent: 'space-between',
+                gap: 12,
                 padding: '14px 18px',
                 borderRadius: 14,
                 background: selectedWordId === curRound.target.id ? '#ECFDF5' : '#FFF5F5',
@@ -346,7 +348,7 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
                 marginTop: 20,
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10, minWidth: 0 }}>
                 <i
                   className={`ph-fill ${selectedWordId === curRound.target.id ? 'ph-check-circle' : 'ph-x-circle'}`}
                   style={{ fontSize: '1.6rem', color: selectedWordId === curRound.target.id ? '#059669' : '#DC2626' }}
@@ -358,7 +360,8 @@ export function DrillPage({ onNavigate, onBackToMap, initialLevel = 1, initialKi
 
               <button
                 type="button"
-                className="btn btn--primary"
+                className="btn btn--primary w-full sm:w-auto"
+                style={{ justifyContent: 'center', whiteSpace: 'nowrap' }}
                 onClick={handleNext}
                 autoFocus
               >

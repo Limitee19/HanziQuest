@@ -172,7 +172,7 @@ const FAR_RATIO_TOL = 0.4;
 /**
  * Cocokkan satu goresan user (koordinat kanvas) dengan path target
  * (koordinat 1024). Keduanya dinormalisasi 0..1 dulu.
- * Arah diperiksa lewat titik awal & akhir: mulai dekat awal target dan
+ * Arah diperiksa lewat titik awal Dan akhir: mulai dekat awal target dan
  * berakhir dekat akhir target.
  */
 export function evaluateSingleStroke(
@@ -289,7 +289,7 @@ export function evaluateHanziWriting(
         status: 'Good',
         userStrokeCount: userCount,
         expectedStrokeCount: expectedCount,
-        feedbackMessage: `Urutan & bentuk benar ${correct}/${userCount} goresan.`,
+        feedbackMessage: `Urutan Dan bentuk benar ${correct}/${userCount} goresan.`,
         advice: firstFail
           ? `Perbaiki goresan ke-${firstFail.index + 1}${
               firstFail.startErr > START_END_TOL

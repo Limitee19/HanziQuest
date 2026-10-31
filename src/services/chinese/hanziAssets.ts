@@ -83,7 +83,7 @@ export function ensureHanziAssets(): Promise<HanziManifest | null> {
   return manifestPromise;
 }
 
-/** Stat ringan untuk UI (jumlah karakter & teks audio yang tersedia). */
+/** Stat ringan untuk UI (jumlah karakter Dan teks audio yang tersedia). */
 export function hanziAssetsStats(): { characters: number; audioTexts: number } {
   if (!manifest) return { characters: 0, audioTexts: 0 };
   return {

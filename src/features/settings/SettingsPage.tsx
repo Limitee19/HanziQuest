@@ -35,7 +35,7 @@ export function SettingsPage() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [quizSfxOn, setQuizSfxOn] = useState<boolean>(() => isQuizSfxEnabled());
 
-  // Profil & Akun states
+  // Profil Dan Akun states
   const [currentUser, setCurrentUser] = useState<StudentUser | null>(() => getActiveUser());
   const [nicknameInput, setNicknameInput] = useState(() => currentUser?.nickname || '');
   const [displayNameInput, setDisplayNameInput] = useState(() => currentUser?.displayName || '');
@@ -96,7 +96,7 @@ export function SettingsPage() {
         setPinInput('');
         setProfileFeedback({
           type: 'success',
-          msg: 'Profil & nama panggilan berhasil diperbarui!',
+          msg: 'Profil Dan nama panggilan berhasil diperbarui!',
         });
       } else {
         playErrorBuzz(true);
@@ -134,14 +134,14 @@ export function SettingsPage() {
       </div>
 
       <div className="space-y-5">
-        {/* Profile & Account Identity Settings */}
+        {/* Profile Dan Account Identity Settings */}
         <Card className="p-6 rounded-3xl border-2 border-zinc-200 dark:border-zinc-800 bg-[#FFFDF9] dark:bg-[#151E32] shadow-sm">
           <CardHeader className="p-0 pb-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <CardTitle className="text-base font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-serif">
                   <User className="w-4 h-4 text-rose-500" />
-                  Profil &amp; Identitas Pengguna
+                  Profil Dan Identitas Pengguna
                 </CardTitle>
                 <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
                   Atur nama panggilan sapaan, identitas akun, avatar emoji, dan ganti PIN login Anda
@@ -302,7 +302,7 @@ export function SettingsPage() {
                 </div>
               </div>
 
-              {/* Submit Button & Switch Account */}
+              {/* Submit Button Dan Switch Account */}
               <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-zinc-200 dark:border-zinc-800">
                 <Button
                   type="submit"
@@ -333,7 +333,7 @@ export function SettingsPage() {
           <CardHeader className="p-0 pb-4">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100 font-serif">
               <Sparkles className="w-4 h-4 text-amber-500" />
-              Tema & Tampilan Visual
+              Tema Dan Tampilan Visual
             </CardTitle>
             <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400">
               Pilih atmosfer antarmuka: Kertas Oriental Hangat (Terang) atau Tinta Langit Malam (Gelap)
@@ -427,7 +427,7 @@ export function SettingsPage() {
               ) : (
                 <VolumeX className="w-4 h-4 text-zinc-400 shrink-0" />
               )}
-              Efek Suara Kuis & Latihan Hanzi
+              Efek Suara Kuis Dan Latihan Hanzi
             </CardTitle>
             <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400">
               Bunyi notifikasi benar/salah, suara klik aksara, dan fanfare kemenangan
@@ -466,12 +466,12 @@ export function SettingsPage() {
           </CardContent>
         </Card>
 
-        {/* Mobile Notifications & App Lock PIN */}
+        {/* Mobile Notifications Dan App Lock PIN */}
         <Card className="p-5 rounded-2xl border-2 border-zinc-200 dark:border-zinc-800 bg-[#FFFDF9] dark:bg-[#151E32]">
           <CardHeader className="p-0 pb-3">
             <CardTitle className="text-sm sm:text-base font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
               <Bell className="w-4 h-4 text-indigo-500 shrink-0" />
-              Pengaturan Notifikasi & Jadwal Belajar
+              Pengaturan Notifikasi Dan Jadwal Belajar
             </CardTitle>
             <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400">
               Pengingat jadwal latihan harian, jatuh tempo kartu SRS, dan proteksi PIN
@@ -480,7 +480,7 @@ export function SettingsPage() {
           <CardContent className="p-0 pt-1 text-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div>
-                <span className="font-semibold block text-zinc-900 dark:text-zinc-100">Pengingat Harian & Keamanan PIN</span>
+                <span className="font-semibold block text-zinc-900 dark:text-zinc-100">Pengingat Harian Dan Keamanan PIN</span>
                 <span className="text-zinc-500 dark:text-zinc-400 text-[11.5px]">Atur jam pengingat harian dan PIN sandi aplikasi</span>
               </div>
               <Button
@@ -488,7 +488,7 @@ export function SettingsPage() {
                 onClick={() => setIsNotifSettingsOpen(true)}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold w-full sm:w-auto text-xs cursor-pointer truncate"
               >
-                Atur Notifikasi & PIN
+                Atur Notifikasi Dan PIN
               </Button>
             </div>
           </CardContent>
@@ -499,10 +499,10 @@ export function SettingsPage() {
           <CardHeader className="p-0 pb-3">
             <CardTitle className="text-sm sm:text-base font-bold flex items-center gap-2 text-zinc-900 dark:text-zinc-100">
               <Music className="w-4 h-4 text-fuchsia-500 shrink-0" />
-              Cache Suara & Audio Offline
+              Cache Suara Dan Audio Offline
             </CardTitle>
             <CardDescription className="text-xs text-zinc-500 dark:text-zinc-400">
-              Audio pelafalan hanzi & arti bahasa Indonesia — tersimpan lokal agar dapat diputar lancar tanpa internet
+              Audio pelafalan hanzi Dan arti bahasa Indonesia — tersimpan lokal agar dapat diputar lancar tanpa internet
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0 pt-1 space-y-3 text-xs">

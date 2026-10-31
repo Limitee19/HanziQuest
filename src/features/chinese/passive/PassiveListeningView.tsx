@@ -29,7 +29,7 @@ import {
 } from '@/services/chinese/passiveLearningService';
 
 const MODES: { id: PassiveMode; label: string; desc: string; icon: typeof Waves }[] = [
-  { id: 'flow', label: 'Aliran Kata', desc: 'Kata (2×) → arti. Untuk pemanasan & familiarisasi.', icon: Waves },
+  { id: 'flow', label: 'Aliran Kata', desc: 'Kata (2×) → arti. Untuk pemanasan Dan familiarisasi.', icon: Waves },
   { id: 'recall', label: 'Latihan Ingat', desc: 'Kata → jeda untuk mengingat → arti. Priming memori aktif-pasif.', icon: Brain },
   { id: 'sentence', label: 'Dalam Kalimat', desc: 'Kata → contoh kalimat → arti. Konteks pemakaian nyata.', icon: BookOpenText },
 ];
@@ -240,7 +240,7 @@ export function PassiveListeningView() {
             <p className="text-[10px] text-zinc-500">
               {isPaused
                 ? 'Dijeda — tekan play untuk melanjutkan.'
-                : 'Bebas lakukan aktivitas lain. Layar & audio tetap berjalan (wake lock aktif).'}
+                : 'Bebas lakukan aktivitas lain. Layar Dan audio tetap berjalan (wake lock aktif).'}
             </p>
           </CardContent>
         </Card>

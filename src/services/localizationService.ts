@@ -32,8 +32,8 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'nav.plan': 'Perencanaan',
     'nav.life': 'Kehidupan',
     'nav.money': 'Keuangan',
-    'nav.study': 'Akademik & Studi',
-    'nav.secure': 'Keamanan & Brankas',
+    'nav.study': 'Akademik Dan Studi',
+    'nav.secure': 'Keamanan Dan Brankas',
     'nav.settings': 'Pengaturan',
 
     // Specific Tabs
@@ -42,11 +42,11 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'tab.tasks': 'Daftar Tugas',
     'tab.routines': 'Rutinitas Berulang',
     'tab.reminders': 'Pengingat',
-    'tab.projects': 'Proyek & Pekerjaan',
-    'tab.goals': 'Target & Tujuan',
+    'tab.projects': 'Proyek Dan Pekerjaan',
+    'tab.goals': 'Target Dan Tujuan',
     'tab.knowledge': 'Basis Pengetahuan',
     'tab.timeline': 'Lini Masa Kehidupan',
-    'tab.academic': 'Perkuliahan & Studi',
+    'tab.academic': 'Perkuliahan Dan Studi',
     'tab.finance': 'Manajemen Keuangan',
     'tab.subscriptions': 'Langganan Berulang',
     'tab.wishlist': 'Daftar Keinginan',
@@ -59,7 +59,7 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'tab.ai_assistant': 'Asisten pintar AI',
     'tab.chinese_learning': 'Belajar Bahasa Mandarin',
     'tab.study_hub': 'Study Hub (Materi Kuliah)',
-    'tab.analytics': 'Analitik & Wawasan',
+    'tab.analytics': 'Analitik Dan Wawasan',
     'tab.settings': 'Pengaturan',
 
     // Chinese Learning Module
@@ -105,7 +105,7 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'cl.startDailyReview': 'Mulai Review Harian',
     'cl.allReviewsComplete': 'Semua review saat ini sudah selesai!',
     'cl.noReviewsDue': 'Tidak ada review yang perlu dilakukan sekarang.',
-    'cl.listeningTab': 'Latihan Listening & Audio',
+    'cl.listeningTab': 'Latihan Listening Dan Audio',
     'cl.playAudio': 'Putar Audio Mandarin',
     'cl.playbackSpeed': 'Kecepatan Pemutaran',
     'cl.slowSpeed': '0.75x Pelan',
@@ -114,7 +114,7 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'cl.startListeningPractice': 'Mulai Latihan Listening',
     'cl.audioUnavailable': 'Audio pengucapan belum tersedia.',
 
-    // ACA-01 Academic & KRS Keys
+    // ACA-01 Academic Dan KRS Keys
     'aca.krs': 'Rencana Studi (KRS)',
     'aca.krsStatus': 'Status Persetujuan KRS',
     'aca.waitingPa': 'Menunggu Persetujuan Dosen PA',
@@ -130,20 +130,20 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'aca.submitKrs': 'Kirim KRS ke Dosen PA',
     'aca.simulateApprove': 'Simulasi Persetujuan PA',
     'aca.simulateRevision': 'Simulasi Perlu Perbaikan',
-    'aca.masterData': 'Master Data & Jam UM',
+    'aca.masterData': 'Master Data Dan Jam UM',
     'aca.periodProfiles': 'Profil Jam Kuliah UM (1-14)',
     'aca.regularSchedule': 'Jadwal Reguler UM',
     'aca.ramadanSchedule': 'Jadwal Ramadhan UM',
     'aca.periodRange': 'Rentang Jam Ke',
-    'aca.rooms': 'Ruang & Gedung Perkuliahan',
-    'aca.lecturers': 'Daftar Dosen & Dosen PA',
+    'aca.rooms': 'Ruang Dan Gedung Perkuliahan',
+    'aca.lecturers': 'Daftar Dosen Dan Dosen PA',
     'aca.classMeetings': 'Jadwal Pertemuan Kelas',
-    'sync.title': 'Cloud Sync & Akun',
+    'sync.title': 'Cloud Sync Dan Akun',
     'sync.syncing': 'Menyingkronkan Data...',
     'sync.synced': 'Tersinkronisasi',
     'sync.syncNow': 'Sync Sekarang',
 
-    // Common Actions & Buttons
+    // Common Actions Dan Buttons
     'action.add': 'Tambah',
     'action.create': 'Buat Baru',
     'action.edit': 'Ubah',
@@ -177,11 +177,11 @@ const dictionaries: Record<Language, Record<string, string>> = {
   en: {
     // Top Level Navigation Hubs
     'nav.home': 'Home',
-    'nav.plan': 'Plan & Time',
-    'nav.life': 'Life & Knowledge',
-    'nav.money': 'Money & Finance',
-    'nav.study': 'Study & College',
-    'nav.secure': 'Security & Vault',
+    'nav.plan': 'Plan Dan Time',
+    'nav.life': 'Life Dan Knowledge',
+    'nav.money': 'Money Dan Finance',
+    'nav.study': 'Study Dan College',
+    'nav.secure': 'Security Dan Vault',
     'nav.settings': 'Settings',
 
     // Specific Tabs
@@ -194,7 +194,7 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'tab.goals': 'Goals',
     'tab.knowledge': 'Knowledge Base',
     'tab.timeline': 'Life Timeline',
-    'tab.academic': 'Academic & Study',
+    'tab.academic': 'Academic Dan Study',
     'tab.finance': 'Finance',
     'tab.subscriptions': 'Subscriptions',
     'tab.wishlist': 'Wishlist',
@@ -207,7 +207,7 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'tab.ai_assistant': 'AI Assistant',
     'tab.chinese_learning': 'Chinese Learning',
     'tab.study_hub': 'Study Hub (Course Materials)',
-    'tab.analytics': 'Analytics & Insights',
+    'tab.analytics': 'Analytics Dan Insights',
     'tab.settings': 'Settings',
 
     // Chinese Learning Module
@@ -253,7 +253,7 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'cl.startDailyReview': 'Start Daily Review',
     'cl.allReviewsComplete': 'All current reviews are complete!',
     'cl.noReviewsDue': 'No reviews are due right now.',
-    'cl.listeningTab': 'Listening & Audio Practice',
+    'cl.listeningTab': 'Listening Dan Audio Practice',
     'cl.playAudio': 'Play Mandarin Audio',
     'cl.playbackSpeed': 'Playback Speed',
     'cl.slowSpeed': '0.75x Slow',
@@ -262,7 +262,7 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'cl.startListeningPractice': 'Start Listening Practice',
     'cl.audioUnavailable': 'Audio pronunciation is unavailable.',
 
-    // ACA-01 Academic & KRS Keys
+    // ACA-01 Academic Dan KRS Keys
     'aca.krs': 'Study Plan (KRS)',
     'aca.krsStatus': 'KRS Approval Status',
     'aca.waitingPa': 'Waiting for Academic Advisor Approval',
@@ -278,20 +278,20 @@ const dictionaries: Record<Language, Record<string, string>> = {
     'aca.submitKrs': 'Submit KRS to Advisor',
     'aca.simulateApprove': 'Simulate Advisor Approval',
     'aca.simulateRevision': 'Simulate Request Revision',
-    'aca.masterData': 'Master Data & UM Periods',
+    'aca.masterData': 'Master Data Dan UM Periods',
     'aca.periodProfiles': 'UM Lecture Period Profiles (1-14)',
     'aca.regularSchedule': 'UM Regular Schedule',
     'aca.ramadanSchedule': 'UM Ramadan Schedule',
     'aca.periodRange': 'Period Range',
-    'aca.rooms': 'Lecture Rooms & Buildings',
-    'aca.lecturers': 'Lecturers & Advisors',
+    'aca.rooms': 'Lecture Rooms Dan Buildings',
+    'aca.lecturers': 'Lecturers Dan Advisors',
     'aca.classMeetings': 'Class Meeting Schedules',
-    'sync.title': 'Cloud Sync & Account',
+    'sync.title': 'Cloud Sync Dan Account',
     'sync.syncing': 'Syncing Data...',
     'sync.synced': 'Synced',
     'sync.syncNow': 'Sync Now',
 
-    // Common Actions & Buttons
+    // Common Actions Dan Buttons
     'action.add': 'Add',
     'action.create': 'Create New',
     'action.edit': 'Edit',

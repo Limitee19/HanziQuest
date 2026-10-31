@@ -80,7 +80,7 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
       }
     } catch {}
 
-    // 2. Ambil data cloud (student_quest_progress & student_quest_meta)
+    // 2. Ambil data cloud (student_quest_progress Dan student_quest_meta)
     const cloudProgressMap: Record<string, { word_id: string; hanzi?: string; stage: string; due_date: string; review_count: number; updated_at: number }> = {};
 
     // a) student_quest_progress (paginasi per 1000 agar tidak terpotong batasan max_rows)
@@ -111,7 +111,7 @@ export async function syncStudentQuestProgress(force = false): Promise<void> {
       console.warn('Fetch student_quest_progress error:', e);
     }
 
-    // b) student_quest_meta (snapshot backup & leech words)
+    // b) student_quest_meta (snapshot backup Dan leech words)
     let metaSnapshot: any = null;
     let existingNotes: Record<string, any> = {};
     let cloudLeechWords: LeechItem[] = [];
@@ -338,7 +338,7 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
     const isGuest = userId === 'usr_guest';
     const scopedKey = getQuestStorageKey();
 
-    // 1) Ambil dari localStorage per-user (sudah disinkronkan & dimerge dengan Cloud)
+    // 1) Ambil dari localStorage per-user (sudah disinkronkan Dan dimerge dengan Cloud)
     try {
       const rawLocal = localStorage.getItem(scopedKey);
       if (rawLocal) {
@@ -349,7 +349,7 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
       }
     } catch {}
 
-    // Fallback SQLite & legacy HANYA jika akun tamu (agar tidak mengotori akun terdaftar)
+    // Fallback SQLite Dan legacy HANYA jika akun tamu (agar tidak mengotori akun terdaftar)
     if (isGuest) {
       try {
         const rows = await selectSql<{ id: string; stage: string; due_date: string; review_count?: number }>(
@@ -404,7 +404,7 @@ export async function fetchOutpostStats(): Promise<Record<number, { total: numbe
   return result;
 }
 
-// ── Mnemonik & Ruang Leech (Kata Bandel) ─────────────────────────────────
+// ── Mnemonik Dan Ruang Leech (Kata Bandel) ─────────────────────────────────
 
 export function getMnemonicNotes(): Record<string, string> {
   try {
@@ -590,7 +590,7 @@ export async function fetchMasteredWords(): Promise<CourseWord[]> {
     }
   } catch {}
 
-  // Fallback ke SQLite & legacy HANYA jika akun tamu
+  // Fallback ke SQLite Dan legacy HANYA jika akun tamu
   if (isGuest) {
     try {
       const rows = await selectSql<{ id: string; stage: string; review_count?: number }>(
