@@ -7,7 +7,7 @@
  * - Data tersinkron ke Supabase jika tersedia, dengan fallback lokal offline yang kuat.
  */
 
-import { supabase } from '@/services/sync/supabaseClient';
+import { supabase, updateMockSession } from '@/services/sync/supabaseClient';
 
 export interface StudentUser {
   id: string;
@@ -466,6 +466,18 @@ async function finalizeLogin(user: StudentUser, authHash?: string): Promise<Stud
     localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(resolved));
   } catch {}
   if (authHash && resolved.role === 'admin') setAdminAuthHash(authHash);
+  
+  // SECURITY FIX: Sync auth session to sync service
+  // This ensures cloud sync operations use correct user_id
+  updateMockSession({
+    user: {
+      id: resolved.id,
+      email: `${resolved.username}@omnilife.local`,
+    },
+    accessToken: `auth_${resolved.id}_${Date.now()}`,
+    isOnline: true,
+  });
+  
   notifyAuthChange(resolved);
   if (resolved.role !== 'guest') {
     // Tarik profil (nama panggilan, nama lengkap, avatar) Dan gap-fill profil
@@ -646,6 +658,14 @@ export function logoutUser(): void {
     localStorage.removeItem(STORAGE_ACTIVE_USER_KEY);
     clearAdminAuthHash();
   } catch {}
+  
+  // SECURITY FIX: Clear sync session on logout
+  updateMockSession({
+    user: null,
+    accessToken: null,
+    isOnline: false,
+  });
+  
   notifyAuthChange(null);
 }
 
@@ -667,6 +687,16 @@ export function loginGuestUser(): StudentUser {
   try {
     localStorage.setItem(STORAGE_ACTIVE_USER_KEY, JSON.stringify(guestUser));
   } catch {}
+  
+  // SECURITY FIX: Guest users should not sync to cloud
+  updateMockSession({
+    user: {
+      id: 'usr_guest',
+      email: 'guest@omnilife.local',
+    },
+    accessToken: null,
+    isOnline: false,  // Prevent cloud sync for guest
+  });
 
   notifyAuthChange(guestUser);
   return guestUser;
