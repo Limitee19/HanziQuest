@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export const FLAVOR: Record<number, string> = {
   1: 'Gerbang desa tempat langkah pertama, lentera menyala menyambut petualang.',
@@ -216,21 +216,10 @@ export function LandmarkSvg({ level }: { level: number }) {
 }
 
 export function Landmark({ level }: { level: number }) {
-  const [imgOk, setImgOk] = useState(false);
   const Mark = MARKS[level] ?? VillageGate;
-  const src = `/assets/pos-hsk${level}.png`;
-
   return (
     <div className={`landmark-container landmark--hsk${level}`}>
       <Mark />
-      {imgOk && <img src={src} alt="" className="landmark-img" onError={() => setImgOk(false)} />}
-      <img
-        src={src}
-        alt=""
-        style={{ display: imgOk ? undefined : 'none' }}
-        onLoad={() => setImgOk(true)}
-        onError={() => setImgOk(false)}
-      />
       <span className="landmark__stamp">H{level}</span>
     </div>
   );
