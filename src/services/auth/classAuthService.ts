@@ -68,6 +68,10 @@ function clearAdminAuthHash(): void {
 const STORAGE_LOCAL_USERS_KEY = 'omnilife_class_local_users';
 const AUTH_STATE_CHANGE_EVENT = 'omnilife_class_auth_state_change';
 
+// SECURITY FIX: PIN hashes stored in sessionStorage only (cleared on tab close)
+// Never persist PIN hashes to localStorage to prevent browser storage exploitation
+const SESSION_PIN_CACHE_KEY = 'omnilife_session_pin_cache';
+
 function getStoredUserNicknameKey(userId: string): string {
   return `omnilife_user_nickname_${userId}`;
 }
@@ -112,22 +116,63 @@ export async function hashPin(pin: string): Promise<string> {
 }
 
 /**
- * Dapatkan daftar akun lokal dari localStorage
+ * Dapatkan daftar akun lokal dari localStorage (metadata) + sessionStorage (PIN hashes)
+ * SECURITY: PIN hashes stored in sessionStorage only, cleared on tab close
  */
 function getStoredLocalUsers(): Array<StudentUser & { pinHash: string }> {
   try {
     const raw = localStorage.getItem(STORAGE_LOCAL_USERS_KEY);
-    if (raw) return JSON.parse(raw);
+    if (raw) {
+      const users = JSON.parse(raw);
+      
+      // SECURITY FIX: Restore PIN hashes from sessionStorage instead of localStorage
+      // This ensures PIN hashes are only in memory per session, not persisted
+      try {
+        const sessionPins = sessionStorage.getItem(SESSION_PIN_CACHE_KEY);
+        if (sessionPins) {
+          const pinMap = JSON.parse(sessionPins);
+          return users.map((u: any) => ({
+            ...u,
+            pinHash: pinMap[u.id] || u.pinHash || '' // Fallback to stored hash only if session expired
+          }));
+        }
+      } catch {}
+      
+      return users;
+    }
   } catch {}
   return [];
 }
 
 /**
- * Simpan daftar akun lokal ke localStorage
+ * Simpan daftar akun lokal ke localStorage (metadata) + sessionStorage (PIN hashes)
+ * SECURITY: PIN hashes stored in sessionStorage only, cleared on tab close
  */
 function saveStoredLocalUsers(users: Array<StudentUser & { pinHash: string }>): void {
   try {
-    localStorage.setItem(STORAGE_LOCAL_USERS_KEY, JSON.stringify(users));
+    // Save metadata to localStorage (for offline fallback)
+    const userMetadata = users.map(u => ({
+      id: u.id,
+      username: u.username,
+      displayName: u.displayName,
+      nickname: u.nickname,
+      role: u.role,
+      isActive: u.isActive,
+      avatar: u.avatar,
+      createdAt: u.createdAt,
+      // DO NOT include pinHash in localStorage
+    }));
+    localStorage.setItem(STORAGE_LOCAL_USERS_KEY, JSON.stringify(userMetadata));
+    
+    // SECURITY FIX: Save PIN hashes to sessionStorage only
+    // This ensures hashes are cleared when tab closes
+    const pinMap: Record<string, string> = {};
+    users.forEach(u => {
+      if (u.pinHash) {
+        pinMap[u.id] = u.pinHash;
+      }
+    });
+    sessionStorage.setItem(SESSION_PIN_CACHE_KEY, JSON.stringify(pinMap));
   } catch {}
 }
 
@@ -597,12 +642,25 @@ export async function loginUser(
     }
   }
 
-  // 2. Fallback verifikasi lokal offline
+  // 2. Fallback verifikasi lokal offline (desktop only, not web)
+  // SECURITY FIX: On web (Vercel), require Supabase authentication
+  // Admin accounts MUST be verified via cloud, never local fallback
+  const isWebDeployment = typeof window !== 'undefined' && !(window as any).__TAURI_INTERNALS__;
+  
+  if (isWebDeployment) {
+    // On Vercel: fail if Supabase didn't find user
+    return {
+      success: false,
+      error: 'Username tidak ditemukan atau Supabase offline. Hubungi guru kelas.',
+    };
+  }
+  
+  // Desktop/Tauri only: allow local fallback
   const localUsers = getStoredLocalUsers();
   const found = localUsers.find((u) => u.username.toLowerCase() === cleanUsername);
 
   if (!found) {
-    // Khusus Admin darurat jika hash PIN cocok secara kriptografis
+    // Khusus Admin darurat jika hash PIN cocok secara kriptografis (desktop only)
     const isMasterAdminMatch = inputHash === DEFAULT_MASTER_ADMIN_HASH || (ENV_MASTER_PIN ? inputHash === await hashPin(ENV_MASTER_PIN) : false);
     if ((cleanUsername === '260242649788' || cleanUsername === 'admin') && isMasterAdminMatch) {
       const adminId = cleanUsername === '260242649788' ? 'usr_admin_260242649788' : 'usr_admin_master';
