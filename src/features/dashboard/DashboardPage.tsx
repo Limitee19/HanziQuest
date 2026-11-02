@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import {
   Flame,
   Layers,
-  Sparkles,
   ArrowRight,
   Headphones,
   Gamepad2,
@@ -107,11 +106,69 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
 
   // Focus word of the day
   const focusWords = [
-    { hanzi: '学习', pinyin: 'xué xí', meaning: 'Belajar, mempelajari', hsk: 'HSK 1', note: 'Kata kunci untuk membangun kebiasaan belajar harian.' },
-    { hanzi: '坚持', pinyin: 'jiān chí', meaning: 'Bertahan, konsisten', hsk: 'HSK 3', note: 'Konsistensi adalah rahasia menguasai bahasa Mandarin.' },
-    { hanzi: '进步', pinyin: 'jìn bù', meaning: 'Kemajuan, berkembang', hsk: 'HSK 2', note: 'Sedikit demi sedikit, setiap kata membawamu maju.' },
-    { hanzi: '朋友', pinyin: 'péng you', meaning: 'Teman, sahabat', hsk: 'HSK 1', note: 'Bahasa adalah jembatan untuk berteman di seluruh dunia.' },
-    { hanzi: '加油', pinyin: 'jiā yóu', meaning: 'Semangat! Ayo!', hsk: 'Frasa Populer', note: 'Ungkapan penyemangat sehari-hari dalam budaya Tionghoa.' },
+    {
+      hanzi: '学习',
+      pinyin: 'xué xí',
+      meaning: 'Belajar, mempelajari',
+      hsk: 'HSK 1',
+      quoteHanzi: '学而时习之，不亦说乎',
+      quotePinyin: 'Xué ér shí xí zhī, bù yì yuè hū',
+      note: 'Belajar dan terus melatihnya secara rutin, bukankah sangat menyenangkan?',
+    },
+    {
+      hanzi: '坚持',
+      pinyin: 'jiān chí',
+      meaning: 'Bertahan, konsisten',
+      hsk: 'HSK 3',
+      quoteHanzi: '贵在坚持，持之以恒',
+      quotePinyin: 'Guì zài jiān chí, chí zhī yǐ héng',
+      note: 'Kunci kemahiran bahasa terletak pada ketekunan mengulang setiap hari.',
+    },
+    {
+      hanzi: '进步',
+      pinyin: 'jìn bù',
+      meaning: 'Kemajuan, berkembang',
+      hsk: 'HSK 2',
+      quoteHanzi: '循序渐进，日就月将',
+      quotePinyin: 'Xún xù jiàn jìn, rì jiù yuè jiāng',
+      note: 'Sedikit demi sedikit, setiap kata membawamu melangkah maju.',
+    },
+    {
+      hanzi: '朋友',
+      pinyin: 'péng you',
+      meaning: 'Teman, sahabat',
+      hsk: 'HSK 1',
+      quoteHanzi: '海内存知己，天涯若比邻',
+      quotePinyin: 'Hǎi nèi cún zhī jǐ, tiān yá ruò bǐ lín',
+      note: 'Bahasa Mandarin adalah jembatan persahabatan ke seluruh penjuru dunia.',
+    },
+    {
+      hanzi: '加油',
+      pinyin: 'jiā yóu',
+      meaning: 'Semangat! Terus maju!',
+      hsk: 'Frasa Populer',
+      quoteHanzi: '乘风破浪，勇往直前',
+      quotePinyin: 'Chéng fēng pò làng, yǒng wǎng zhí qián',
+      note: 'Menerjang rintangan, terus melangkah maju penuh semangat.',
+    },
+    {
+      hanzi: '积累',
+      pinyin: 'jī lěi',
+      meaning: 'Akumulasi, menumpuk',
+      hsk: 'HSK 4',
+      quoteHanzi: '积少成多，聚沙成塔',
+      quotePinyin: 'Jī shǎo chéng duō, jù shā chéng tǎ',
+      note: 'Kumpulkan sedikit demi sedikit, butiran pasir pun akan menjelma menara megah.',
+    },
+    {
+      hanzi: '初心',
+      pinyin: 'chū xīn',
+      meaning: 'Niat awal, tekad mula',
+      hsk: 'Frasa Klasik',
+      quoteHanzi: '不忘初心，方得始终',
+      quotePinyin: 'Bù wàng chū xīn, fāng dé shǐ zhōng',
+      note: 'Jangan lupakan niat awalmu, niscaya cita-citamu akan terwujud sempurna.',
+    },
   ];
   const dayIndex = new Date().getDate() % focusWords.length;
   const todayWord = focusWords[dayIndex];
@@ -571,10 +628,15 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
           }}
         >
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <span className="pack-badge">
-                <Sparkles className="w-3.5 h-3.5 text-amber-500" /> Kata Hari Ini
-              </span>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-lg bg-amber-500/10 dark:bg-amber-400/10 text-amber-900 dark:text-amber-300 font-serif text-xs font-bold border border-amber-500/25 tracking-wide">
+                  今日词汇
+                </span>
+                <span className="text-[11px] font-semibold text-zinc-500 dark:text-zinc-400 font-mono">
+                  (Jīnrì cíhuì · Kata Hari Ini)
+                </span>
+              </div>
               <span
                 style={{
                   padding: '2px 8px',
@@ -609,9 +671,29 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
               <p style={{ margin: '4px 0 0', fontSize: '0.94rem', fontWeight: 600, color: 'var(--ink)' }}>
                 {todayWord.meaning}
               </p>
-              <p style={{ margin: '8px 0 0', fontSize: '0.82rem', color: 'var(--ink-soft)', lineHeight: 1.4 }}>
-                {todayWord.note}
-              </p>
+
+              {/* Kutipan Pepatah Mandarin + Pinyin + Arti */}
+              <div className="mt-3.5 p-3 rounded-xl bg-amber-500/5 dark:bg-amber-400/5 border border-amber-500/15 space-y-1">
+                <div className="flex items-center justify-between gap-1">
+                  <span className="font-serif text-xs font-bold text-amber-900 dark:text-amber-300 tracking-wide">
+                    {todayWord.quoteHanzi}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => speakHanzi(todayWord.quoteHanzi)}
+                    className="text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400 text-xs cursor-pointer p-0.5"
+                    title="Dengarkan Pepatah Mandarin"
+                  >
+                    🔊
+                  </button>
+                </div>
+                <p className="font-mono text-[10.5px] text-zinc-500 dark:text-zinc-400">
+                  {todayWord.quotePinyin}
+                </p>
+                <p className="text-[11.5px] text-zinc-600 dark:text-zinc-300 italic pt-0.5 leading-relaxed">
+                  "{todayWord.note}"
+                </p>
+              </div>
             </div>
           </div>
 
