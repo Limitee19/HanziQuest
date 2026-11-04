@@ -217,7 +217,11 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
   };
 
   const outpost = OUTPOST_INFO[level] || OUTPOST_INFO[1];
-  const progressPct = sessionWords.length > 0 ? Math.round((currentIndex / sessionWords.length) * 100) : 0;
+  const progressPct = sessionWords.length > 0
+    ? (isSessionComplete
+        ? 100
+        : Math.min(100, Math.round(((currentIndex + 1) / sessionWords.length) * 100)))
+    : 0;
 
   return (
     <div className="w-full max-w-4xl mx-auto px-4 py-8 space-y-6 animate-in fade-in duration-300">
@@ -351,46 +355,65 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
 
       {/* ── Main Session Area ── */}
       {isSessionComplete ? (
-        /* Completion Card */
+        /* Completion Card (Oriental Victory Medallion - Perfectly Centered) */
         <div 
-          className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-8 sm:p-12 text-center space-y-6 animate-in zoom-in-95 duration-300"
+          className="bg-[#FFFDF9] dark:bg-[#151E32] border border-zinc-300 dark:border-[#24324E] rounded-3xl p-8 sm:p-14 text-center space-y-6 animate-in zoom-in-95 duration-300 flex flex-col items-center justify-center mx-auto"
           style={{ boxShadow: '0 12px 32px -4px rgba(35, 31, 32, 0.08)' }}
         >
-          <div className="w-20 h-20 mx-auto rounded-full bg-emerald-100 border-3 border-emerald-500 text-4xl flex items-center justify-center animate-bounce shadow-md">
-            🎉
+          {/* Oriental Grand Victory Seal & Crest */}
+          <div className="relative mx-auto flex items-center justify-center">
+            <div className="absolute w-28 h-28 rounded-full bg-linear-to-tr from-amber-500/20 via-rose-500/20 to-amber-300/20 blur-xl animate-pulse" />
+            <div className="relative w-24 h-24 rounded-full bg-linear-to-br from-[#B91C1C] via-[#991B1B] to-[#7F1D1D] p-1 shadow-lg shadow-rose-950/25 ring-4 ring-amber-400/30 flex items-center justify-center">
+              <div className="w-full h-full rounded-full border-2 border-dashed border-amber-300/80 flex flex-col items-center justify-center bg-radial from-[#DC2626]/40 to-transparent">
+                <span className="font-serif text-3xl font-black text-amber-200 tracking-wider select-none drop-shadow-xs">
+                  成
+                </span>
+                <span className="text-[9px] uppercase tracking-widest font-black text-amber-300/90 -mt-0.5">
+                  TUNTAS
+                </span>
+              </div>
+            </div>
           </div>
-          <div>
-            <h2 className="font-serif text-3xl font-extrabold text-[#231F20]">
+
+          <div className="space-y-2 text-center max-w-lg mx-auto">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 dark:bg-amber-400/10 border border-amber-500/25 text-amber-800 dark:text-amber-300 text-xs font-bold mx-auto">
+              <span>第 {level} 关 · 完美通关</span>
+              <span className="text-amber-600/60 dark:text-amber-400/60">✦</span>
+              <span>Pos {level} Tuntas</span>
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl font-black text-zinc-900 dark:text-zinc-50 tracking-tight text-center">
               Sesi Pos {level} Berhasil Dituntaskan!
             </h2>
-            <p className="text-zinc-600 text-sm mt-1 max-w-md mx-auto">
-              Kamu telah melatih <strong>{reviewedWordsCount} aksara</strong> hari ini. Terus siram setiap hari agar bunga aksaramu mekar sempurna di Kebun Petualangan!
+            <p className="text-zinc-600 dark:text-zinc-300 text-sm leading-relaxed text-center mx-auto max-w-md">
+              Kamu telah melatih <strong>{reviewedWordsCount} aksara</strong> dengan algoritma Spaced Repetition (SRS). Kosakata yang ditandai <em>Mudah</em> atau <em>Bagus</em> disimpan terjadwal dan tidak akan muncul kembali hari ini.
             </p>
           </div>
 
           {arcade && (
-            <div className="inline-flex items-center gap-4 px-6 py-3 bg-amber-50 rounded-2xl border border-amber-300 text-amber-900 font-bold text-base shadow-xs">
-              <span>Total XP Diperoleh: +{xpEarned} XP</span>
-              <span>Streak Tertinggi: {streak}</span>
+            <div className="inline-flex flex-wrap items-center justify-center gap-3 sm:gap-6 px-6 py-3 bg-amber-50 dark:bg-amber-950/40 rounded-2xl border border-amber-300 dark:border-amber-700/60 text-amber-900 dark:text-amber-200 font-bold text-sm shadow-xs mx-auto">
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                Total XP Diperoleh: +{xpEarned} XP
+              </span>
+              <span className="text-amber-400/60 hidden sm:inline">•</span>
+              <span className="flex items-center gap-1.5">
+                <Flame className="w-4 h-4 text-rose-600 dark:text-rose-400" />
+                Streak Tertinggi: {streak}
+              </span>
             </div>
           )}
 
-          <div className="flex items-center justify-center gap-4 pt-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-3 w-full max-w-md mx-auto">
             <button
               type="button"
               onClick={() => {
                 clickTick(sound);
-                // Restart new batch
-                const pool = course.words.filter((w) => parseInt(w.level, 10) === level);
-                const shuffled = [...pool].sort(() => Math.random() - 0.5);
-                setSessionWords(shuffled.slice(0, sessionTarget));
-                setCurrentIndex(0);
-                setIsRevealed(false);
-                setIsSessionComplete(false);
+                loadQueue(level, sessionTarget);
               }}
-              className="px-6 py-3 rounded-2xl bg-[#C0392B] hover:bg-[#a93226] text-white font-bold text-sm cursor-pointer shadow-xs transition-transform active:scale-95"
+              className="w-full sm:w-auto flex-1 px-6 py-3.5 rounded-2xl bg-linear-to-r from-[#C0392B] to-[#962D22] hover:from-[#a93226] hover:to-[#7d251c] text-white font-bold text-sm cursor-pointer shadow-md shadow-rose-950/15 transition-transform active:scale-95 text-center flex items-center justify-center gap-2"
             >
-              Lanjut 10 Kartu Lagi ➔
+              <span>Lanjut 10 Kartu Lagi</span>
+              <span>➔</span>
             </button>
             {onBackToMap && (
               <button
@@ -399,7 +422,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                   clickTick(sound);
                   onBackToMap();
                 }}
-                className="px-6 py-3 rounded-2xl bg-white dark:bg-[#1C2742] border border-zinc-300 dark:border-[#24324E] hover:bg-zinc-100 dark:hover:bg-[#253252] text-zinc-800 dark:text-zinc-200 font-bold text-sm cursor-pointer shadow-xs"
+                className="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-white dark:bg-[#1C2742] border border-zinc-300 dark:border-[#2D3D60] hover:bg-zinc-100 dark:hover:bg-[#253252] text-zinc-800 dark:text-zinc-200 font-bold text-sm cursor-pointer shadow-xs transition-transform active:scale-95 text-center"
               >
                 Kembali ke Peta
               </button>

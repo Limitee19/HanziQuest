@@ -50,6 +50,9 @@ export const HANZI_INDO_DICT: Record<string, string> = {
   '吧': '(partikel saran / ajakan: "ayo" atau "kan?")',
 
   // Kata HSK 1 yang sering bermasalah di kamus mentah
+  '后': 'belakang / setelah / kemudian',
+  '车': 'kendaraan / mobil / kereta',
+  '国': 'negara / negeri / bangsa',
   '小学': 'sekolah dasar (SD)',
   '小学生': 'murid sekolah dasar (SD)',
   '中学': 'sekolah menengah (SMP/SMA)',
