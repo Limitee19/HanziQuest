@@ -30,9 +30,10 @@ import { CustomAvatar } from '@/components/common/CustomAvatar';
 
 interface DashboardPageProps {
   onNavigate: (tab: NavTab) => void;
+  onStartSession?: (level: number) => void;
 }
 
-export function DashboardPage({ onNavigate }: DashboardPageProps) {
+export function DashboardPage({ onNavigate, onStartSession }: DashboardPageProps) {
   const [activeInfo, setActiveInfo] = useState<'arcade' | 'sound' | null>(null);
   const [isWritingModalOpen, setIsWritingModalOpen] = useState(false);
 
@@ -499,13 +500,21 @@ export function DashboardPage({ onNavigate }: DashboardPageProps) {
           <GameWorldMap
             counts={outpostStats}
             soundEnabled={sound}
-            onSelectStage={() => {
+            onSelectStage={(lvl) => {
               clickTick(sound);
-              onNavigate('session');
+              if (onStartSession) {
+                onStartSession(lvl);
+              } else {
+                onNavigate('session');
+              }
             }}
-            onStartStudy={() => {
+            onStartStudy={(lvl) => {
               clickTick(sound);
-              onNavigate('session');
+              if (onStartSession) {
+                onStartSession(lvl);
+              } else {
+                onNavigate('session');
+              }
             }}
             onDrill={() => {
               clickTick(sound);

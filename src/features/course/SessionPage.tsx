@@ -6,7 +6,7 @@ import type { CourseWord } from '@/data/course.types';
 import { meaningOf } from '@/data/course.types';
 import { speakHanzi, playSuccessChime, playErrorBuzz, clickTick } from '@/lib/fx';
 import { usePrefs } from '@/lib/prefs';
-import { recordQuestWordReview, saveMnemonicNote, getMnemonicNotes, syncStudentQuestProgress } from '@/services/chinese/questService';
+import { recordQuestWordReview, saveMnemonicNote, getMnemonicNotes, syncStudentQuestProgress, fetchSessionQueueForLevel } from '@/services/chinese/questService';
 import { formatPartOfSpeech } from '@/services/chinese/dictionaryService';
 import { getWordExampleSentence } from '@/services/chinese/exampleSentenceService';
 
@@ -50,19 +50,38 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
   const [xpEarned, setXpEarned] = useState(0);
   const [reviewedWordsCount, setReviewedWordsCount] = useState(0);
   const [isSessionComplete, setIsSessionComplete] = useState(false);
+  const [queueMeta, setQueueMeta] = useState<{ dueCount: number; newCount: number; isAllCompleted: boolean }>({
+    dueCount: 0,
+    newCount: 0,
+    isAllCompleted: false,
+  });
 
-  // Inisialisasi daftar kata sesi berdasarkan level
+  // Inisialisasi daftar kata sesi berdasarkan level dengan algoritma Anki SRS
+  const loadQueue = async (lvl: number, targetCount: number) => {
+    try {
+      const res = await fetchSessionQueueForLevel(lvl, targetCount);
+      setSessionWords(res.words);
+      setQueueMeta({
+        dueCount: res.dueCount,
+        newCount: res.newCount,
+        isAllCompleted: res.isAllCompletedForToday,
+      });
+      setCurrentIndex(0);
+      setIsRevealed(false);
+      setReviewedWordsCount(0);
+      setIsSessionComplete(false);
+      setMnemonics(getMnemonicNotes());
+    } catch (err) {
+      console.error('Failed to load queue:', err);
+    }
+  };
+
   useEffect(() => {
-    const pool = course.words.filter((w) => parseInt(w.level, 10) === level);
-    // Shuffle pool untuk variasi
-    const shuffled = [...pool].sort(() => Math.random() - 0.5);
-    const selected = shuffled.slice(0, sessionTarget);
-    setSessionWords(selected);
-    setCurrentIndex(0);
-    setIsRevealed(false);
-    setReviewedWordsCount(0);
-    setIsSessionComplete(false);
-    setMnemonics(getMnemonicNotes());
+    setLevel(initialLevel);
+  }, [initialLevel]);
+
+  useEffect(() => {
+    loadQueue(level, sessionTarget);
   }, [level, sessionTarget]);
 
   const currentWord: CourseWord | undefined = sessionWords[currentIndex];
@@ -265,9 +284,21 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
         style={{ boxShadow: '0 4px 12px -2px rgba(15, 23, 42, 0.05)' }}
       >
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400 shrink-0">
-            Kartu {Math.min(currentIndex + 1, sessionWords.length)} / {sessionWords.length}
-          </span>
+          <div className="flex items-center gap-2 shrink-0 flex-wrap">
+            <span className="text-xs font-bold text-zinc-500 dark:text-zinc-400">
+              Kartu {Math.min(currentIndex + 1, sessionWords.length)} / {sessionWords.length}
+            </span>
+            {queueMeta.dueCount > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-800 text-rose-700 dark:text-rose-300 text-[10px] font-bold">
+                {queueMeta.dueCount} jatuh tempo
+              </span>
+            )}
+            {queueMeta.newCount > 0 && (
+              <span className="px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-[10px] font-bold">
+                {queueMeta.newCount} kata baru
+              </span>
+            )}
+          </div>
           <div className="flex-1 sm:w-48 h-3 bg-zinc-100 dark:bg-zinc-800 rounded-full overflow-hidden border border-zinc-200 dark:border-zinc-700">
             <div
               className="h-full bg-linear-to-r from-amber-500 to-emerald-500 rounded-full transition-all duration-300"

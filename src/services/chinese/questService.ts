@@ -805,3 +805,100 @@ export async function recordQuestWordReview(
   window.dispatchEvent(new CustomEvent('omnilife_db_updated'));
   window.dispatchEvent(new CustomEvent('db_mutation'));
 }
+
+
+export interface SessionQueueResult {
+  words: CourseWord[];
+  dueCount: number;
+  newCount: number;
+  isAllCompletedForToday: boolean;
+  totalWordsInLevel: number;
+}
+
+/**
+ * Mengambil antrean kartu belajar terstruktur (Anki SRS Algorithm) untuk level/pos tertentu:
+ * 1. Prioritas Utama: Kartu Jatuh Tempo Hari Ini (Due Reviews).
+ * 2. Prioritas Kedua: Kartu Baru Belum Dipelajari (New Cards) secara berurutan sesuai kurikulum HSK.
+ * 3. Kartu yang sudah dipelajari dengan rating 'Mudah' (interval 7 hari) atau 'Bagus' (3 hari)
+ *    TIDAK AKAN muncul lagi sebelum tanggal jatuh tempo berikutnya.
+ */
+export async function fetchSessionQueueForLevel(
+  level: number,
+  targetCount: number = 10
+): Promise<SessionQueueResult> {
+  try {
+    await syncStudentQuestProgress();
+  } catch {}
+
+  const todayStr = new Date().toISOString().slice(0, 10);
+  const progressMap = new Map<string, { id: string; stage: string; due_date: string; review_count?: number }>();
+  const scopedKey = getQuestStorageKey();
+
+  try {
+    const rawLocal = localStorage.getItem(scopedKey);
+    if (rawLocal) {
+      const localMap = JSON.parse(rawLocal);
+      for (const [id, item] of Object.entries(localMap)) {
+        progressMap.set(id, item as any);
+      }
+    }
+  } catch {}
+
+  const levelWords = course.words.filter((w) => parseInt(w.level, 10) === level);
+  
+  const dueWords: CourseWord[] = [];
+  const newWords: CourseWord[] = [];
+  const restingWords: CourseWord[] = [];
+
+  for (const word of levelWords) {
+    const prog = progressMap.get(word.id) || progressMap.get(word.hanzi);
+    if (!prog || !prog.review_count || prog.review_count === 0) {
+      newWords.push(word);
+    } else if (prog.due_date <= todayStr && prog.due_date !== '9999-12-31') {
+      dueWords.push(word);
+    } else {
+      restingWords.push(word);
+    }
+  }
+
+  // Sort dueWords: kartu yang paling lama terlambat diutamakan
+  dueWords.sort((a, b) => {
+    const pA = progressMap.get(a.id) || progressMap.get(a.hanzi);
+    const pB = progressMap.get(b.id) || progressMap.get(b.hanzi);
+    return (pA?.due_date || '').localeCompare(pB?.due_date || '');
+  });
+
+  const selectedWords: CourseWord[] = [];
+
+  // 1. Ambil kata yang due
+  const takeDue = dueWords.slice(0, targetCount);
+  selectedWords.push(...takeDue);
+
+  // 2. Ambil kata baru berurutan untuk mengisi sisa kuota sesi
+  const remainingSlots = targetCount - selectedWords.length;
+  if (remainingSlots > 0 && newWords.length > 0) {
+    const takeNew = newWords.slice(0, remainingSlots);
+    selectedWords.push(...takeNew);
+  }
+
+  const isAllCompletedForToday = dueWords.length === 0 && newWords.length === 0;
+
+  // Fallback: jika seluruh kata di pos ini sudah dipelajari dan tidak ada yang jatuh tempo hari ini,
+  // ambil kata yang paling dekat dengan jatuh tempo untuk latihan awal
+  if (selectedWords.length === 0 && levelWords.length > 0) {
+    restingWords.sort((a, b) => {
+      const pA = progressMap.get(a.id) || progressMap.get(a.hanzi);
+      const pB = progressMap.get(b.id) || progressMap.get(b.hanzi);
+      return (pA?.due_date || '').localeCompare(pB?.due_date || '');
+    });
+    selectedWords.push(...restingWords.slice(0, targetCount));
+  }
+
+  return {
+    words: selectedWords,
+    dueCount: dueWords.length,
+    newCount: newWords.length,
+    isAllCompletedForToday,
+    totalWordsInLevel: levelWords.length,
+  };
+}

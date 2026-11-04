@@ -189,7 +189,7 @@
     {
       "id": "L1-0008",
       "hanzi": "百",
-      "pinyin": "Bǎi",
+      "pinyin": "bǎi",
       "trad": "百",
       "level": "1",
       "pos": "m",
@@ -358,7 +358,7 @@
     {
       "id": "L1-0042",
       "hanzi": "车",
-      "pinyin": "Chē",
+      "pinyin": "chē",
       "trad": "車",
       "level": "1",
       "pos": "n",
@@ -434,7 +434,7 @@
     {
       "id": "L1-0062",
       "hanzi": "大学",
-      "pinyin": "Dà xué",
+      "pinyin": "dà xué",
       "trad": "大學",
       "level": "1",
       "pos": "n",
@@ -627,28 +627,29 @@
     {
       "id": "L1-0089",
       "hanzi": "都",
-      "pinyin": "Dū",
+      "pinyin": "dōu",
       "trad": "都",
       "level": "1",
       "pos": "d",
       "freq": 25,
       "meanEn": [
-        "surname Du"
+        "all",
+        "both"
       ],
-      "meanId": "nama keluarga Du",
+      "meanId": "semuanya; seluruhnya",
       "pinyinNum": "dou1"
     },
     {
       "id": "L1-0090",
       "hanzi": "读",
-      "pinyin": "dòu",
+      "pinyin": "dú",
       "trad": "讀",
       "level": "1",
       "pos": "v",
       "freq": 1013,
       "meanEn": [
-        "comma",
-        "phrase marked by pause"
+        "to read",
+        "to study"
       ],
       "meanId": "membaca; belajar",
       "pinyinNum": "du2"
@@ -962,7 +963,7 @@
     {
       "id": "L1-0128",
       "hanzi": "国",
-      "pinyin": "Guó",
+      "pinyin": "guó",
       "trad": "國",
       "level": "1",
       "pos": "n",
@@ -976,15 +977,17 @@
     {
       "id": "L1-0132",
       "hanzi": "还",
-      "pinyin": "Huán",
+      "pinyin": "hái",
       "trad": "還",
       "level": "1",
       "pos": "d",
       "freq": 37,
       "meanEn": [
-        "surname Huan"
+        "still",
+        "yet",
+        "also"
       ],
-      "meanId": "masih; juga; mengembalikan",
+      "meanId": "masih; juga",
       "pinyinNum": "hai2"
     },
     {
@@ -1171,7 +1174,7 @@
     {
       "id": "L1-0147",
       "hanzi": "后",
-      "pinyin": "Hòu",
+      "pinyin": "hòu",
       "trad": "后",
       "level": "1",
       "pos": "f",
@@ -1560,12 +1563,12 @@
         "(modal particle intensifying preceding clause)"
       ],
       "meanId": "sudah (partikel perubahan situasi/tindakan selesai)",
-      "pinyinNum": "liao3"
+      "pinyinNum": "le0"
     },
     {
       "id": "L1-0212",
       "hanzi": "冷",
-      "pinyin": "Lěng",
+      "pinyin": "lěng",
       "trad": "冷",
       "level": "1",
       "pos": "a",
@@ -1922,7 +1925,7 @@
     {
       "id": "L1-0254",
       "hanzi": "那",
-      "pinyin": "Nā",
+      "pinyin": "nā",
       "trad": "那",
       "level": "1",
       "pos": "r",
@@ -2038,7 +2041,7 @@
     {
       "id": "L1-0270",
       "hanzi": "能",
-      "pinyin": "Néng",
+      "pinyin": "néng",
       "trad": "能",
       "level": "1",
       "pos": "v",
@@ -2080,7 +2083,7 @@
     {
       "id": "L1-0273",
       "hanzi": "年",
-      "pinyin": "Nián",
+      "pinyin": "nián",
       "trad": "年",
       "level": "1",
       "pos": "qt",
@@ -2226,7 +2229,7 @@
     {
       "id": "L1-0294",
       "hanzi": "钱",
-      "pinyin": "Qián",
+      "pinyin": "qián",
       "trad": "錢",
       "level": "1",
       "pos": "n",
@@ -2346,7 +2349,7 @@
     {
       "id": "L1-0308",
       "hanzi": "日",
-      "pinyin": "Rì",
+      "pinyin": "rì",
       "trad": "日",
       "level": "1",
       "pos": "t",
@@ -2360,7 +2363,7 @@
     {
       "id": "L1-0311",
       "hanzi": "三",
-      "pinyin": "Sān",
+      "pinyin": "sān",
       "trad": "三",
       "level": "1",
       "pos": "m",
@@ -2617,7 +2620,7 @@
     {
       "id": "L1-0341",
       "hanzi": "书",
-      "pinyin": "Shū",
+      "pinyin": "shū",
       "trad": "書",
       "level": "1",
       "pos": "n",
@@ -2645,7 +2648,7 @@
     {
       "id": "L1-0345",
       "hanzi": "水",
-      "pinyin": "Shuǐ",
+      "pinyin": "shuǐ",
       "trad": "水",
       "level": "1",
       "pos": "n",
@@ -3307,7 +3310,7 @@
     {
       "id": "L1-0411",
       "hanzi": "新",
-      "pinyin": "Xīn",
+      "pinyin": "xīn",
       "trad": "新",
       "level": "1",
       "pos": "a",
@@ -3455,7 +3458,7 @@
     {
       "id": "L1-0425",
       "hanzi": "也",
-      "pinyin": "Yě",
+      "pinyin": "yě",
       "trad": "也",
       "level": "1",
       "pos": "d",
@@ -3632,7 +3635,7 @@
     {
       "id": "L1-0450",
       "hanzi": "元",
-      "pinyin": "Yuán",
+      "pinyin": "yuán",
       "trad": "元",
       "level": "1",
       "pos": "q",
@@ -4039,7 +4042,7 @@
     {
       "id": "L1-0498",
       "hanzi": "坐",
-      "pinyin": "Zuò",
+      "pinyin": "zuò",
       "trad": "坐",
       "level": "1",
       "pos": "v",
@@ -4382,7 +4385,7 @@
     {
       "id": "L2-0632",
       "hanzi": "雪",
-      "pinyin": "Xuě",
+      "pinyin": "xuě",
       "trad": "雪",
       "level": "1",
       "pos": "n",
@@ -4532,7 +4535,7 @@
     {
       "id": "L1-0009",
       "hanzi": "班",
-      "pinyin": "Bān",
+      "pinyin": "bān",
       "trad": "班",
       "level": "2",
       "pos": "n",
@@ -4576,7 +4579,7 @@
     {
       "id": "L1-0015",
       "hanzi": "包",
-      "pinyin": "Bāo",
+      "pinyin": "bāo",
       "trad": "包",
       "level": "2",
       "pos": "v",
@@ -4606,7 +4609,7 @@
     {
       "id": "L1-0024",
       "hanzi": "比",
-      "pinyin": "Bǐ",
+      "pinyin": "bǐ",
       "trad": "比",
       "level": "2",
       "pos": "p",
@@ -4622,7 +4625,7 @@
     {
       "id": "L1-0025",
       "hanzi": "别",
-      "pinyin": "Bié",
+      "pinyin": "bié",
       "trad": "別",
       "level": "2",
       "pos": "d",
@@ -4743,7 +4746,7 @@
     {
       "id": "L1-0055",
       "hanzi": "错",
-      "pinyin": "Cuò",
+      "pinyin": "cuò",
       "trad": "錯",
       "level": "2",
       "pos": "v",
@@ -4862,7 +4865,7 @@
     {
       "id": "L1-0115",
       "hanzi": "高",
-      "pinyin": "Gāo",
+      "pinyin": "gāo",
       "trad": "高",
       "level": "2",
       "pos": "a",
@@ -4906,7 +4909,7 @@
     {
       "id": "L1-0131",
       "hanzi": "过",
-      "pinyin": "Guō",
+      "pinyin": "guō",
       "trad": "過",
       "level": "2",
       "pos": "u",
@@ -4936,7 +4939,7 @@
     {
       "id": "L1-0150",
       "hanzi": "花",
-      "pinyin": "Huā",
+      "pinyin": "huā",
       "trad": "花",
       "level": "2",
       "pos": "v",
@@ -5208,7 +5211,7 @@
     {
       "id": "L1-0218",
       "hanzi": "楼",
-      "pinyin": "Lóu",
+      "pinyin": "lóu",
       "trad": "樓",
       "level": "2",
       "pos": "n",
@@ -5222,7 +5225,7 @@
     {
       "id": "L1-0221",
       "hanzi": "路",
-      "pinyin": "Lù",
+      "pinyin": "lù",
       "trad": "路",
       "level": "2",
       "pos": "n",
@@ -5266,7 +5269,7 @@
     {
       "id": "L1-0238",
       "hanzi": "门",
-      "pinyin": "Mén",
+      "pinyin": "mén",
       "trad": "門",
       "level": "2",
       "pos": "n",
@@ -5815,17 +5818,15 @@
     {
       "id": "L1-0469",
       "hanzi": "着",
-      "pinyin": "zhāo",
+      "pinyin": "zhe",
       "trad": "著",
       "level": "2",
       "pos": "u",
       "freq": 38,
       "meanEn": [
-        "(chess) move",
-        "trick",
-        "all right!"
+        "aspect particle indicating action in progress"
       ],
-      "meanId": "(partikel sedang)",
+      "meanId": "(partikel aspek sedang)",
       "pinyinNum": "zhe0"
     },
     {
@@ -5906,7 +5907,7 @@
     {
       "id": "L1-0496",
       "hanzi": "左",
-      "pinyin": "Zuǒ",
+      "pinyin": "zuǒ",
       "trad": "左",
       "level": "2",
       "pos": "f",
@@ -6690,7 +6691,7 @@
     {
       "id": "L2-0529",
       "hanzi": "题",
-      "pinyin": "Tí",
+      "pinyin": "tí",
       "trad": "題",
       "level": "2",
       "pos": "n",
@@ -6963,7 +6964,7 @@
     {
       "id": "L2-0668",
       "hanzi": "阴",
-      "pinyin": "Yīn",
+      "pinyin": "yīn",
       "trad": "陰",
       "level": "2",
       "pos": "a",
@@ -6993,7 +6994,7 @@
     {
       "id": "L2-0689",
       "hanzi": "鱼",
-      "pinyin": "Yú",
+      "pinyin": "yú",
       "trad": "魚",
       "level": "2",
       "pos": "n",
@@ -7055,7 +7056,7 @@
     {
       "id": "L2-0742",
       "hanzi": "周",
-      "pinyin": "Zhōu",
+      "pinyin": "zhōu",
       "trad": "周",
       "level": "2",
       "pos": "qt",
@@ -7406,7 +7407,7 @@
     {
       "id": "L3-0859",
       "hanzi": "游",
-      "pinyin": "Yóu",
+      "pinyin": "yóu",
       "trad": "游",
       "level": "2",
       "pos": "v",
@@ -7670,7 +7671,7 @@
     {
       "id": "L1-0038",
       "hanzi": "常",
-      "pinyin": "Cháng",
+      "pinyin": "cháng",
       "trad": "常",
       "level": "3",
       "pos": "d",
@@ -7777,7 +7778,7 @@
     {
       "id": "L1-0084",
       "hanzi": "东",
-      "pinyin": "Dōng",
+      "pinyin": "dōng",
       "trad": "東",
       "level": "3",
       "pos": "f",
@@ -7912,7 +7913,7 @@
     {
       "id": "L1-0125",
       "hanzi": "关",
-      "pinyin": "Guān",
+      "pinyin": "guān",
       "trad": "關",
       "level": "3",
       "pos": "v",
@@ -8136,7 +8137,7 @@
     {
       "id": "L1-0231",
       "hanzi": "毛",
-      "pinyin": "Máo",
+      "pinyin": "máo",
       "trad": "毛",
       "level": "3",
       "pos": "nr",
@@ -8198,7 +8199,7 @@
     {
       "id": "L1-0266",
       "hanzi": "南",
-      "pinyin": "Nán",
+      "pinyin": "nán",
       "trad": "南",
       "level": "3",
       "pos": "b",
@@ -8334,7 +8335,7 @@
     {
       "id": "L1-0312",
       "hanzi": "山",
-      "pinyin": "Shān",
+      "pinyin": "shān",
       "trad": "山",
       "level": "3",
       "pos": "n",
@@ -8438,7 +8439,7 @@
     {
       "id": "L1-0384",
       "hanzi": "西",
-      "pinyin": "Xī",
+      "pinyin": "xī",
       "trad": "西",
       "level": "3",
       "pos": "f",
@@ -8484,17 +8485,17 @@
     {
       "id": "L1-0416",
       "hanzi": "行",
-      "pinyin": "háng",
+      "pinyin": "xíng",
       "trad": "行",
       "level": "3",
       "pos": "v",
       "freq": 272,
       "meanEn": [
-        "row",
-        "line",
-        "commercial firm"
+        "all right",
+        "capable",
+        "to walk"
       ],
-      "meanId": "",
+      "meanId": "bisa; boleh; berjalan",
       "pinyinNum": "xing2"
     },
     {
@@ -8607,7 +8608,7 @@
     {
       "id": "L1-0476",
       "hanzi": "中",
-      "pinyin": "Zhōng",
+      "pinyin": "zhōng",
       "trad": "中",
       "level": "3",
       "pos": "f",
@@ -9120,7 +9121,7 @@
     {
       "id": "L2-0053",
       "hanzi": "查",
-      "pinyin": "Zhā",
+      "pinyin": "zhā",
       "trad": "查",
       "level": "3",
       "pos": "v",
@@ -9407,7 +9408,7 @@
     {
       "id": "L2-0130",
       "hanzi": "东北",
-      "pinyin": "Dōng běi",
+      "pinyin": "dōng běi",
       "trad": "東北",
       "level": "3",
       "pos": "s",
@@ -9422,7 +9423,7 @@
     {
       "id": "L2-0131",
       "hanzi": "东方",
-      "pinyin": "Dōng fāng",
+      "pinyin": "dōng fāng",
       "trad": "東方",
       "level": "3",
       "pos": "s",
@@ -9524,7 +9525,7 @@
     {
       "id": "L2-0142",
       "hanzi": "段",
-      "pinyin": "Duàn",
+      "pinyin": "duàn",
       "trad": "段",
       "level": "3",
       "pos": "q",
@@ -9692,7 +9693,7 @@
     {
       "id": "L2-0169",
       "hanzi": "封",
-      "pinyin": "Fēng",
+      "pinyin": "fēng",
       "trad": "封",
       "level": "3",
       "pos": "q",
@@ -9900,7 +9901,7 @@
     {
       "id": "L2-0211",
       "hanzi": "海",
-      "pinyin": "Hǎi",
+      "pinyin": "hǎi",
       "trad": "海",
       "level": "3",
       "pos": "n",
@@ -10185,7 +10186,7 @@
     {
       "id": "L2-0255",
       "hanzi": "加",
-      "pinyin": "Jiā",
+      "pinyin": "jiā",
       "trad": "加",
       "level": "3",
       "pos": "v",
@@ -10261,7 +10262,7 @@
     {
       "id": "L2-0273",
       "hanzi": "角",
-      "pinyin": "Jué",
+      "pinyin": "jué",
       "trad": "角",
       "level": "3",
       "pos": "n",
@@ -10626,7 +10627,7 @@
     {
       "id": "L2-0336",
       "hanzi": "蓝",
-      "pinyin": "Lán",
+      "pinyin": "lán",
       "trad": "藍",
       "level": "3",
       "pos": "a",
@@ -10788,7 +10789,7 @@
     {
       "id": "L2-0376",
       "hanzi": "米",
-      "pinyin": "Mǐ",
+      "pinyin": "mǐ",
       "trad": "米",
       "level": "3",
       "pos": "n",
@@ -10969,7 +10970,7 @@
     {
       "id": "L2-0406",
       "hanzi": "怕",
-      "pinyin": "Pà",
+      "pinyin": "pà",
       "trad": "怕",
       "level": "3",
       "pos": "v",
@@ -11601,7 +11602,7 @@
     {
       "id": "L2-0581",
       "hanzi": "西北",
-      "pinyin": "Xī běi",
+      "pinyin": "xī běi",
       "trad": "西北",
       "level": "3",
       "pos": "s",
@@ -11615,7 +11616,7 @@
     {
       "id": "L2-0583",
       "hanzi": "西方",
-      "pinyin": "Xī fāng",
+      "pinyin": "xī fāng",
       "trad": "西方",
       "level": "3",
       "pos": "s",
@@ -11718,7 +11719,7 @@
     {
       "id": "L2-0599",
       "hanzi": "向",
-      "pinyin": "Xiàng",
+      "pinyin": "xiàng",
       "trad": "向",
       "level": "3",
       "pos": "p",
@@ -12265,7 +12266,7 @@
     {
       "id": "L2-0699",
       "hanzi": "越",
-      "pinyin": "Yuè",
+      "pinyin": "yuè",
       "trad": "越",
       "level": "3",
       "pos": "d",
@@ -13104,7 +13105,7 @@
     {
       "id": "L3-0472",
       "hanzi": "马",
-      "pinyin": "Mǎ",
+      "pinyin": "mǎ",
       "trad": "馬",
       "level": "3",
       "pos": "n",
@@ -13119,7 +13120,7 @@
     {
       "id": "L3-0515",
       "hanzi": "牛",
-      "pinyin": "Niú",
+      "pinyin": "niú",
       "trad": "牛",
       "level": "3",
       "pos": "n",
@@ -13281,7 +13282,7 @@
     {
       "id": "L3-0666",
       "hanzi": "室",
-      "pinyin": "Shì",
+      "pinyin": "shì",
       "trad": "室",
       "level": "3",
       "pos": "n",
@@ -13311,7 +13312,7 @@
     {
       "id": "L3-0685",
       "hanzi": "双",
-      "pinyin": "Shuāng",
+      "pinyin": "shuāng",
       "trad": "雙",
       "level": "3",
       "pos": "m",
@@ -13505,7 +13506,7 @@
     {
       "id": "L3-0831",
       "hanzi": "羊",
-      "pinyin": "Yáng",
+      "pinyin": "yáng",
       "trad": "羊",
       "level": "3",
       "pos": "n",
@@ -13582,7 +13583,7 @@
     {
       "id": "L3-0883",
       "hanzi": "张",
-      "pinyin": "Zhāng",
+      "pinyin": "zhāng",
       "trad": "張",
       "level": "3",
       "pos": "q",
@@ -14075,7 +14076,7 @@
     {
       "id": "L4-0365",
       "hanzi": "季",
-      "pinyin": "Jì",
+      "pinyin": "jì",
       "trad": "季",
       "level": "3",
       "pos": "q",
@@ -14865,7 +14866,7 @@
     {
       "id": "L6-1004",
       "hanzi": "园",
-      "pinyin": "Yuán",
+      "pinyin": "yuán",
       "trad": "園",
       "level": "3",
       "pos": "g",
@@ -15028,17 +15029,16 @@
     {
       "id": "L1-0483",
       "hanzi": "重",
-      "pinyin": "chóng",
+      "pinyin": "zhòng",
       "trad": "重",
       "level": "4",
       "pos": "a",
       "freq": 608,
       "meanEn": [
-        "to repeat",
-        "repetition",
-        "again"
+        "heavy",
+        "important"
       ],
-      "meanId": "",
+      "meanId": "berat; penting",
       "pinyinNum": "zhong4"
     },
     {
@@ -16379,7 +16379,7 @@
     {
       "id": "L2-0323",
       "hanzi": "克",
-      "pinyin": "Kè",
+      "pinyin": "kè",
       "trad": "克",
       "level": "4",
       "pos": "g",
@@ -16531,7 +16531,7 @@
     {
       "id": "L2-0354",
       "hanzi": "凉",
-      "pinyin": "Liáng",
+      "pinyin": "liáng",
       "trad": "涼",
       "level": "4",
       "pos": "a",
@@ -16680,7 +16680,7 @@
     {
       "id": "L2-0373",
       "hanzi": "满",
-      "pinyin": "Mǎn",
+      "pinyin": "mǎn",
       "trad": "滿",
       "level": "4",
       "pos": "a",
@@ -17014,7 +17014,7 @@
     {
       "id": "L2-0452",
       "hanzi": "全",
-      "pinyin": "Quán",
+      "pinyin": "quán",
       "trad": "全",
       "level": "4",
       "pos": "d",
@@ -17740,7 +17740,7 @@
     {
       "id": "L2-0576",
       "hanzi": "闻",
-      "pinyin": "Wén",
+      "pinyin": "wén",
       "trad": "聞",
       "level": "4",
       "pos": "v",
@@ -18054,7 +18054,7 @@
     {
       "id": "L2-0683",
       "hanzi": "友好",
-      "pinyin": "Yǒu hǎo",
+      "pinyin": "yǒu hǎo",
       "trad": "友好",
       "level": "4",
       "pos": "a",
@@ -18371,7 +18371,7 @@
     {
       "id": "L2-0759",
       "hanzi": "组",
-      "pinyin": "Zǔ",
+      "pinyin": "zǔ",
       "trad": "組",
       "level": "4",
       "pos": "n",
@@ -18803,7 +18803,7 @@
     {
       "id": "L3-0066",
       "hanzi": "步",
-      "pinyin": "Bù",
+      "pinyin": "bù",
       "trad": "步",
       "level": "4",
       "pos": "qv",
@@ -18878,7 +18878,7 @@
     {
       "id": "L3-0089",
       "hanzi": "成功",
-      "pinyin": "Chéng gōng",
+      "pinyin": "chéng gōng",
       "trad": "成功",
       "level": "4",
       "pos": "a",
@@ -19012,7 +19012,7 @@
     {
       "id": "L3-0141",
       "hanzi": "刀",
-      "pinyin": "Dāo",
+      "pinyin": "dāo",
       "trad": "刀",
       "level": "4",
       "pos": "n",
@@ -19264,7 +19264,7 @@
     {
       "id": "L3-0194",
       "hanzi": "费",
-      "pinyin": "Fèi",
+      "pinyin": "fèi",
       "trad": "費",
       "level": "4",
       "pos": "n",
@@ -19339,7 +19339,7 @@
     {
       "id": "L3-0207",
       "hanzi": "付",
-      "pinyin": "Fù",
+      "pinyin": "fù",
       "trad": "付",
       "level": "4",
       "pos": "v",
@@ -19900,7 +19900,7 @@
     {
       "id": "L3-0297",
       "hanzi": "互联网",
-      "pinyin": "Hù lián wǎng",
+      "pinyin": "hù lián wǎng",
       "trad": "互聯網",
       "level": "4",
       "pos": "n",
@@ -19991,7 +19991,7 @@
     {
       "id": "L3-0311",
       "hanzi": "火",
-      "pinyin": "Huǒ",
+      "pinyin": "huǒ",
       "trad": "火",
       "level": "4",
       "pos": "n",
@@ -20353,7 +20353,7 @@
     {
       "id": "L3-0380",
       "hanzi": "京剧",
-      "pinyin": "Jīng jù",
+      "pinyin": "jīng jù",
       "trad": "京劇",
       "level": "4",
       "pos": "n",
@@ -20641,7 +20641,7 @@
     {
       "id": "L3-0447",
       "hanzi": "连",
-      "pinyin": "Lián",
+      "pinyin": "lián",
       "trad": "連",
       "level": "4",
       "pos": "u",
@@ -20731,7 +20731,7 @@
     {
       "id": "L3-0480",
       "hanzi": "美",
-      "pinyin": "Měi",
+      "pinyin": "měi",
       "trad": "美",
       "level": "4",
       "pos": "b",
@@ -21173,7 +21173,7 @@
     {
       "id": "L3-0555",
       "hanzi": "强",
-      "pinyin": "Qiáng",
+      "pinyin": "qiáng",
       "trad": "強",
       "level": "4",
       "pos": "a",
@@ -21259,15 +21259,17 @@
     {
       "id": "L3-0570",
       "hanzi": "区",
-      "pinyin": "Oū",
+      "pinyin": "qū",
       "trad": "區",
       "level": "4",
       "pos": "n",
       "freq": 638,
       "meanEn": [
-        "surname Ou"
+        "area",
+        "district",
+        "region"
       ],
-      "meanId": "",
+      "meanId": "daerah; wilayah; zona",
       "pinyinNum": "qu1"
     },
     {
@@ -21878,7 +21880,7 @@
     {
       "id": "L3-0693",
       "hanzi": "台",
-      "pinyin": "Tái",
+      "pinyin": "tái",
       "trad": "台",
       "level": "4",
       "pos": "q",
@@ -21893,7 +21895,7 @@
     {
       "id": "L3-0694",
       "hanzi": "谈",
-      "pinyin": "Tán",
+      "pinyin": "tán",
       "trad": "談",
       "level": "4",
       "pos": "v",
@@ -21907,7 +21909,7 @@
     {
       "id": "L3-0697",
       "hanzi": "汤",
-      "pinyin": "Tāng",
+      "pinyin": "tāng",
       "trad": "湯",
       "level": "4",
       "pos": "n",
@@ -22013,7 +22015,7 @@
     {
       "id": "L3-0730",
       "hanzi": "土",
-      "pinyin": "Tǔ",
+      "pinyin": "tǔ",
       "trad": "土",
       "level": "4",
       "pos": "n",
@@ -22320,7 +22322,7 @@
     {
       "id": "L3-0813",
       "hanzi": "修",
-      "pinyin": "Xiū",
+      "pinyin": "xiū",
       "trad": "修",
       "level": "4",
       "pos": "v",
@@ -23035,7 +23037,7 @@
     {
       "id": "L3-0942",
       "hanzi": "祝",
-      "pinyin": "Zhù",
+      "pinyin": "zhù",
       "trad": "祝",
       "level": "4",
       "pos": "v",
@@ -23602,7 +23604,7 @@
     {
       "id": "L4-0157",
       "hanzi": "戴",
-      "pinyin": "Dài",
+      "pinyin": "dài",
       "trad": "戴",
       "level": "4",
       "pos": "v",
@@ -24385,7 +24387,7 @@
     {
       "id": "L4-0384",
       "hanzi": "江",
-      "pinyin": "Jiāng",
+      "pinyin": "jiāng",
       "trad": "江",
       "level": "4",
       "pos": "nr",
@@ -25428,7 +25430,7 @@
     {
       "id": "L4-0667",
       "hanzi": "树林",
-      "pinyin": "Shù lín",
+      "pinyin": "shù lín",
       "trad": "樹林",
       "level": "4",
       "pos": "n",
@@ -25442,7 +25444,7 @@
     {
       "id": "L4-0674",
       "hanzi": "帅",
-      "pinyin": "Shuài",
+      "pinyin": "shuài",
       "trad": "帥",
       "level": "4",
       "pos": "nr",
@@ -25530,7 +25532,7 @@
     {
       "id": "L4-0691",
       "hanzi": "孙子",
-      "pinyin": "Sūn zǐ",
+      "pinyin": "sūn zǐ",
       "trad": "孫子",
       "level": "4",
       "pos": "n",
@@ -25880,7 +25882,7 @@
     {
       "id": "L4-0793",
       "hanzi": "咸",
-      "pinyin": "Xián",
+      "pinyin": "xián",
       "trad": "咸",
       "level": "4",
       "pos": "a",
@@ -25909,7 +25911,7 @@
     {
       "id": "L4-0803",
       "hanzi": "项",
-      "pinyin": "Xiàng",
+      "pinyin": "xiàng",
       "trad": "項",
       "level": "4",
       "pos": "q",
@@ -26514,7 +26516,7 @@
     {
       "id": "H4-1423",
       "hanzi": "亚洲",
-      "pinyin": "Yà zhōu",
+      "pinyin": "yà zhōu",
       "trad": "亞洲",
       "level": "4",
       "pos": "ns",
@@ -26930,7 +26932,7 @@
     {
       "id": "L5-0109",
       "hanzi": "乘",
-      "pinyin": "Chéng",
+      "pinyin": "chéng",
       "trad": "乘",
       "level": "4",
       "pos": "v",
@@ -26972,7 +26974,7 @@
     {
       "id": "L5-0115",
       "hanzi": "迟",
-      "pinyin": "Chí",
+      "pinyin": "chí",
       "trad": "遲",
       "level": "4",
       "pos": "a",
@@ -28176,7 +28178,7 @@
     {
       "id": "L5-0855",
       "hanzi": "熊",
-      "pinyin": "Xióng",
+      "pinyin": "xióng",
       "trad": "熊",
       "level": "4",
       "pos": "n",
@@ -29608,7 +29610,7 @@
     {
       "id": "L7-3606",
       "hanzi": "摄氏度",
-      "pinyin": "Shè shì dù",
+      "pinyin": "shè shì dù",
       "trad": "攝氏度",
       "level": "4",
       "pos": "q",
@@ -29846,7 +29848,7 @@
     {
       "id": "L1-0006",
       "hanzi": "白",
-      "pinyin": "Bái",
+      "pinyin": "bái",
       "trad": "白",
       "level": "5",
       "pos": "a",
@@ -30059,7 +30061,7 @@
     {
       "id": "L2-0223",
       "hanzi": "黑",
-      "pinyin": "Hēi",
+      "pinyin": "hēi",
       "trad": "黑",
       "level": "5",
       "pos": "a",
@@ -30073,7 +30075,7 @@
     {
       "id": "L2-0226",
       "hanzi": "红",
-      "pinyin": "Hóng",
+      "pinyin": "hóng",
       "trad": "紅",
       "level": "5",
       "pos": "a",
@@ -30269,7 +30271,7 @@
     {
       "id": "L2-0417",
       "hanzi": "平",
-      "pinyin": "Píng",
+      "pinyin": "píng",
       "trad": "平",
       "level": "5",
       "pos": "a",
@@ -30632,7 +30634,7 @@
     {
       "id": "L2-0739",
       "hanzi": "中医",
-      "pinyin": "Zhōng yī",
+      "pinyin": "zhōng yī",
       "trad": "中醫",
       "level": "5",
       "pos": "n",
@@ -30755,7 +30757,7 @@
     {
       "id": "L3-0016",
       "hanzi": "保",
-      "pinyin": "Bǎo",
+      "pinyin": "bǎo",
       "trad": "保",
       "level": "5",
       "pos": "v",
@@ -31193,7 +31195,7 @@
     {
       "id": "L3-0083",
       "hanzi": "朝",
-      "pinyin": "Cháo",
+      "pinyin": "cháo",
       "trad": "朝",
       "level": "5",
       "pos": "p",
@@ -32211,7 +32213,7 @@
     {
       "id": "L3-0204",
       "hanzi": "福",
-      "pinyin": "Fú",
+      "pinyin": "fú",
       "trad": "福",
       "level": "5",
       "pos": "n",
@@ -32226,7 +32228,7 @@
     {
       "id": "L3-0211",
       "hanzi": "富",
-      "pinyin": "Fù",
+      "pinyin": "fù",
       "trad": "富",
       "level": "5",
       "pos": "g",
@@ -32437,7 +32439,7 @@
     {
       "id": "L3-0256",
       "hanzi": "古",
-      "pinyin": "Gǔ",
+      "pinyin": "gǔ",
       "trad": "古",
       "level": "5",
       "pos": "a",
@@ -32543,7 +32545,7 @@
     {
       "id": "L3-0275",
       "hanzi": "国庆",
-      "pinyin": "Guó qìng",
+      "pinyin": "guó qìng",
       "trad": "國慶",
       "level": "5",
       "pos": "t",
@@ -33576,7 +33578,7 @@
     {
       "id": "L3-0443",
       "hanzi": "力",
-      "pinyin": "Lì",
+      "pinyin": "lì",
       "trad": "力",
       "level": "5",
       "pos": "n",
@@ -33732,7 +33734,7 @@
     {
       "id": "L3-0462",
       "hanzi": "龙",
-      "pinyin": "Lóng",
+      "pinyin": "lóng",
       "trad": "龍",
       "level": "5",
       "pos": "n",
@@ -34216,7 +34218,7 @@
     {
       "id": "L3-0545",
       "hanzi": "齐",
-      "pinyin": "Qí",
+      "pinyin": "qí",
       "trad": "齊",
       "level": "5",
       "pos": "a",
@@ -34870,7 +34872,7 @@
     {
       "id": "L3-0642",
       "hanzi": "时代",
-      "pinyin": "Shí dài",
+      "pinyin": "shí dài",
       "trad": "時代",
       "level": "5",
       "pos": "n",
@@ -35168,7 +35170,7 @@
     {
       "id": "L3-0683",
       "hanzi": "束",
-      "pinyin": "Shù",
+      "pinyin": "shù",
       "trad": "束",
       "level": "5",
       "pos": "q",
@@ -35214,7 +35216,7 @@
     {
       "id": "L3-0690",
       "hanzi": "随",
-      "pinyin": "Suí",
+      "pinyin": "suí",
       "trad": "隨",
       "level": "5",
       "pos": "p",
@@ -35671,7 +35673,7 @@
     {
       "id": "L3-0753",
       "hanzi": "围",
-      "pinyin": "Wéi",
+      "pinyin": "wéi",
       "trad": "圍",
       "level": "5",
       "pos": "v",
@@ -35864,7 +35866,7 @@
     {
       "id": "L3-0781",
       "hanzi": "现代",
-      "pinyin": "Xiàn dài",
+      "pinyin": "xiàn dài",
       "trad": "現代",
       "level": "5",
       "pos": "t",
@@ -36642,7 +36644,7 @@
     {
       "id": "L3-0902",
       "hanzi": "支",
-      "pinyin": "Zhī",
+      "pinyin": "zhī",
       "trad": "支",
       "level": "5",
       "pos": "q",
@@ -36656,7 +36658,7 @@
     {
       "id": "L3-0906",
       "hanzi": "直",
-      "pinyin": "Zhí",
+      "pinyin": "zhí",
       "trad": "直",
       "level": "5",
       "pos": "d",
@@ -36790,7 +36792,7 @@
     {
       "id": "L3-0928",
       "hanzi": "中华民族",
-      "pinyin": "Zhōng huá mín zú",
+      "pinyin": "zhōng huá mín zú",
       "trad": "中華民族",
       "level": "5",
       "pos": "3",
@@ -37216,7 +37218,7 @@
     {
       "id": "L4-0022",
       "hanzi": "薄",
-      "pinyin": "Bó",
+      "pinyin": "bó",
       "trad": "薄",
       "level": "5",
       "pos": "a",
@@ -37493,7 +37495,7 @@
     {
       "id": "L4-0071",
       "hanzi": "曾",
-      "pinyin": "Zēng",
+      "pinyin": "zēng",
       "trad": "曾",
       "level": "5",
       "pos": "d",
@@ -38061,7 +38063,7 @@
     {
       "id": "L4-0153",
       "hanzi": "大众",
-      "pinyin": "Dà zhòng",
+      "pinyin": "dà zhòng",
       "trad": "大眾",
       "level": "5",
       "pos": "n",
@@ -38122,7 +38124,7 @@
     {
       "id": "L4-0161",
       "hanzi": "单",
-      "pinyin": "Shàn",
+      "pinyin": "shàn",
       "trad": "單",
       "level": "5",
       "pos": "d",
@@ -38521,7 +38523,7 @@
     {
       "id": "L4-0232",
       "hanzi": "方",
-      "pinyin": "Fāng",
+      "pinyin": "fāng",
       "trad": "方",
       "level": "5",
       "pos": "q",
@@ -38731,7 +38733,7 @@
     {
       "id": "L4-0261",
       "hanzi": "盖",
-      "pinyin": "Gě",
+      "pinyin": "gě",
       "trad": "蓋",
       "level": "5",
       "pos": "v",
@@ -39858,7 +39860,7 @@
     {
       "id": "L4-0447",
       "hanzi": "宽",
-      "pinyin": "Kuān",
+      "pinyin": "kuān",
       "trad": "寬",
       "level": "5",
       "pos": "a",
@@ -41067,7 +41069,7 @@
     {
       "id": "L4-0638",
       "hanzi": "诗",
-      "pinyin": "Shī",
+      "pinyin": "shī",
       "trad": "詩",
       "level": "5",
       "pos": "n",
@@ -41712,7 +41714,7 @@
     {
       "id": "L4-0746",
       "hanzi": "网络",
-      "pinyin": "Wǎng luò",
+      "pinyin": "wǎng luò",
       "trad": "網絡",
       "level": "5",
       "pos": "n",
@@ -42333,7 +42335,7 @@
     {
       "id": "L4-0841",
       "hanzi": "延长",
-      "pinyin": "Yán cháng",
+      "pinyin": "yán cháng",
       "trad": "延長",
       "level": "5",
       "pos": "v",
@@ -42421,7 +42423,7 @@
     {
       "id": "L4-0858",
       "hanzi": "摇",
-      "pinyin": "Yáo",
+      "pinyin": "yáo",
       "trad": "搖",
       "level": "5",
       "pos": "v",
@@ -43263,7 +43265,7 @@
     {
       "id": "L4-0986",
       "hanzi": "资源",
-      "pinyin": "Zī yuán",
+      "pinyin": "zī yuán",
       "trad": "資源",
       "level": "5",
       "pos": "n",
@@ -43934,7 +43936,7 @@
     {
       "id": "L5-0120",
       "hanzi": "丑",
-      "pinyin": "Chǒu",
+      "pinyin": "chǒu",
       "trad": "丑",
       "level": "5",
       "pos": "a",
@@ -43993,7 +43995,7 @@
     {
       "id": "L5-0128",
       "hanzi": "除夕",
-      "pinyin": "Chú xī",
+      "pinyin": "chú xī",
       "trad": "除夕",
       "level": "5",
       "pos": "t",
@@ -45051,7 +45053,7 @@
     {
       "id": "L5-0330",
       "hanzi": "滑",
-      "pinyin": "Huá",
+      "pinyin": "huá",
       "trad": "滑",
       "level": "5",
       "pos": "v",
@@ -45326,7 +45328,7 @@
     {
       "id": "L5-0380",
       "hanzi": "剪",
-      "pinyin": "Jiǎn",
+      "pinyin": "jiǎn",
       "trad": "剪",
       "level": "5",
       "pos": "v",
@@ -46321,7 +46323,7 @@
     {
       "id": "L5-0600",
       "hanzi": "青",
-      "pinyin": "Qīng",
+      "pinyin": "qīng",
       "trad": "青",
       "level": "5",
       "pos": "a",
@@ -48210,7 +48212,7 @@
     {
       "id": "L5-0932",
       "hanzi": "雨水",
-      "pinyin": "Yǔ shuǐ",
+      "pinyin": "yǔ shuǐ",
       "trad": "雨水",
       "level": "5",
       "pos": "n",
@@ -48224,7 +48226,7 @@
     {
       "id": "L5-0935",
       "hanzi": "元旦",
-      "pinyin": "Yuán dàn",
+      "pinyin": "yuán dàn",
       "trad": "元旦",
       "level": "5",
       "pos": "t",
@@ -48883,7 +48885,7 @@
     {
       "id": "H5-2169",
       "hanzi": "哈",
-      "pinyin": "Hā",
+      "pinyin": "hā",
       "trad": "哈",
       "level": "5",
       "pos": "b",
@@ -48898,7 +48900,7 @@
     {
       "id": "H5-2342",
       "hanzi": "欧洲",
-      "pinyin": "Oū zhōu",
+      "pinyin": "oū zhōu",
       "trad": "歐洲",
       "level": "5",
       "pos": "ns",
@@ -49667,7 +49669,7 @@
     {
       "id": "L6-0086",
       "hanzi": "藏",
-      "pinyin": "Zàng",
+      "pinyin": "zàng",
       "trad": "藏",
       "level": "5",
       "pos": "v",
@@ -50729,7 +50731,7 @@
     {
       "id": "L6-0677",
       "hanzi": "权",
-      "pinyin": "Quán",
+      "pinyin": "quán",
       "trad": "權",
       "level": "5",
       "pos": "n",
@@ -51534,7 +51536,7 @@
     {
       "id": "L6-1006",
       "hanzi": "原",
-      "pinyin": "Yuán",
+      "pinyin": "yuán",
       "trad": "原",
       "level": "5",
       "pos": "b",
@@ -51716,7 +51718,7 @@
     {
       "id": "L6-1084",
       "hanzi": "中华",
-      "pinyin": "Zhōng huá",
+      "pinyin": "zhōng huá",
       "trad": "中華",
       "level": "5",
       "pos": "nz",
@@ -53717,7 +53719,7 @@
     {
       "id": "L2-0063",
       "hanzi": "成",
-      "pinyin": "Chéng",
+      "pinyin": "chéng",
       "trad": "成",
       "level": "6",
       "pos": "v",
@@ -53731,7 +53733,7 @@
     {
       "id": "L2-0241",
       "hanzi": "黄",
-      "pinyin": "Huáng",
+      "pinyin": "huáng",
       "trad": "黃",
       "level": "6",
       "pos": "nr",
@@ -54070,7 +54072,7 @@
     {
       "id": "L3-0291",
       "hanzi": "和平",
-      "pinyin": "Hé píng",
+      "pinyin": "hé píng",
       "trad": "和平",
       "level": "6",
       "pos": "n",
@@ -54101,7 +54103,7 @@
     {
       "id": "L3-0305",
       "hanzi": "环",
-      "pinyin": "Huán",
+      "pinyin": "huán",
       "trad": "環",
       "level": "6",
       "pos": "n",
@@ -54217,7 +54219,7 @@
     {
       "id": "L3-0452",
       "hanzi": "联合国",
-      "pinyin": "Lián hé guó",
+      "pinyin": "lián hé guó",
       "trad": "聯合國",
       "level": "6",
       "pos": "nt",
@@ -54278,7 +54280,7 @@
     {
       "id": "L3-0534",
       "hanzi": "皮",
-      "pinyin": "Pí",
+      "pinyin": "pí",
       "trad": "皮",
       "level": "6",
       "pos": "n",
@@ -55249,7 +55251,7 @@
     {
       "id": "L4-0291",
       "hanzi": "官",
-      "pinyin": "Guān",
+      "pinyin": "guān",
       "trad": "官",
       "level": "6",
       "pos": "n",
@@ -55278,7 +55280,7 @@
     {
       "id": "L4-0296",
       "hanzi": "归",
-      "pinyin": "Guī",
+      "pinyin": "guī",
       "trad": "歸",
       "level": "6",
       "pos": "v",
@@ -55736,7 +55738,7 @@
     {
       "id": "L4-0514",
       "hanzi": "密",
-      "pinyin": "Mì",
+      "pinyin": "mì",
       "trad": "密",
       "level": "6",
       "pos": "a",
@@ -56085,7 +56087,7 @@
     {
       "id": "L4-0614",
       "hanzi": "闪",
-      "pinyin": "Shǎn",
+      "pinyin": "shǎn",
       "trad": "閃",
       "level": "6",
       "pos": "v",
@@ -56171,7 +56173,7 @@
     {
       "id": "L4-0683",
       "hanzi": "松",
-      "pinyin": "Sōng",
+      "pinyin": "sōng",
       "trad": "松",
       "level": "6",
       "pos": "v",
@@ -56524,7 +56526,7 @@
     {
       "id": "L4-0844",
       "hanzi": "严",
-      "pinyin": "Yán",
+      "pinyin": "yán",
       "trad": "嚴",
       "level": "6",
       "pos": "a",
@@ -57488,7 +57490,7 @@
     {
       "id": "L5-0092",
       "hanzi": "长寿",
-      "pinyin": "Cháng shòu",
+      "pinyin": "cháng shòu",
       "trad": "長壽",
       "level": "6",
       "pos": "a",
@@ -57872,7 +57874,7 @@
     {
       "id": "L5-0160",
       "hanzi": "大都",
-      "pinyin": "Dà dū",
+      "pinyin": "dà dū",
       "trad": "大都",
       "level": "6",
       "pos": "ns",
@@ -59463,7 +59465,7 @@
     {
       "id": "L5-0467",
       "hanzi": "立",
-      "pinyin": "Lì",
+      "pinyin": "lì",
       "trad": "立",
       "level": "6",
       "pos": "v",
@@ -59507,7 +59509,7 @@
     {
       "id": "L5-0473",
       "hanzi": "联想",
-      "pinyin": "Lián xiǎng",
+      "pinyin": "lián xiǎng",
       "trad": "聯想",
       "level": "6",
       "pos": "v",
@@ -60182,7 +60184,7 @@
     {
       "id": "L5-0588",
       "hanzi": "枪",
-      "pinyin": "Qiāng",
+      "pinyin": "qiāng",
       "trad": "槍",
       "level": "6",
       "pos": "n",
@@ -60590,7 +60592,7 @@
     {
       "id": "L5-0668",
       "hanzi": "神",
-      "pinyin": "Shén",
+      "pinyin": "shén",
       "trad": "神",
       "level": "6",
       "pos": "n",
@@ -64342,7 +64344,7 @@
     {
       "id": "L6-0258",
       "hanzi": "番",
-      "pinyin": "Pān",
+      "pinyin": "pān",
       "trad": "番",
       "level": "6",
       "pos": "qv",
@@ -64758,7 +64760,7 @@
     {
       "id": "L6-0327",
       "hanzi": "宫",
-      "pinyin": "Gōng",
+      "pinyin": "gōng",
       "trad": "宮",
       "level": "6",
       "pos": "g",
@@ -64862,7 +64864,7 @@
     {
       "id": "L6-0339",
       "hanzi": "顾",
-      "pinyin": "Gù",
+      "pinyin": "gù",
       "trad": "顧",
       "level": "6",
       "pos": "v",
@@ -65643,7 +65645,7 @@
     {
       "id": "L6-0430",
       "hanzi": "将军",
-      "pinyin": "Jiāng jūn",
+      "pinyin": "jiāng jūn",
       "trad": "將軍",
       "level": "6",
       "pos": "n",
@@ -65807,7 +65809,7 @@
     {
       "id": "L6-0450",
       "hanzi": "解",
-      "pinyin": "Xiè",
+      "pinyin": "xiè",
       "trad": "解",
       "level": "6",
       "pos": "v",
@@ -65959,7 +65961,7 @@
     {
       "id": "L6-0467",
       "hanzi": "井",
-      "pinyin": "Jǐng",
+      "pinyin": "jǐng",
       "trad": "井",
       "level": "6",
       "pos": "n",
@@ -66356,7 +66358,7 @@
     {
       "id": "L6-0523",
       "hanzi": "赖",
-      "pinyin": "Lài",
+      "pinyin": "lài",
       "trad": "賴",
       "level": "6",
       "pos": "v",
@@ -66448,7 +66450,7 @@
     {
       "id": "L6-0557",
       "hanzi": "露",
-      "pinyin": "Lù",
+      "pinyin": "lù",
       "trad": "露",
       "level": "6",
       "pos": "v",
@@ -67132,7 +67134,7 @@
     {
       "id": "L6-0662",
       "hanzi": "清",
-      "pinyin": "Qīng",
+      "pinyin": "qīng",
       "trad": "清",
       "level": "6",
       "pos": "a",
@@ -67375,7 +67377,7 @@
     {
       "id": "L6-0701",
       "hanzi": "塞",
-      "pinyin": "Sāi",
+      "pinyin": "sāi",
       "trad": "塞",
       "level": "6",
       "pos": "v",
@@ -67974,7 +67976,7 @@
     {
       "id": "L6-0802",
       "hanzi": "田",
-      "pinyin": "Tián",
+      "pinyin": "tián",
       "trad": "田",
       "level": "6",
       "pos": "n",
@@ -68032,7 +68034,7 @@
     {
       "id": "L6-0807",
       "hanzi": "通道",
-      "pinyin": "Tōng dào",
+      "pinyin": "tōng dào",
       "trad": "通道",
       "level": "6",
       "pos": "n",
@@ -68685,7 +68687,7 @@
     {
       "id": "L6-0905",
       "hanzi": "新兴",
-      "pinyin": "Xīn xīng",
+      "pinyin": "xīn xīng",
       "trad": "新興",
       "level": "6",
       "pos": "b",
@@ -68882,7 +68884,7 @@
     {
       "id": "L6-0935",
       "hanzi": "仰",
-      "pinyin": "Yǎng",
+      "pinyin": "yǎng",
       "trad": "仰",
       "level": "6",
       "pos": "v",
@@ -69211,7 +69213,7 @@
     {
       "id": "L6-0976",
       "hanzi": "印",
-      "pinyin": "Yìn",
+      "pinyin": "yìn",
       "trad": "印",
       "level": "6",
       "pos": "v",
@@ -69284,7 +69286,7 @@
     {
       "id": "L6-0996",
       "hanzi": "于",
-      "pinyin": "Yú",
+      "pinyin": "yú",
       "trad": "于",
       "level": "6",
       "pos": "p",
@@ -69479,7 +69481,7 @@
     {
       "id": "L6-1042",
       "hanzi": "章",
-      "pinyin": "Zhāng",
+      "pinyin": "zhāng",
       "trad": "章",
       "level": "6",
       "pos": "q",
@@ -70033,7 +70035,7 @@
     {
       "id": "H6-3812",
       "hanzi": "雷",
-      "pinyin": "Léi",
+      "pinyin": "léi",
       "trad": "雷",
       "level": "6",
       "pos": "n",
@@ -72172,7 +72174,7 @@
     {
       "id": "L7-0464",
       "hanzi": "盛",
-      "pinyin": "Shèng",
+      "pinyin": "shèng",
       "trad": "盛",
       "level": "6",
       "pos": "v",
@@ -73123,7 +73125,7 @@
     {
       "id": "L7-1069",
       "hanzi": "方言",
-      "pinyin": "Fāng yán",
+      "pinyin": "fāng yán",
       "trad": "方言",
       "level": "6",
       "pos": "n",
@@ -73333,7 +73335,7 @@
     {
       "id": "L7-1228",
       "hanzi": "富裕",
-      "pinyin": "Fù yù",
+      "pinyin": "fù yù",
       "trad": "富裕",
       "level": "6",
       "pos": "a",
@@ -74087,7 +74089,7 @@
     {
       "id": "L7-1709",
       "hanzi": "互助",
-      "pinyin": "Hù zhù",
+      "pinyin": "hù zhù",
       "trad": "互助",
       "level": "6",
       "pos": "vn",
@@ -74816,7 +74818,7 @@
     {
       "id": "L7-2146",
       "hanzi": "金子",
-      "pinyin": "Jīn zǐ",
+      "pinyin": "jīn zǐ",
       "trad": "金子",
       "level": "6",
       "pos": "n",
@@ -76803,7 +76805,7 @@
     {
       "id": "L7-3375",
       "hanzi": "曲",
-      "pinyin": "Qū",
+      "pinyin": "qū",
       "trad": "曲",
       "level": "6",
       "pos": "g",
@@ -77356,7 +77358,7 @@
     {
       "id": "L7-3690",
       "hanzi": "狮子",
-      "pinyin": "Shī zǐ",
+      "pinyin": "shī zǐ",
       "trad": "獅子",
       "level": "6",
       "pos": "n",
@@ -79085,7 +79087,7 @@
     {
       "id": "L7-4858",
       "hanzi": "业",
-      "pinyin": "Yè",
+      "pinyin": "yè",
       "trad": "業",
       "level": "6",
       "pos": "g",
@@ -80403,7 +80405,7 @@
     {
       "id": "L3-0300",
       "hanzi": "华人",
-      "pinyin": "Huá rén",
+      "pinyin": "huá rén",
       "trad": "華人",
       "level": "7-9",
       "pos": "n",
@@ -80417,7 +80419,7 @@
     {
       "id": "L3-0598",
       "hanzi": "任",
-      "pinyin": "Rén",
+      "pinyin": "rén",
       "trad": "任",
       "level": "7-9",
       "pos": "v",
@@ -80462,7 +80464,7 @@
     {
       "id": "L3-0714",
       "hanzi": "铁",
-      "pinyin": "Tiě",
+      "pinyin": "tiě",
       "trad": "鐵",
       "level": "7-9",
       "pos": "n",
@@ -80507,7 +80509,7 @@
     {
       "id": "L3-0930",
       "hanzi": "钟",
-      "pinyin": "Zhōng",
+      "pinyin": "zhōng",
       "trad": "鍾",
       "level": "7-9",
       "pos": "n",
@@ -80662,7 +80664,7 @@
     {
       "id": "L4-0149",
       "hanzi": "大陆",
-      "pinyin": "Dà lù",
+      "pinyin": "dà lù",
       "trad": "大陸",
       "level": "7-9",
       "pos": "n",
@@ -80738,7 +80740,7 @@
     {
       "id": "L4-0236",
       "hanzi": "非",
-      "pinyin": "Fēi",
+      "pinyin": "fēi",
       "trad": "非",
       "level": "7-9",
       "pos": "b",
@@ -80951,7 +80953,7 @@
     {
       "id": "L4-0885",
       "hanzi": "应",
-      "pinyin": "Yīng",
+      "pinyin": "yīng",
       "trad": "應",
       "level": "7-9",
       "pos": "v",
@@ -82621,7 +82623,7 @@
     {
       "id": "L6-0043",
       "hanzi": "扁",
-      "pinyin": "Piān",
+      "pinyin": "piān",
       "trad": "扁",
       "level": "7-9",
       "pos": "a",
@@ -83026,7 +83028,7 @@
     {
       "id": "L6-0198",
       "hanzi": "党",
-      "pinyin": "Dǎng",
+      "pinyin": "dǎng",
       "trad": "黨",
       "level": "7-9",
       "pos": "n",
@@ -83359,7 +83361,7 @@
     {
       "id": "L6-0281",
       "hanzi": "佛",
-      "pinyin": "Fó",
+      "pinyin": "fó",
       "trad": "佛",
       "level": "7-9",
       "pos": "n",
@@ -83585,7 +83587,7 @@
     {
       "id": "L6-0366",
       "hanzi": "海湾",
-      "pinyin": "Hǎi wān",
+      "pinyin": "hǎi wān",
       "trad": "海灣",
       "level": "7-9",
       "pos": "n",
@@ -83735,7 +83737,7 @@
     {
       "id": "L6-0410",
       "hanzi": "吉利",
-      "pinyin": "Jí lì",
+      "pinyin": "jí lì",
       "trad": "吉利",
       "level": "7-9",
       "pos": "a",
@@ -83765,7 +83767,7 @@
     {
       "id": "L6-0441",
       "hanzi": "揭",
-      "pinyin": "Jiē",
+      "pinyin": "jiē",
       "trad": "揭",
       "level": "7-9",
       "pos": "v",
@@ -84361,7 +84363,7 @@
     {
       "id": "L6-0606",
       "hanzi": "内地",
-      "pinyin": "Nèi dì",
+      "pinyin": "nèi dì",
       "trad": "內地",
       "level": "7-9",
       "pos": "s",
@@ -88529,7 +88531,7 @@
     {
       "id": "L7-0207",
       "hanzi": "标致",
-      "pinyin": "Biāo zhì",
+      "pinyin": "biāo zhì",
       "trad": "標致",
       "level": "7-9",
       "pos": "a",
@@ -90685,7 +90687,7 @@
     {
       "id": "L7-0391",
       "hanzi": "长征",
-      "pinyin": "Cháng zhēng",
+      "pinyin": "cháng zhēng",
       "trad": "長征",
       "level": "7-9",
       "pos": "n",
@@ -91904,7 +91906,7 @@
     {
       "id": "L7-0513",
       "hanzi": "仇",
-      "pinyin": "Qiú",
+      "pinyin": "qiú",
       "trad": "仇",
       "level": "7-9",
       "pos": "n",
@@ -96010,7 +96012,7 @@
     {
       "id": "L7-0881",
       "hanzi": "丁",
-      "pinyin": "Dīng",
+      "pinyin": "dīng",
       "trad": "丁",
       "level": "7-9",
       "pos": "nr",
@@ -96641,7 +96643,7 @@
     {
       "id": "L7-0932",
       "hanzi": "斗",
-      "pinyin": "Dǒu",
+      "pinyin": "dǒu",
       "trad": "斗",
       "level": "7-9",
       "pos": "v",
@@ -99003,7 +99005,7 @@
     {
       "id": "L7-1144",
       "hanzi": "丰满",
-      "pinyin": "Fēng mǎn",
+      "pinyin": "fēng mǎn",
       "trad": "豐滿",
       "level": "7-9",
       "pos": "a",
@@ -99477,7 +99479,7 @@
     {
       "id": "L7-1178",
       "hanzi": "凤凰",
-      "pinyin": "Fèng huáng",
+      "pinyin": "fèng huáng",
       "trad": "鳳凰",
       "level": "7-9",
       "pos": "n",
@@ -99979,7 +99981,7 @@
     {
       "id": "L7-1220",
       "hanzi": "复兴",
-      "pinyin": "Fù xīng",
+      "pinyin": "fù xīng",
       "trad": "復興",
       "level": "7-9",
       "pos": "vn",
@@ -100433,7 +100435,7 @@
     {
       "id": "L7-1273",
       "hanzi": "港",
-      "pinyin": "Gǎng",
+      "pinyin": "gǎng",
       "trad": "港",
       "level": "7-9",
       "pos": "n",
@@ -100554,7 +100556,7 @@
     {
       "id": "L7-1286",
       "hanzi": "高明",
-      "pinyin": "Gāo míng",
+      "pinyin": "gāo míng",
       "trad": "高明",
       "level": "7-9",
       "pos": "a",
@@ -100751,7 +100753,7 @@
     {
       "id": "L7-1302",
       "hanzi": "戈壁",
-      "pinyin": "Gē bì",
+      "pinyin": "gē bì",
       "trad": "戈壁",
       "level": "7-9",
       "pos": "n",
@@ -101142,7 +101144,7 @@
     {
       "id": "L7-1342",
       "hanzi": "弓",
-      "pinyin": "Gōng",
+      "pinyin": "gōng",
       "trad": "弓",
       "level": "7-9",
       "pos": "n",
@@ -101721,7 +101723,7 @@
     {
       "id": "L7-1392",
       "hanzi": "勾",
-      "pinyin": "Gōu",
+      "pinyin": "gōu",
       "trad": "勾",
       "level": "7-9",
       "pos": "v",
@@ -102891,7 +102893,7 @@
     {
       "id": "L7-1490",
       "hanzi": "光泽",
-      "pinyin": "Guāng zé",
+      "pinyin": "guāng zé",
       "trad": "光澤",
       "level": "7-9",
       "pos": "n",
@@ -103183,7 +103185,7 @@
     {
       "id": "L7-1516",
       "hanzi": "国徽",
-      "pinyin": "Guó huī",
+      "pinyin": "guó huī",
       "trad": "國徽",
       "level": "7-9",
       "pos": "N",
@@ -105330,7 +105332,7 @@
     {
       "id": "L7-1717",
       "hanzi": "华侨",
-      "pinyin": "Huá qiáo",
+      "pinyin": "huá qiáo",
       "trad": "華僑",
       "level": "7-9",
       "pos": "n",
@@ -105345,7 +105347,7 @@
     {
       "id": "L7-1718",
       "hanzi": "华裔",
-      "pinyin": "Huá yì",
+      "pinyin": "huá yì",
       "trad": "華裔",
       "level": "7-9",
       "pos": "n",
@@ -107319,7 +107321,7 @@
     {
       "id": "L7-1904",
       "hanzi": "计",
-      "pinyin": "Jì",
+      "pinyin": "jì",
       "trad": "計",
       "level": "7-9",
       "pos": "v",
@@ -107557,7 +107559,7 @@
     {
       "id": "L7-1925",
       "hanzi": "祭",
-      "pinyin": "Zhài",
+      "pinyin": "zhài",
       "trad": "祭",
       "level": "7-9",
       "pos": "v",
@@ -107886,7 +107888,7 @@
     {
       "id": "L7-1953",
       "hanzi": "驾",
-      "pinyin": "Jià",
+      "pinyin": "jià",
       "trad": "駕",
       "level": "7-9",
       "pos": "v",
@@ -108739,7 +108741,7 @@
     {
       "id": "L7-2026",
       "hanzi": "姜",
-      "pinyin": "Jiāng",
+      "pinyin": "jiāng",
       "trad": "姜",
       "level": "7-9",
       "pos": "nr",
@@ -109083,7 +109085,7 @@
     {
       "id": "L7-2058",
       "hanzi": "焦",
-      "pinyin": "Jiāo",
+      "pinyin": "jiāo",
       "trad": "焦",
       "level": "7-9",
       "pos": "a",
@@ -110427,7 +110429,7 @@
     {
       "id": "L7-2178",
       "hanzi": "经",
-      "pinyin": "Jīng",
+      "pinyin": "jīng",
       "trad": "經",
       "level": "7-9",
       "pos": "p",
@@ -113955,7 +113957,7 @@
     {
       "id": "L7-2498",
       "hanzi": "腊月",
-      "pinyin": "Là yuè",
+      "pinyin": "là yuè",
       "trad": "臘月",
       "level": "7-9",
       "pos": "t",
@@ -113998,7 +114000,7 @@
     {
       "id": "L7-2502",
       "hanzi": "来宾",
-      "pinyin": "Lái bīn",
+      "pinyin": "lái bīn",
       "trad": "來賓",
       "level": "7-9",
       "pos": "n",
@@ -114633,7 +114635,7 @@
     {
       "id": "L7-2559",
       "hanzi": "冷战",
-      "pinyin": "Lěng zhàn",
+      "pinyin": "lěng zhàn",
       "trad": "冷戰",
       "level": "7-9",
       "pos": "n",
@@ -117509,7 +117511,7 @@
     {
       "id": "L7-2813",
       "hanzi": "枚",
-      "pinyin": "Méi",
+      "pinyin": "méi",
       "trad": "枚",
       "level": "7-9",
       "pos": "q",
@@ -117552,7 +117554,7 @@
     {
       "id": "L7-2820",
       "hanzi": "美德",
-      "pinyin": "Měi Dé",
+      "pinyin": "měi Dé",
       "trad": "美德",
       "level": "7-9",
       "pos": "n",
@@ -118093,7 +118095,7 @@
     {
       "id": "L7-2877",
       "hanzi": "苗",
-      "pinyin": "Miáo",
+      "pinyin": "miáo",
       "trad": "苗",
       "level": "7-9",
       "pos": "n",
@@ -118559,7 +118561,7 @@
     {
       "id": "L7-2916",
       "hanzi": "末日",
-      "pinyin": "Mò rì",
+      "pinyin": "mò rì",
       "trad": "末日",
       "level": "7-9",
       "pos": "n",
@@ -118633,7 +118635,7 @@
     {
       "id": "L7-2923",
       "hanzi": "墨",
-      "pinyin": "Mò",
+      "pinyin": "mò",
       "trad": "墨",
       "level": "7-9",
       "pos": "n",
@@ -118725,7 +118727,7 @@
     {
       "id": "L7-2930",
       "hanzi": "牡丹",
-      "pinyin": "Mǔ dan",
+      "pinyin": "mǔ dan",
       "trad": "牡丹",
       "level": "7-9",
       "pos": "n",
@@ -121071,7 +121073,7 @@
     {
       "id": "L7-3140",
       "hanzi": "平和",
-      "pinyin": "Píng hé",
+      "pinyin": "píng hé",
       "trad": "平和",
       "level": "7-9",
       "pos": "a",
@@ -121270,7 +121272,7 @@
     {
       "id": "L7-3157",
       "hanzi": "颇",
-      "pinyin": "Pō",
+      "pinyin": "pō",
       "trad": "頗",
       "level": "7-9",
       "pos": "d",
@@ -121498,7 +121500,7 @@
     {
       "id": "L7-3172",
       "hanzi": "菩萨",
-      "pinyin": "Pú sà",
+      "pinyin": "pú sà",
       "trad": "菩薩",
       "level": "7-9",
       "pos": "n",
@@ -123479,7 +123481,7 @@
     {
       "id": "L7-3344",
       "hanzi": "清新",
-      "pinyin": "Qīng xīn",
+      "pinyin": "qīng xīn",
       "trad": "清新",
       "level": "7-9",
       "pos": "a",
@@ -124413,7 +124415,7 @@
     {
       "id": "L7-3419",
       "hanzi": "饶",
-      "pinyin": "Ráo",
+      "pinyin": "ráo",
       "trad": "饒",
       "level": "7-9",
       "pos": "v",
@@ -126171,7 +126173,7 @@
     {
       "id": "L7-3582",
       "hanzi": "尚",
-      "pinyin": "Shàng",
+      "pinyin": "shàng",
       "trad": "尚",
       "level": "7-9",
       "pos": "d",
@@ -129022,7 +129024,7 @@
     {
       "id": "L7-3834",
       "hanzi": "耍",
-      "pinyin": "Shuǎ",
+      "pinyin": "shuǎ",
       "trad": "耍",
       "level": "7-9",
       "pos": "v",
@@ -130699,7 +130701,7 @@
     {
       "id": "L7-3987",
       "hanzi": "太极",
-      "pinyin": "Tài jí",
+      "pinyin": "tài jí",
       "trad": "太極",
       "level": "7-9",
       "pos": "nz",
@@ -130713,7 +130715,7 @@
     {
       "id": "L7-3989",
       "hanzi": "太平",
-      "pinyin": "Tài píng",
+      "pinyin": "tài píng",
       "trad": "太平",
       "level": "7-9",
       "pos": "a",
@@ -131732,7 +131734,7 @@
     {
       "id": "L7-4077",
       "hanzi": "天桥",
-      "pinyin": "Tiān qiáo",
+      "pinyin": "tiān qiáo",
       "trad": "天橋",
       "level": "7-9",
       "pos": "n",
@@ -132563,7 +132565,7 @@
     {
       "id": "L7-4153",
       "hanzi": "头条",
-      "pinyin": "Tóu tiáo",
+      "pinyin": "tóu tiáo",
       "trad": "頭條",
       "level": "7-9",
       "pos": "n",
@@ -134157,7 +134159,7 @@
     {
       "id": "L7-4285",
       "hanzi": "威信",
-      "pinyin": "Wēi xìn",
+      "pinyin": "wēi xìn",
       "trad": "威信",
       "level": "7-9",
       "pos": "n",
@@ -134642,7 +134644,7 @@
     {
       "id": "L7-4322",
       "hanzi": "温泉",
-      "pinyin": "Wēn quán",
+      "pinyin": "wēn quán",
       "trad": "溫泉",
       "level": "7-9",
       "pos": "n",
@@ -134714,7 +134716,7 @@
     {
       "id": "L7-4328",
       "hanzi": "文",
-      "pinyin": "Wén",
+      "pinyin": "wén",
       "trad": "文",
       "level": "7-9",
       "pos": "g",
@@ -135881,7 +135883,7 @@
     {
       "id": "L7-4426",
       "hanzi": "席",
-      "pinyin": "Xí",
+      "pinyin": "xí",
       "trad": "席",
       "level": "7-9",
       "pos": "qt",
@@ -137326,7 +137328,7 @@
     {
       "id": "L7-4563",
       "hanzi": "小康",
-      "pinyin": "Xiǎo kāng",
+      "pinyin": "xiǎo kāng",
       "trad": "小康",
       "level": "7-9",
       "pos": "n",
@@ -138973,7 +138975,7 @@
     {
       "id": "L7-4694",
       "hanzi": "许",
-      "pinyin": "Xǔ",
+      "pinyin": "xǔ",
       "trad": "許",
       "level": "7-9",
       "pos": "v",
@@ -139896,7 +139898,7 @@
     {
       "id": "L7-4766",
       "hanzi": "延",
-      "pinyin": "Yán",
+      "pinyin": "yán",
       "trad": "延",
       "level": "7-9",
       "pos": "g",
@@ -140094,7 +140096,7 @@
     {
       "id": "L7-4783",
       "hanzi": "阎王",
-      "pinyin": "Yán wáng",
+      "pinyin": "yán wáng",
       "trad": "閻王",
       "level": "7-9",
       "pos": "n",
@@ -140476,7 +140478,7 @@
     {
       "id": "L7-4813",
       "hanzi": "扬",
-      "pinyin": "Yáng",
+      "pinyin": "yáng",
       "trad": "揚",
       "level": "7-9",
       "pos": "g",
@@ -143315,7 +143317,7 @@
     {
       "id": "L7-5091",
       "hanzi": "余",
-      "pinyin": "Yú",
+      "pinyin": "yú",
       "trad": "余",
       "level": "7-9",
       "pos": "m",
@@ -145100,7 +145102,7 @@
     {
       "id": "L7-5250",
       "hanzi": "张扬",
-      "pinyin": "Zhāng Yáng",
+      "pinyin": "zhāng Yáng",
       "trad": "張揚",
       "level": "7-9",
       "pos": "v",
@@ -145755,7 +145757,7 @@
     {
       "id": "L7-5308",
       "hanzi": "振兴",
-      "pinyin": "Zhèn xīng",
+      "pinyin": "zhèn xīng",
       "trad": "振興",
       "level": "7-9",
       "pos": "v",
@@ -146994,7 +146996,7 @@
     {
       "id": "L7-5414",
       "hanzi": "中庸",
-      "pinyin": "Zhōng yōng",
+      "pinyin": "zhōng yōng",
       "trad": "中庸",
       "level": "7-9",
       "pos": "n",
@@ -147655,7 +147657,7 @@
     {
       "id": "L7-5475",
       "hanzi": "筑",
-      "pinyin": "Zhù",
+      "pinyin": "zhù",
       "trad": "筑",
       "level": "7-9",
       "pos": "v",
@@ -148032,7 +148034,7 @@
     {
       "id": "L7-5508",
       "hanzi": "壮",
-      "pinyin": "Zhuàng",
+      "pinyin": "zhuàng",
       "trad": "壯",
       "level": "7-9",
       "pos": "v",
@@ -148965,7 +148967,7 @@
     {
       "id": "L7-5580",
       "hanzi": "宗",
-      "pinyin": "Zōng",
+      "pinyin": "zōng",
       "trad": "宗",
       "level": "7-9",
       "pos": "q",
@@ -149695,7 +149697,7 @@
     {
       "id": "H7-9-5547",
       "hanzi": "国务院",
-      "pinyin": "Guó wù yuàn",
+      "pinyin": "guó wù yuàn",
       "trad": "國務院",
       "level": "7-9",
       "pos": "nt",
@@ -149920,7 +149922,7 @@
     {
       "id": "H7-9-5811",
       "hanzi": "孔",
-      "pinyin": "Kǒng",
+      "pinyin": "kǒng",
       "trad": "孔",
       "level": "7-9",
       "pos": "n",
@@ -150609,7 +150611,7 @@
     {
       "id": "H7-9-6478",
       "hanzi": "奔驰",
-      "pinyin": "Bēn chí",
+      "pinyin": "bēn chí",
       "trad": "奔馳",
       "level": "7-9",
       "pos": "nz",
@@ -151930,7 +151932,7 @@
     {
       "id": "H7-9-7630",
       "hanzi": "正月",
-      "pinyin": "Zhēng yuè",
+      "pinyin": "zhēng yuè",
       "trad": "正月",
       "level": "7-9",
       "pos": "t",
@@ -154794,7 +154796,7 @@
     {
       "id": "H7-9-8948",
       "hanzi": "淡水",
-      "pinyin": "Dàn shuǐ",
+      "pinyin": "dàn shuǐ",
       "trad": "淡水",
       "level": "7-9",
       "pos": "n",
@@ -158885,7 +158887,7 @@
     {
       "id": "H7-9-10155",
       "hanzi": "兴隆",
-      "pinyin": "Xīng lóng",
+      "pinyin": "xīng lóng",
       "trad": "興隆",
       "level": "7-9",
       "pos": "a",

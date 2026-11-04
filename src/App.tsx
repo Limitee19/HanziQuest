@@ -64,7 +64,7 @@ function AppContent() {
   const renderActivePage = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <DashboardPage onNavigate={setActiveTab} />;
+        return <DashboardPage onNavigate={setActiveTab} onStartSession={handleStartSession} />;
       case 'drill':
         return <DrillPage onBackToMap={() => setActiveTab('dashboard')} />;
       case 'leech':
@@ -91,6 +91,7 @@ function AppContent() {
       case 'session':
         return (
           <SessionPage
+            key={`session-lvl-${sessionLevel}`}
             initialLevel={sessionLevel}
             onBackToMap={() => setActiveTab('dashboard')}
           />
