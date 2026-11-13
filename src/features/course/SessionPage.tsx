@@ -16,12 +16,12 @@ interface SessionPageProps {
 }
 
 const OUTPOST_INFO: Record<number, { name: string; icon: string; subtitle: string; desc: string }> = {
-  1: { name: 'Pos 1: Gerbang Desa', icon: '⛩️', subtitle: 'HSK 1 (500 kata)', desc: 'Lembah Permulaan · Kosakata dasar sehari-hari' },
-  2: { name: 'Pos 2: Jembatan Bambu', icon: '🎋', subtitle: 'HSK 2 (772 kata)', desc: 'Hutan Bambu Dan Sungai · Percakapan dasar dan hubungan sosial' },
-  3: { name: 'Pos 3: Paviliun Teh', icon: '🍵', subtitle: 'HSK 3 (973 kata)', desc: 'Air Terjun Dan Sakura · Tata bahasa menengah dan kerja rutin' },
-  4: { name: 'Pos 4: Menara Lentera', icon: '🏮', subtitle: 'HSK 4 (1.000 kata)', desc: 'Ngarai Lentera Senja · Diskusi topik umum Dan opini' },
-  5: { name: 'Pos 5: Gunung Berkabut', icon: '⛰️', subtitle: 'HSK 5 (1.071 kata)', desc: 'Tebing Awan Dan Salju · Artikel, koran, dan film Mandarin' },
-  6: { name: 'Pos 6: Pagoda Puncak', icon: '🏯', subtitle: 'HSK 6 (1.140 kata)', desc: 'Istana Awan Emas · Kemahiran tingkat lanjut Dan sastra' },
+  1: { name: 'Pos 1: Gerbang Desa', icon: '⛩️', subtitle: 'HSK 3.0 Tingkat 1 (300 kata)', desc: 'Lembah Permulaan · Kosakata dasar kehidupan sehari-hari' },
+  2: { name: 'Pos 2: Jembatan Bambu', icon: '🎋', subtitle: 'HSK 3.0 Tingkat 2 (500 kata kumulatif)', desc: 'Hutan Bambu & Sungai · Percakapan dasar dan interaksi sosial' },
+  3: { name: 'Pos 3: Paviliun Teh', icon: '🍵', subtitle: 'HSK 3.0 Tingkat 3 (1.000 kata kumulatif)', desc: 'Air Terjun & Sakura · Tata bahasa menengah dan aktivitas harian' },
+  4: { name: 'Pos 4: Menara Lentera', icon: '🏮', subtitle: 'HSK 3.0 Tingkat 4 (2.000 kata kumulatif)', desc: 'Ngarai Lentera Senja · Diskusi topik umum dan opini mandiri' },
+  5: { name: 'Pos 5: Gunung Berkabut', icon: '⛰️', subtitle: 'HSK 3.0 Tingkat 5 (3.500+ kata)', desc: 'Tebing Awan & Salju · Membaca artikel, wacana, berita, dan film' },
+  6: { name: 'Pos 6: Pagoda Puncak', icon: '🏯', subtitle: 'HSK 3.0 Tingkat 6 (5.400+ kata)', desc: 'Istana Awan Emas · Kemahiran tingkat lanjut dan sastra Mandarin' },
 };
 
 export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBackToMap }) => {
@@ -50,6 +50,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
   const [xpEarned, setXpEarned] = useState(0);
   const [reviewedWordsCount, setReviewedWordsCount] = useState(0);
   const [isSessionComplete, setIsSessionComplete] = useState(false);
+  const [requeuedIds, setRequeuedIds] = useState<Record<string, boolean>>({});
   const [queueMeta, setQueueMeta] = useState<{ dueCount: number; newCount: number; isAllCompleted: boolean }>({
     dueCount: 0,
     newCount: 0,
@@ -70,6 +71,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
       setIsRevealed(false);
       setReviewedWordsCount(0);
       setIsSessionComplete(false);
+      setRequeuedIds({});
       setMnemonics(getMnemonicNotes());
     } catch (err) {
       console.error('Failed to load queue:', err);
@@ -127,11 +129,17 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
       }
     }
 
+    const shouldRequeue = rating === 'again' && !requeuedIds[currentWord.id];
+    if (shouldRequeue) {
+      setRequeuedIds((prev) => ({ ...prev, [currentWord.id]: true }));
+      setSessionWords((prev) => [...prev, currentWord]);
+    }
+
     await recordQuestWordReview(currentWord, rating);
 
     setReviewedWordsCount((prev) => prev + 1);
 
-    if (currentIndex + 1 >= sessionWords.length) {
+    if (!shouldRequeue && currentIndex + 1 >= sessionWords.length) {
       if (arcade) {
         confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
       }
@@ -166,6 +174,10 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
     } else {
       playErrorBuzz(sound);
       setStreak(0);
+      if (!requeuedIds[currentWord.id]) {
+        setRequeuedIds((prev) => ({ ...prev, [currentWord.id]: true }));
+        setSessionWords((prev) => [...prev, currentWord]);
+      }
       await recordQuestWordReview(currentWord, 'again');
     }
 
@@ -638,7 +650,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                     className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200 dark:border-rose-900/60 text-rose-800 dark:text-rose-300 font-bold text-xs cursor-pointer transition-transform active:scale-95 text-center space-y-0.5 shadow-xs"
                   >
                     <div className="font-extrabold text-sm">🔴 Ulang</div>
-                    <div className="text-[10px] text-rose-600 dark:text-rose-400">&lt; 1 mnt (1)</div>
+                    <div className="text-[10px] text-rose-600 dark:text-rose-400">Ulang di sesi ini (&lt; 10 mnt)</div>
                   </button>
 
                   <button
@@ -647,7 +659,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                     className="p-3 rounded-2xl bg-amber-50 dark:bg-amber-950/40 hover:bg-amber-100 dark:hover:bg-amber-900/50 border border-amber-200 dark:border-amber-900/60 text-amber-800 dark:text-amber-300 font-bold text-xs cursor-pointer transition-transform active:scale-95 text-center space-y-0.5 shadow-xs"
                   >
                     <div className="font-extrabold text-sm">🟠 Sukar</div>
-                    <div className="text-[10px] text-amber-600 dark:text-amber-400">12 jam (2)</div>
+                    <div className="text-[10px] text-amber-600 dark:text-amber-400">1 hari (besok)</div>
                   </button>
 
                   <button
@@ -656,7 +668,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                     className="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/40 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 border border-emerald-200 dark:border-emerald-900/60 text-emerald-800 dark:text-emerald-300 font-bold text-xs cursor-pointer transition-transform active:scale-95 text-center space-y-0.5 shadow-xs"
                   >
                     <div className="font-extrabold text-sm">🟢 Bagus</div>
-                    <div className="text-[10px] text-emerald-600 dark:text-emerald-400">1 hari (3)</div>
+                    <div className="text-[10px] text-emerald-600 dark:text-emerald-400">3 hari lagi</div>
                   </button>
 
                   <button
@@ -665,7 +677,7 @@ export const SessionPage: React.FC<SessionPageProps> = ({ initialLevel = 1, onBa
                     className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 border border-indigo-200 dark:border-indigo-900/60 text-indigo-800 dark:text-indigo-300 font-bold text-xs cursor-pointer transition-transform active:scale-95 text-center space-y-0.5 shadow-xs"
                   >
                     <div className="font-extrabold text-sm">🔵 Mudah</div>
-                    <div className="text-[10px] text-indigo-600 dark:text-indigo-400">4 hari (4)</div>
+                    <div className="text-[10px] text-indigo-600 dark:text-indigo-400">7 hari lagi</div>
                   </button>
                 </div>
               </div>

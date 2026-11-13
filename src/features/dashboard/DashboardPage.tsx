@@ -31,9 +31,10 @@ import { CustomAvatar } from '@/components/common/CustomAvatar';
 interface DashboardPageProps {
   onNavigate: (tab: NavTab) => void;
   onStartSession?: (level: number) => void;
+  onStartDrill?: (level: number) => void;
 }
 
-export function DashboardPage({ onNavigate, onStartSession }: DashboardPageProps) {
+export function DashboardPage({ onNavigate, onStartSession, onStartDrill }: DashboardPageProps) {
   const [activeInfo, setActiveInfo] = useState<'arcade' | 'sound' | null>(null);
   const [isWritingModalOpen, setIsWritingModalOpen] = useState(false);
 
@@ -516,9 +517,13 @@ export function DashboardPage({ onNavigate, onStartSession }: DashboardPageProps
                 onNavigate('session');
               }
             }}
-            onDrill={() => {
+            onDrill={(lvl) => {
               clickTick(sound);
-              onNavigate('drill');
+              if (onStartDrill) {
+                onStartDrill(lvl);
+              } else {
+                onNavigate('drill');
+              }
             }}
             onOpenDeck={() => {
               clickTick(sound);

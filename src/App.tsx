@@ -23,6 +23,7 @@ import {
 function AppContent() {
   const [activeTab, setActiveTab] = useState<NavTab>('dashboard');
   const [sessionLevel, setSessionLevel] = useState<number>(1);
+  const [drillLevel, setDrillLevel] = useState<number>(1);
   const [vocabTarget, setVocabTarget] = useState<{ query?: string; wordId?: string } | null>(null);
   const { isInitialized } = useDb();
 
@@ -61,12 +62,29 @@ function AppContent() {
     setActiveTab('session');
   };
 
+  const handleStartDrill = (lvl = 1) => {
+    setDrillLevel(lvl);
+    setActiveTab('drill');
+  };
+
   const renderActivePage = () => {
     switch (activeTab) {
       case 'dashboard':
-        return <DashboardPage onNavigate={setActiveTab} onStartSession={handleStartSession} />;
+        return (
+          <DashboardPage
+            onNavigate={setActiveTab}
+            onStartSession={handleStartSession}
+            onStartDrill={handleStartDrill}
+          />
+        );
       case 'drill':
-        return <DrillPage onBackToMap={() => setActiveTab('dashboard')} />;
+        return (
+          <DrillPage
+            key={`drill-lvl-${drillLevel}`}
+            initialLevel={drillLevel}
+            onBackToMap={() => setActiveTab('dashboard')}
+          />
+        );
       case 'leech':
         return (
           <LeechPage
